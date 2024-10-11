@@ -1,6 +1,6 @@
 ﻿using Finance.Domain.Entities;
 
-namespace Finance.Application.UseCases.Tags.Commons
+namespace Finance.Application.UseCases.Tag.Commons
 {
     public class TagResponse(
         Guid tagId,

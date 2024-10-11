@@ -1,7 +1,7 @@
-﻿using Finance.Application.UseCases.Tags.Commons;
+﻿using Finance.Application.UseCases.Tag.Commons;
 using MediatR;
 
-namespace Finance.Application.UseCases.Tags.CreateTag
+namespace Finance.Application.UseCases.Tag.CreateTag
 {
     public interface ICreateTagHandler : IRequestHandler<CreateTagRequest, TagResponse>
     {
