@@ -11,10 +11,11 @@ namespace Finance.Application.UseCases.Tag.DisableTag
         public async Task<TagResponse> Handle(DisableTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(request.TagId, cancellationToken);
+            tag.Disable();
+
             await tagRepository.UpdateAsync(tag, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return TagResponse.FromEntity(tag);
         }
     }
 }

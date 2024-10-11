@@ -23,5 +23,11 @@ namespace Finance.Domain.Entities
             Active = active;
             Name = name;
         }
+
+        public void Disable()
+        {
+            Active = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
