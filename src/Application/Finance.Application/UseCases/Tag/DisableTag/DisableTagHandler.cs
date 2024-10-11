@@ -8,6 +8,7 @@ namespace Finance.Application.UseCases.Tag.DisableTag
         public async Task<TagResponse> Handle(DisableTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(request.TagId, cancellationToken);
+            await tagRepository.UpdateAsync(tag, cancellationToken);
 
             throw new NotImplementedException();
         }
