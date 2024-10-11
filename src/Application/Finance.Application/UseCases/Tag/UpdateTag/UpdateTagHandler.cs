@@ -1,11 +1,14 @@
 ﻿using Finance.Application.UseCases.Tag.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Tag.UpdateTag
 {
-    public class UpdateTagHandler : IUpdateTagHandler
+    public class UpdateTagHandler(ITagRepository tagRepository) : IUpdateTagHandler
     {
-        public Task<TagResponse> Handle(UpdateTagRequest request, CancellationToken cancellationToken)
+        public async Task<TagResponse> Handle(UpdateTagRequest request, CancellationToken cancellationToken)
         {
+            var tag = await tagRepository.FindAsync(request.TagId, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
