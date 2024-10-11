@@ -14,8 +14,7 @@ namespace Finance.Application.UseCases.Tag.CreateTag
             var tag = new TagEntity(name: request.Name);
             await tagRepository.InsertAsync(tag, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return TagResponse.FromEntity(tag);
         }
     }
 }

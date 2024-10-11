@@ -57,5 +57,16 @@ namespace Finance.Test.UnitTests.Application.UseCases.Tag.CreateTag
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfTagIsAddedSuccessfully))]
+        [Trait("Unit/UseCase", "Tag - CreateTag")]
+        public async Task ShouldReturnTheCorrectResponseIfTagIsAddedSuccessfully()
+        {
+            var request = _fixture.MakeCreateTagRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.Active.Should().BeTrue();
+            response.Name.Should().Be(request.Name);
+        }
     }
 }
