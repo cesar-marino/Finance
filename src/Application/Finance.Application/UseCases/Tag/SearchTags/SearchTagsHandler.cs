@@ -6,7 +6,7 @@ namespace Finance.Application.UseCases.Tag.SearchTags
     {
         public async Task<SearchTagsResponse> Handle(SearchTagsRequest request, CancellationToken cancellationToken)
         {
-            await tagRepository.SearchAsync(
+            var tags = await tagRepository.SearchAsync(
                 page: request.Page,
                 perPage: request.PerPage,
                 active: request.Active,
@@ -14,7 +14,12 @@ namespace Finance.Application.UseCases.Tag.SearchTags
                 order: request.Order,
                 cancellationToken);
 
-            throw new NotImplementedException();
+            return new(
+                page: request.Page,
+                perPage: request.PerPage,
+                total: tags.Total,
+                order: request.Order,
+                items: tags.Items);
         }
     }
 }
