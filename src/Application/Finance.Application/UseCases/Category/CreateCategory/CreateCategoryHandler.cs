@@ -18,8 +18,7 @@ namespace Finance.Application.UseCases.Category.CreateCategory
 
             await categoryRepository.InsertAsync(category, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return CategoryResponse.FromEntity(category);
         }
     }
 }
