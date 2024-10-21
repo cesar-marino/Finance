@@ -9,11 +9,13 @@ namespace Finance.Test.UnitTests.Commons
         public Faker Faker { get; } = new("pt_BR");
 
         public TagEntity MakeTagEntity(
+            Guid? accountId = null,
             Guid? tagId = null,
             bool active = true,
             string? name = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
+                accountId: accountId ?? Faker.Random.Guid(),
                 tagId: tagId ?? Faker.Random.Guid(),
                 active: active,
                 name: name ?? Faker.Random.String(5),

@@ -3,8 +3,11 @@ using MediatR;
 
 namespace Finance.Application.UseCases.Tag.CreateTag
 {
-    public class CreateTagRequest(string name) : IRequest<TagResponse>
+    public class CreateTagRequest(
+        Guid accountId,
+        string name) : IRequest<TagResponse>
     {
-        public string Name { get; private set; } = name;
+        public Guid AccountId { get; } = accountId;
+        public string Name { get; } = name;
     }
 }
