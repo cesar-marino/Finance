@@ -1,5 +1,4 @@
 ﻿using Finance.Application.UseCases.Tag.GetTag;
-using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
