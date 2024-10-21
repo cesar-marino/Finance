@@ -7,10 +7,12 @@ namespace Finance.Application.UseCases.Tag.EnableTag
     {
         public async Task<TagResponse> Handle(EnableTagRequest request, CancellationToken cancellationToken)
         {
-            await tagRepository.FindAsync(
+            var tag = await tagRepository.FindAsync(
                 accountId: request.AccountId,
                 entityId: request.TagId,
                 cancellationToken);
+
+            await tagRepository.UpdateAsync(tag, cancellationToken);
 
             throw new NotImplementedException();
         }
