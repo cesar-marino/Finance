@@ -2,6 +2,7 @@
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,13 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.CreateTag
         private readonly CreateTagHandlerTestFixture _fixture;
         private readonly CreateTagHandler _sut;
         private readonly Mock<ITagRepository> _tagRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public CreateTagHandlerTest(CreateTagHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _tagRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(tagRepository: _tagRepositoryMock.Object);
+            _sut = new(
+                tagRepository: _tagRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsynThrows))]
@@ -27,6 +32,22 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.CreateTag
         {
             _tagRepositoryMock
                 .Setup(x => x.InsertAsync(It.IsAny<TagEntity>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateTagRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsynThrows))]
+        [Trait("Unit/UseCase", "Tag - CreateTag")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncAsynThrows()
+        {
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeCreateTagRequest();
