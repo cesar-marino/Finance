@@ -3,7 +3,7 @@
     public abstract class EntityBase
     {
         public Guid AccountId { get; }
-        public Guid EntityId { get; }
+        public Guid Id { get; }
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; set; }
 
@@ -14,7 +14,7 @@
             DateTime? updatedAt = null)
         {
             AccountId = accountId;
-            EntityId = entityId ?? Guid.NewGuid();
+            Id = entityId ?? Guid.NewGuid();
             CreatedAt = createdAt ?? DateTime.UtcNow;
             UpdatedAt = updatedAt ?? DateTime.UtcNow;
         }
