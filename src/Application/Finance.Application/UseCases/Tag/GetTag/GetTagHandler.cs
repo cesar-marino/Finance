@@ -7,9 +7,8 @@ namespace Finance.Application.UseCases.Tag.GetTag
     {
         public async Task<TagResponse> Handle(GetTagRequest request, CancellationToken cancellationToken)
         {
-            await tagRepository.FindAsync(request.AccountId, request.TagId, cancellationToken);
-
-            throw new NotImplementedException();
+            var tag = await tagRepository.FindAsync(request.AccountId, request.TagId, cancellationToken);
+            return TagResponse.FromEntity(tag);
         }
     }
 }
