@@ -6,7 +6,7 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTests.Application.UseCases.Category
+namespace Finance.Test.UnitTests.Application.UseCases.Category.CreateCategory
 {
     public class CreateCategoryHandlerTest : IClassFixture<CreateCategoryHandlerTestFixture>
     {

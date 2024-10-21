@@ -1,7 +1,7 @@
 ﻿using Finance.Application.UseCases.Category.CreateCategory;
 using Finance.Test.UnitTests.Commons;
 
-namespace Finance.Test.UnitTests.Application.UseCases.Category
+namespace Finance.Test.UnitTests.Application.UseCases.Category.CreateCategory
 {
     public class CreateCategoryHandlerTestFixture : FixtureBase
     {
