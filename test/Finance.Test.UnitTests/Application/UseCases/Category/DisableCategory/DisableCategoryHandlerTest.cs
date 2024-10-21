@@ -1,4 +1,5 @@
 ﻿using Finance.Application.UseCases.Category.DisableCategory;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -35,6 +36,27 @@ namespace Finance.Test.UnitTests.Application.UseCases.Category.DisableCategory
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Category not found");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "Category - DisableCategory")]
+        public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var category = _fixture.MakeCategoryEntity();
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            _categoryRepositoryMock
+                .Setup(x => x.UpdateAsync(It.IsAny<CategoryEntity>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeDisableCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
