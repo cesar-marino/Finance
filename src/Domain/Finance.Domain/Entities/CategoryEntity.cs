@@ -9,16 +9,12 @@ namespace Finance.Domain.Entities
         public string? Icon { get; }
         public string? Color { get; }
 
-        private readonly List<Guid> _subcategories = [];
-        public IReadOnlyList<Guid> Subcategories => _subcategories.AsReadOnly();
-
         public CategoryEntity(string name, string? icon, string? color)
         {
             Active = true;
             Name = name;
             Icon = icon;
             Color = color;
-            _subcategories = [];
         }
 
         public CategoryEntity(
@@ -27,7 +23,6 @@ namespace Finance.Domain.Entities
             string name,
             string? icon,
             string? color,
-            IReadOnlyList<Guid> subcategories,
             DateTime createdAt,
             DateTime updatedAt) : base(categoryId, createdAt, updatedAt)
         {
@@ -35,7 +30,6 @@ namespace Finance.Domain.Entities
             Name = name;
             Icon = icon;
             Color = color;
-            _subcategories = subcategories.ToList();
         }
     }
 }
