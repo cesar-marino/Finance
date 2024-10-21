@@ -12,6 +12,7 @@ namespace Finance.Application.UseCases.Category.CreateCategory
         public async Task<CategoryResponse> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = new CategoryEntity(
+                accountId: request.AccountId,
                 name: request.Name,
                 icon: request.Icon,
                 color: request.Color);

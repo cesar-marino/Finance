@@ -9,7 +9,11 @@ namespace Finance.Domain.Entities
         public string? Icon { get; }
         public string? Color { get; }
 
-        public CategoryEntity(string name, string? icon, string? color)
+        public CategoryEntity(
+            Guid accountId,
+            string name,
+            string? icon,
+            string? color) : base(accountId: accountId)
         {
             Active = true;
             Name = name;
@@ -19,12 +23,17 @@ namespace Finance.Domain.Entities
 
         public CategoryEntity(
             Guid categoryId,
+            Guid accountId,
             bool active,
             string name,
             string? icon,
             string? color,
             DateTime createdAt,
-            DateTime updatedAt) : base(categoryId, createdAt, updatedAt)
+            DateTime updatedAt) : base(
+                accountId: accountId,
+                id: categoryId,
+                createdAt: createdAt,
+                updatedAt: updatedAt)
         {
             Active = active;
             Name = name;

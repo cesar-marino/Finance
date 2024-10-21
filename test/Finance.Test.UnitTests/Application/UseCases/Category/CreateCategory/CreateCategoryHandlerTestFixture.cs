@@ -6,8 +6,9 @@ namespace Finance.Test.UnitTests.Application.UseCases.Category.CreateCategory
     public class CreateCategoryHandlerTestFixture : FixtureBase
     {
         public CreateCategoryRequest MakeCreateCategoryRequest() => new(
-                name: Faker.Random.String(5),
-                icon: Faker.Random.String(5),
-                color: Faker.Random.String(5));
+            accountId: Faker.Random.Guid(),
+            name: Faker.Random.String(5),
+            icon: Faker.Random.String(5),
+            color: Faker.Random.String(5));
     }
 }

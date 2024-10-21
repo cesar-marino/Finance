@@ -23,6 +23,7 @@ namespace Finance.Test.UnitTests.Commons
                 updatedAt: updatedAt ?? Faker.Date.Past());
 
         public CategoryEntity MakeCategoryEntity(
+            Guid? accountId = null,
             Guid? categoryId = null,
             bool active = true,
             string? name = null,
@@ -30,6 +31,7 @@ namespace Finance.Test.UnitTests.Commons
             string? color = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
+                accountId: accountId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid(),
                 active: active,
                 name: name ?? Faker.Random.String(5),
