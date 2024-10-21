@@ -9,6 +9,8 @@ namespace Finance.Application.UseCases.Category.EnableCategory
         {
             var category = await categoryRepository.FindAsync(request.CategoryId, cancellationToken);
 
+            await categoryRepository.UpdateAsync(category, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
