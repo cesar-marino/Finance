@@ -35,5 +35,25 @@ namespace Finance.Test.UnitTests.Application.UseCases.Tag.GetTag
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Tag not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfFindAsyncReturnsTag))]
+        [Trait("Unit/UseCase", "Tag - GetTag")]
+        public async Task ShouldReturnTheCorrectResponseIfFindAsyncReturnsTag()
+        {
+            var tag = _fixture.MakeTagEntity();
+            _tagRepositoryMock
+                .Setup(x => x.FindAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tag);
+
+            var request = _fixture.MakeGetTagRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(tag.AccountId);
+            response.Active.Should().Be(tag.Active);
+            response.CreatedAt.Should().Be(tag.CreatedAt);
+            response.Name.Should().Be(tag.Name);
+            response.TagId.Should().Be(tag.Id);
+            response.UpdatedAt.Should().Be(tag.UpdatedAt);
+        }
     }
 }
