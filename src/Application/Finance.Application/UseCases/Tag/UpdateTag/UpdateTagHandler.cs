@@ -15,10 +15,11 @@ namespace Finance.Application.UseCases.Tag.UpdateTag
                 entityId: request.TagId,
                 cancellationToken);
 
+            tag.ChangeName(request.Name);
+
             await tagRepository.UpdateAsync(tag, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return TagResponse.FromEntity(tag);
         }
     }
 }
