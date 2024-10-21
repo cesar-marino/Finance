@@ -1,0 +1,28 @@
+﻿using Finance.Domain.SeedWork;
+
+namespace Finance.Domain.Entities
+{
+    public class TagEntity : AggregateRoot
+    {
+        public bool Active { get; }
+        public string Name { get; }
+
+        public TagEntity(Guid accountId, string name) : base(accountId: accountId)
+        {
+            Active = true;
+            Name = name;
+        }
+
+        public TagEntity(
+            Guid accountId,
+            Guid tagId,
+            bool active,
+            string name,
+            DateTime createdAt,
+            DateTime updatedAt) : base(accountId, tagId, createdAt, updatedAt)
+        {
+            Active = active;
+            Name = name;
+        }
+    }
+}
