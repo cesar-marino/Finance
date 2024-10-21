@@ -1,9 +1,12 @@
 ﻿using Finance.Application.UseCases.Tag.Commons;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Tag.EnableTag
 {
-    public class EnableTagHandler(ITagRepository tagRepository) : IEnableTagHandler
+    public class EnableTagHandler(
+        ITagRepository tagRepository,
+        IUnitOfWork unitOfWork) : IEnableTagHandler
     {
         public async Task<TagResponse> Handle(EnableTagRequest request, CancellationToken cancellationToken)
         {
@@ -13,6 +16,7 @@ namespace Finance.Application.UseCases.Tag.EnableTag
                 cancellationToken);
 
             await tagRepository.UpdateAsync(tag, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
