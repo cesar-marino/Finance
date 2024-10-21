@@ -83,5 +83,25 @@ namespace Finance.Test.UnitTests.Application.UseCases.Category.DisableCategory
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfCategoryIsDisabledSuccessfully))]
+        [Trait("Unit/UseCase", "Category - DisableCategory")]
+        public async Task ShouldReturnTheCorrectResponseIfCategoryIsDisabledSuccessfully()
+        {
+            var category = _fixture.MakeCategoryEntity();
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            var request = _fixture.MakeDisableCategoryRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.Active.Should().BeFalse();
+            response.CategoryId.Should().Be(category.Id);
+            response.Color.Should().Be(category.Color);
+            response.CreatedAt.Should().Be(category.CreatedAt);
+            response.Icon.Should().Be(category.Icon);
+            response.Name.Should().Be(category.Name);
+        }
     }
 }
