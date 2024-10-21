@@ -1,11 +1,17 @@
 ﻿using Finance.Application.UseCases.Tag.Commons;
+using Finance.Domain.Entities;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Tag.CreateTag
 {
-    public class CreateTagHandler : ICreateTagHandler
+    public class CreateTagHandler(ITagRepository tagRepository) : ICreateTagHandler
     {
-        public Task<TagResponse> Handle(CreateTagRequest request, CancellationToken cancellationToken)
+        public async Task<TagResponse> Handle(CreateTagRequest request, CancellationToken cancellationToken)
         {
+            var tag = new TagEntity(accountId: request.AccountId, name: request.Name);
+
+            await tagRepository.InsertAsync(tag);
+
             throw new NotImplementedException();
         }
     }
