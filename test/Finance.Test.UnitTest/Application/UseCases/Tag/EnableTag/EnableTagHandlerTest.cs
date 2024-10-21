@@ -94,5 +94,27 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.EnableTag
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfTagIsEnalbedSuccessfully))]
+        [Trait("Unit/UseCase", "Tag - EnableTag")]
+        public async Task ShouldReturnTheCorrectResponseIfTagIsEnalbedSuccessfully()
+        {
+            var tag = _fixture.MakeTagEntity(active: false);
+            _tagRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tag);
+
+            var request = _fixture.MakeEnableTagRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(tag.AccountId);
+            response.Active.Should().BeTrue();
+            response.CreatedAt.Should().Be(tag.CreatedAt);
+            response.Name.Should().Be(tag.Name);
+            response.TagId.Should().Be(tag.Id);
+        }
     }
 }
