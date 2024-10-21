@@ -4,7 +4,7 @@ namespace Finance.Domain.Entities
 {
     public class TagEntity : AggregateRoot
     {
-        public bool Active { get; }
+        public bool Active { get; private set; }
         public string Name { get; }
 
         public TagEntity(Guid accountId, string name) : base(accountId: accountId)
@@ -23,6 +23,12 @@ namespace Finance.Domain.Entities
         {
             Active = active;
             Name = name;
+        }
+
+        public void Disable()
+        {
+            Active = false;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

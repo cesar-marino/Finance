@@ -15,10 +15,11 @@ namespace Finance.Application.UseCases.Tag.DisableTag
                 entityId: request.TagId,
                 cancellationToken);
 
+            tag.Disable();
+
             await tagRepository.UpdateAsync(tag, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return TagResponse.FromEntity(tag);
         }
     }
 }
