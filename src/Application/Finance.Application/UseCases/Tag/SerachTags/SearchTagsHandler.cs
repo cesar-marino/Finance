@@ -6,14 +6,19 @@ namespace Finance.Application.UseCases.Tag.SerachTags
     {
         public async Task<SearchTagsResponse> Handle(SearchTagsRequest request, CancellationToken cancellationToken)
         {
-            await tagRepository.SearchAsync(
+            var result = await tagRepository.SearchAsync(
                 active: request.Active,
                 name: request.Name,
                 currentPage: request.CurrentPage,
                 perPage: request.PerPage,
                 order: request.Order);
 
-            throw new NotImplementedException();
+            return new(
+                currentPage: result.CurrentPage,
+                perPage: result.PerPage,
+                total: result.Total,
+                order: result.Order,
+                items: result.Items);
         }
     }
 }

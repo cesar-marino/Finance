@@ -42,5 +42,40 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfSearchAsyncReturnsValidResults))]
+        [Trait("Unit/UseCase", "Tag - SearchTags")]
+        public async Task ShouldReturnTheCorrectResponseIfSearchAsyncReturnsValidResults()
+        {
+            var results = _fixture.MakeTagEntityList();
+            _tagRepositoryMock
+                .Setup(x => x.SearchAsync(
+                    It.IsAny<bool?>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<SearchOrder>()))
+                .ReturnsAsync(results);
+
+            var request = _fixture.MakeSearchTagsRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.CurrentPage.Should().Be(results.CurrentPage);
+            response.Order.Should().Be(results.Order);
+            response.PerPage.Should().Be(results.PerPage);
+            response.Total.Should().Be(results.Total);
+
+            response.Items.ToList().ForEach((item) =>
+            {
+                var result = results.Items.FirstOrDefault(x => x.Id == item.Id);
+                result.Should().NotBeNull();
+                result!.AccountId.Should().Be(item.AccountId);
+                result!.Active.Should().Be(item.Active);
+                result!.CreatedAt.Should().Be(item.CreatedAt);
+                result!.Id.Should().Be(item.Id);
+                result!.Name.Should().Be(item.Name);
+                result!.UpdatedAt.Should().Be(item.UpdatedAt);
+            });
+        }
     }
 }
