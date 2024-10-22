@@ -1,4 +1,5 @@
-﻿using Finance.Domain.Repositories;
+﻿using Finance.Application.UseCases.Tag.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Tag.SerachTags
 {
@@ -21,7 +22,7 @@ namespace Finance.Application.UseCases.Tag.SerachTags
                 total: result.Total,
                 orderBy: result.OrderBy,
                 order: result.Order,
-                items: result.Items);
+                items: result.Items.Select(TagResponse.FromEntity).ToList());
         }
     }
 }

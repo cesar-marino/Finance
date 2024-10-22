@@ -1,12 +1,10 @@
-﻿using Finance.Application.Commons;
-using Finance.Application.UseCases.Tag.Commons;
+﻿using Finance.Application.UseCases.Tag.Commons;
 using Finance.Application.UseCases.Tag.CreateTag;
 using Finance.Application.UseCases.Tag.DisableTag;
 using Finance.Application.UseCases.Tag.EnableTag;
 using Finance.Application.UseCases.Tag.GetTag;
 using Finance.Application.UseCases.Tag.SerachTags;
 using Finance.Application.UseCases.Tag.UpdateTag;
-using Finance.Domain.Entities;
 using Finance.Domain.SeedWork;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +28,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{accountId:guid}/{tagId:guid}/disable")]
+        [HttpPut("{accountId:guid}/{tagId:guid}/disable")]
         [ProducesResponseType(typeof(TagResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -44,7 +42,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{accountId:guid}/{tagId:guid}/enable")]
+        [HttpPut("{accountId:guid}/{tagId:guid}/enable")]
         [ProducesResponseType(typeof(TagResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -73,7 +71,7 @@ namespace Finance.Presentation.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(SearchPaginationResponse<TagEntity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SearchTagsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Search(
             [FromQuery] bool? active = null,

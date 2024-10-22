@@ -1,5 +1,5 @@
 ﻿using Finance.Application.Commons;
-using Finance.Domain.Entities;
+using Finance.Application.UseCases.Tag.Commons;
 using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Tag.SerachTags
@@ -10,7 +10,7 @@ namespace Finance.Application.UseCases.Tag.SerachTags
         int total,
         string? orderBy,
         SearchOrder? order,
-        IReadOnlyList<TagEntity> items) : SearchPaginationResponse<TagEntity>(currentPage, perPage, total, orderBy, order, items)
+        IReadOnlyList<TagResponse> items) : SearchPaginationResponse<TagResponse>(currentPage, perPage, total, orderBy, order, items)
     {
     }
 }

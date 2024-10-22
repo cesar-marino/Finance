@@ -2,14 +2,14 @@
 
 namespace Finance.Application.Commons
 {
-    public abstract class SearchPaginationResponse<TAggregate> where TAggregate : AggregateRoot
+    public abstract class SearchPaginationResponse<TResponse>
     {
         public int? CurrentPage { get; }
         public int? PerPage { get; }
         public int Total { get; }
         public string? OrderBy { get; }
         public SearchOrder? Order { get; }
-        public IReadOnlyList<TAggregate> Items { get; }
+        public IReadOnlyList<TResponse> Items { get; }
 
         protected SearchPaginationResponse(
             int? currentPage,
@@ -17,7 +17,7 @@ namespace Finance.Application.Commons
             int total,
             string? orderBy,
             SearchOrder? order,
-            IReadOnlyList<TAggregate> items)
+            IReadOnlyList<TResponse> items)
         {
             CurrentPage = currentPage;
             PerPage = perPage;

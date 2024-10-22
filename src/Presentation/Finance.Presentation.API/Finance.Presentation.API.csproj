@@ -8,12 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Finance.Application\Finance.Application.csproj" />
     <ProjectReference Include="..\..\Domain\Finance.Domain\Finance.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Finance.Infrastructure.Database\Finance.Infrastructure.Database.csproj" />
   </ItemGroup>
 
 </Project>
