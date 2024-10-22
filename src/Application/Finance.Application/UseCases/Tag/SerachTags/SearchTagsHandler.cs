@@ -11,12 +11,15 @@ namespace Finance.Application.UseCases.Tag.SerachTags
                 name: request.Name,
                 currentPage: request.CurrentPage,
                 perPage: request.PerPage,
-                order: request.Order);
+                orderBy: request.OrderBy,
+                order: request.Order,
+                cancellationToken);
 
             return new(
                 currentPage: result.CurrentPage,
                 perPage: result.PerPage,
                 total: result.Total,
+                orderBy: result.OrderBy,
                 order: result.Order,
                 items: result.Items);
         }

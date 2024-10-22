@@ -18,6 +18,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
             currentPage: Faker.Random.Int(),
             perPage: Faker.Random.Int(),
             total: Faker.Random.Int(),
+            orderBy: Faker.Random.String(5),
             order: SearchOrder.Asc,
             items: []);
     }

@@ -5,11 +5,12 @@ using Finance.Domain.SeedWork;
 namespace Finance.Application.UseCases.Tag.SerachTags
 {
     public class SearchTagsResponse(
-        int currentPage,
-        int perPage,
+        int? currentPage,
+        int? perPage,
         int total,
+        string? orderBy,
         SearchOrder order,
-        IReadOnlyList<TagEntity> items) : SearchPaginationResponse<TagEntity>(currentPage, perPage, total, order, items)
+        IReadOnlyList<TagEntity> items) : SearchPaginationResponse<TagEntity>(currentPage, perPage, total, orderBy, order, items)
     {
     }
 }

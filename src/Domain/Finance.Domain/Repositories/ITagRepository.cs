@@ -8,8 +8,10 @@ namespace Finance.Domain.Repositories
         Task<SearchResult<TagEntity>> SearchAsync(
             bool? active,
             string? name,
-            int currentPage,
-            int perPage,
-            SearchOrder order);
+            int? currentPage,
+            int? perPage,
+            string? orderBy,
+            SearchOrder order,
+            CancellationToken cancellationToken = default);
     }
 }

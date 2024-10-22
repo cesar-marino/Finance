@@ -32,7 +32,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
                     It.IsAny<string?>(),
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<SearchOrder>()))
+                    It.IsAny<string?>(),
+                    It.IsAny<SearchOrder>(),
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeSearchTagsRequest();
@@ -54,7 +56,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
                     It.IsAny<string?>(),
                     It.IsAny<int>(),
                     It.IsAny<int>(),
-                    It.IsAny<SearchOrder>()))
+                    It.IsAny<string?>(),
+                    It.IsAny<SearchOrder>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(results);
 
             var request = _fixture.MakeSearchTagsRequest();
@@ -62,6 +66,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
 
             response.CurrentPage.Should().Be(results.CurrentPage);
             response.Order.Should().Be(results.Order);
+            response.OrderBy.Should().Be(results.OrderBy);
             response.PerPage.Should().Be(results.PerPage);
             response.Total.Should().Be(results.Total);
 

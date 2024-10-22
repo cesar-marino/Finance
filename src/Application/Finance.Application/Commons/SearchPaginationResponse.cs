@@ -4,22 +4,25 @@ namespace Finance.Application.Commons
 {
     public abstract class SearchPaginationResponse<TAggregate> where TAggregate : AggregateRoot
     {
-        public int CurrentPage { get; }
-        public int PerPage { get; }
+        public int? CurrentPage { get; }
+        public int? PerPage { get; }
         public int Total { get; }
+        public string? OrderBy { get; }
         public SearchOrder Order { get; }
         public IReadOnlyList<TAggregate> Items { get; }
 
         protected SearchPaginationResponse(
-            int currentPage,
-            int perPage,
+            int? currentPage,
+            int? perPage,
             int total,
+            string? orderBy,
             SearchOrder order,
             IReadOnlyList<TAggregate> items)
         {
             CurrentPage = currentPage;
             PerPage = perPage;
             Total = total;
+            OrderBy = orderBy;
             Order = order;
             Items = items;
         }
