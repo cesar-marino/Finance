@@ -9,7 +9,7 @@ namespace Finance.Application.UseCases.Tag.SerachTags
         int? perPage,
         int total,
         string? orderBy,
-        SearchOrder order,
+        SearchOrder? order,
         IReadOnlyList<TagEntity> items) : SearchPaginationResponse<TagEntity>(currentPage, perPage, total, orderBy, order, items)
     {
     }

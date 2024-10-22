@@ -49,7 +49,7 @@ namespace Finance.Infrastructure.Database.Repositories
             int? currentPage,
             int? perPage,
             string? orderBy,
-            SearchOrder order,
+            SearchOrder? order,
             CancellationToken cancellationToken = default)
         {
             try

@@ -8,7 +8,7 @@ namespace Finance.Application.Commons
         public int? PerPage { get; }
         public int Total { get; }
         public string? OrderBy { get; }
-        public SearchOrder Order { get; }
+        public SearchOrder? Order { get; }
         public IReadOnlyList<TAggregate> Items { get; }
 
         protected SearchPaginationResponse(
@@ -16,7 +16,7 @@ namespace Finance.Application.Commons
             int? perPage,
             int total,
             string? orderBy,
-            SearchOrder order,
+            SearchOrder? order,
             IReadOnlyList<TAggregate> items)
         {
             CurrentPage = currentPage;

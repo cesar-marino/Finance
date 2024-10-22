@@ -4,16 +4,16 @@ namespace Finance.Application.Commons
 {
     public abstract class SearchPaginationRequest
     {
-        public int? CurrentPage { get; }
-        public int? PerPage { get; }
-        public string? OrderBy { get; }
-        public SearchOrder Order { get; }
+        public int? CurrentPage { get; set; }
+        public int? PerPage { get; set; }
+        public string? OrderBy { get; set; }
+        public SearchOrder? Order { get; set; }
 
         protected SearchPaginationRequest(
             int? currentPage,
             int? perPage,
             string? orderBy,
-            SearchOrder order)
+            SearchOrder? order)
         {
             CurrentPage = currentPage;
             PerPage = perPage;

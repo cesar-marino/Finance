@@ -5,14 +5,14 @@
         int? perPage,
         int total,
         string? orderBy,
-        SearchOrder order,
+        SearchOrder? order,
         IReadOnlyList<TAggregate> items) where TAggregate : AggregateRoot
     {
         public int? CurrentPage { get; } = currentPage;
         public int? PerPage { get; } = perPage;
         public int Total { get; } = total;
         public string? OrderBy { get; } = orderBy;
-        public SearchOrder Order { get; } = order;
+        public SearchOrder? Order { get; } = order;
         public IReadOnlyList<TAggregate> Items { get; } = items;
     }
 }
