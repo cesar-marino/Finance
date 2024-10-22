@@ -1,4 +1,4 @@
-﻿namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
+﻿namespace Finance.Application.UseCases.Tag.SerachTags
 {
     public class SearchTagsHandler : ISearchTagsHandler
     {

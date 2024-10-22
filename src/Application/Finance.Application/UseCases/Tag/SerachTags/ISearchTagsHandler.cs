@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
+namespace Finance.Application.UseCases.Tag.SerachTags
 {
     public interface ISearchTagsHandler : IRequestHandler<SearchTagsRequest, SearchTagsResponse>
     {
