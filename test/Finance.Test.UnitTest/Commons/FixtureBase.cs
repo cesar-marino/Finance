@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Finance.Domain.Entities;
+using Finance.Domain.Enums;
 
 namespace Finance.Test.UnitTest.Commons
 {
@@ -19,6 +20,26 @@ namespace Finance.Test.UnitTest.Commons
                 tagId: tagId ?? Faker.Random.Guid(),
                 active: active,
                 name: name ?? Faker.Random.String(5),
+                createdAt: createdAt ?? Faker.Date.Past(),
+                updatedAt: updatedAt ?? Faker.Date.Past());
+
+        public CategoryEntity MakeCategoryEntity(
+            Guid? accountId = null,
+            Guid? categoryId = null,
+            bool active = true,
+            CategoryType categoryType = CategoryType.Expenditure,
+            string? name = null,
+            string? icon = null,
+            string? color = null,
+            DateTime? createdAt = null,
+            DateTime? updatedAt = null) => new(
+                accountId: accountId ?? Faker.Random.Guid(),
+                categoryId: categoryId ?? Faker.Random.Guid(),
+                active: active,
+                categoryType: categoryType,
+                name: name ?? Faker.Random.String(5),
+                icon: icon ?? Faker.Random.String(5),
+                color: color ?? Faker.Random.String(5),
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
     }

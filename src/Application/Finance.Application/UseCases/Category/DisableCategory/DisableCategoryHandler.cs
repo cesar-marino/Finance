@@ -7,10 +7,12 @@ namespace Finance.Application.UseCases.Category.DisableCategory
     {
         public async Task<CategoryResponse> Handle(DisableCategoryRequest request, CancellationToken cancellationToken)
         {
-            await categoryRepository.FindAsync(
+            var category = await categoryRepository.FindAsync(
                 accountId: request.AccountId,
                 entityId: request.CategoryId,
                 cancellationToken);
+
+            await categoryRepository.UpdateAsync(category, cancellationToken);
 
             throw new NotImplementedException();
         }
