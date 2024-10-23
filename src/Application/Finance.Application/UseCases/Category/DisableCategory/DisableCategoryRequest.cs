@@ -1,0 +1,13 @@
+﻿using Finance.Application.UseCases.Category.Commons;
+using MediatR;
+
+namespace Finance.Application.UseCases.Category.DisableCategory
+{
+    public class DisableCategoryRequest(
+        Guid accountId,
+        Guid categoryId) : IRequest<CategoryResponse>
+    {
+        public Guid AccountId { get; } = accountId;
+        public Guid CategoryId { get; } = categoryId;
+    }
+}
