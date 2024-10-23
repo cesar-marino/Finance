@@ -7,12 +7,12 @@ namespace Finance.Application.UseCases.Category.GetCategory
     {
         public async Task<CategoryResponse> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
         {
-            await categoryRepository.FindAsync(
+            var category = await categoryRepository.FindAsync(
                 accountId: request.AccountId,
                 entityId: request.CategoryId,
                 cancellationToken);
 
-            throw new NotImplementedException();
+            return CategoryResponse.FromEntity(category);
         }
     }
 }
