@@ -5,7 +5,7 @@ namespace Finance.Domain.Entities
 {
     public class CategoryEntity : AggregateRoot
     {
-        public bool Active { get; }
+        public bool Active { get; private set; }
         public CategoryType CategoryType { get; }
         public string Name { get; }
         public string? Icon { get; }
@@ -41,6 +41,12 @@ namespace Finance.Domain.Entities
             Name = name;
             Icon = icon;
             Color = color;
+        }
+
+        public void Disable()
+        {
+            Active = false;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

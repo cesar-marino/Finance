@@ -15,10 +15,11 @@ namespace Finance.Application.UseCases.Category.DisableCategory
                 entityId: request.CategoryId,
                 cancellationToken);
 
+            category.Disable();
+
             await categoryRepository.UpdateAsync(category, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return CategoryResponse.FromEntity(category);
         }
     }
 }
