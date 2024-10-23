@@ -6,10 +6,10 @@ namespace Finance.Domain.Entities
     public class CategoryEntity : AggregateRoot
     {
         public bool Active { get; private set; }
-        public CategoryType CategoryType { get; }
-        public string Name { get; }
-        public string? Icon { get; }
-        public string? Color { get; }
+        public CategoryType CategoryType { get; private set; }
+        public string Name { get; private set; }
+        public string? Icon { get; private set; }
+        public string? Color { get; private set; }
 
         public CategoryEntity(
             Guid accountId,
@@ -52,6 +52,19 @@ namespace Finance.Domain.Entities
         public void Enable()
         {
             Active = true;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Updated(
+            CategoryType categoryType,
+            string name,
+            string? icon,
+            string? color)
+        {
+            CategoryType = categoryType;
+            Name = name;
+            Icon = icon;
+            Color = color;
             UpdatedAt = DateTime.UtcNow;
         }
     }

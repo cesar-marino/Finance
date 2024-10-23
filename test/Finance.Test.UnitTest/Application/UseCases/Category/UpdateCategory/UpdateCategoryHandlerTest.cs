@@ -94,5 +94,30 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.UpdateCategory
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfCategoryIsUpdatedSuccessfully))]
+        [Trait("Unit/UseCase", "Category - UpdateCategory")]
+        public async Task ShouldReturnTheCorrectResponseIfCategoryIsUpdatedSuccessfully()
+        {
+            var category = _fixture.MakeCategoryEntity();
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            var request = _fixture.MakeUpdateCategoryRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(category.AccountId);
+            response.Active.Should().Be(category.Active);
+            response.CategoryId.Should().Be(category.Id);
+            response.CategoryType.Should().Be(request.CategoryType);
+            response.Color.Should().Be(request.Color);
+            response.CreatedAt.Should().Be(category.CreatedAt);
+            response.Icon.Should().Be(request.Icon);
+            response.Name.Should().Be(request.Name);
+        }
     }
 }

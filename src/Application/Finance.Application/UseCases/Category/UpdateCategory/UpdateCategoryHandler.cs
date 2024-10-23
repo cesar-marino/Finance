@@ -15,10 +15,15 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
                 entityId: request.CategoryId,
                 cancellationToken);
 
+            category.Updated(
+                categoryType: request.CategoryType,
+                name: request.Name,
+                icon: request.Icon,
+                color: request.Color);
+
             await categoryRepository.UpdateAsync(category, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return CategoryResponse.FromEntity(category);
         }
     }
 }
