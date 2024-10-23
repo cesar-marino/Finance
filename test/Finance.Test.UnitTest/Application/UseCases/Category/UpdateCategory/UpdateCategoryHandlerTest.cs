@@ -1,0 +1,43 @@
+﻿using Finance.Application.UseCases.Category.UpdateCategory;
+using Finance.Domain.Exceptions;
+using Finance.Domain.Repositories;
+using FluentAssertions;
+using Moq;
+
+namespace Finance.Test.UnitTest.Application.UseCases.Category.UpdateCategory
+{
+    public class UpdateCategoryHandlerTest : IClassFixture<UpdateCategoryHandlerTestFixture>
+    {
+        private readonly UpdateCategoryHandlerTestFixture _fixture;
+        private readonly UpdateCategoryHandler _sut;
+        private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+
+        public UpdateCategoryHandlerTest(UpdateCategoryHandlerTestFixture fixture)
+        {
+            _fixture = fixture;
+            _categoryRepositoryMock = new();
+
+            _sut = new(
+                categoryRepository: _categoryRepositoryMock.Object);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
+        [Trait("Unit/UseCase", "Category - UpdateCategory")]
+        public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
+        {
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new NotFoundException("Category"));
+
+            var request = _fixture.MakeUpdateCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Category not found");
+        }
+    }
+}
