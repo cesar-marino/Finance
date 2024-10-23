@@ -1,9 +1,12 @@
 ﻿using Finance.Application.UseCases.Category.Commons;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Category.EnableCategory
 {
-    public class EnableCategoryHandler(ICategoryRepository categoryRepository) : IEnableCategoryHandler
+    public class EnableCategoryHandler(
+        ICategoryRepository categoryRepository,
+        IUnitOfWork unitOfWork) : IEnableCategoryHandler
     {
         public async Task<CategoryResponse> Handle(EnableCategoryRequest request, CancellationToken cancellationToken)
         {
@@ -12,9 +15,11 @@ namespace Finance.Application.UseCases.Category.EnableCategory
                 entityId: request.CategoryId,
                 cancellationToken);
 
-            await categoryRepository.UpdateAsync(category, cancellationToken);
+            category.Enable();
 
-            throw new NotImplementedException();
+            await categoryRepository.UpdateAsync(category, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
+            return CategoryResponse.FromEntity(category);
         }
     }
 }

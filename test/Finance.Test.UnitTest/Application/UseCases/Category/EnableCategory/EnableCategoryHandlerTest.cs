@@ -2,6 +2,7 @@
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,14 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.EnableCategory
         private readonly EnableCategoryHandlerTestFixture _fixture;
         private readonly EnableCategoryHandler _sut;
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public EnableCategoryHandlerTest(EnableCategoryHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _categoryRepositoryMock = new();
+            _unitOfWorkMock = new();
 
             _sut = new(
-                categoryRepository: _categoryRepositoryMock.Object);
+                categoryRepository: _categoryRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -65,6 +69,55 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.EnableCategory
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Category - EnableCategory")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var category = _fixture.MakeCategoryEntity();
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeEnableCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfCategoryIsEnabledSuccessfully))]
+        [Trait("Unit/UseCase", "Category - EnableCategory")]
+        public async Task ShouldReturnTheCorrectResponseIfCategoryIsEnabledSuccessfully()
+        {
+            var category = _fixture.MakeCategoryEntity(active: false);
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            var request = _fixture.MakeEnableCategoryRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(category.AccountId);
+            response.Active.Should().BeTrue();
+            response.CategoryId.Should().Be(category.Id);
+            response.CategoryType.Should().Be(category.CategoryType);
+            response.Color.Should().Be(category.Color);
+            response.CreatedAt.Should().Be(category.CreatedAt);
+            response.Icon.Should().Be(category.Icon);
+            response.Name.Should().Be(category.Name);
         }
     }
 }
