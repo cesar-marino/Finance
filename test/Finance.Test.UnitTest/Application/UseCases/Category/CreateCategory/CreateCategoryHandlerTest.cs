@@ -57,5 +57,20 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfCategoryIsAddedSuccessfully))]
+        [Trait("Unit/UseCase", "Category - CreateCategory")]
+        public async Task ShouldReturnTheCorrectResponseIfCategoryIsAddedSuccessfully()
+        {
+            var request = _fixture.MakeCreateCategoryRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(request.AccountId);
+            response.Active.Should().BeTrue();
+            response.CategoryType.Should().Be(request.CategoryType);
+            response.Color.Should().Be(request.Color);
+            response.Icon.Should().Be(request.Icon);
+            response.Name.Should().Be(request.Name);
+        }
     }
 }
