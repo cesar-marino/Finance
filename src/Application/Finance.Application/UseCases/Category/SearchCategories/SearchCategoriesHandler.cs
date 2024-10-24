@@ -1,4 +1,5 @@
-﻿using Finance.Domain.Repositories;
+﻿using Finance.Application.UseCases.Category.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Category.SearchCategories
 {
@@ -6,7 +7,7 @@ namespace Finance.Application.UseCases.Category.SearchCategories
     {
         public async Task<SearchCategoriesResponse> Handle(SearchCategoriesRequest request, CancellationToken cancellationToken)
         {
-            await categoryRepository.SearchAsync(
+            var result = await categoryRepository.SearchAsync(
                 active: request.Active,
                 categoryType: request.CategoryType,
                 name: request.Name,
@@ -16,7 +17,13 @@ namespace Finance.Application.UseCases.Category.SearchCategories
                 order: request.Order,
                 cancellationToken);
 
-            throw new NotImplementedException();
+            return new(
+                currentPage: result.CurrentPage,
+                perPage: result.PerPage,
+                total: result.Total,
+                orderBy: result.OrderBy,
+                order: result.Order,
+                items: result.Items.Select(CategoryResponse.FromEntity).ToList());
         }
     }
 }

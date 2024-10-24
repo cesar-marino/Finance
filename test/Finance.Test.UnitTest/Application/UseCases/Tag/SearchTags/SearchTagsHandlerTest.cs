@@ -49,7 +49,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
         [Trait("Unit/UseCase", "Tag - SearchTags")]
         public async Task ShouldReturnTheCorrectResponseIfSearchAsyncReturnsValidResults()
         {
-            var results = _fixture.MakeTagEntityList();
+            var results = _fixture.MakeSearchResult();
             _tagRepositoryMock
                 .Setup(x => x.SearchAsync(
                     It.IsAny<bool?>(),

@@ -52,6 +52,44 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.SearchCategories
                 .WithMessage("An unexpected error occurred");
         }
 
-        //should return the correct response if SearchAsync returns category list
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfSearchAsyncReturnsValidCategoryList))]
+        [Trait("Unit/UseCase", "Category - SearchCategories")]
+        public async Task ShouldReturnTheCorrectResponseIfSearchAsyncReturnsValidCategoryList()
+        {
+            var result = _fixture.MakeSearchResult();
+            _categoryRepositoryMock
+                .Setup(x => x.SearchAsync(
+                    It.IsAny<bool?>(),
+                    It.IsAny<CategoryType>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<SearchOrder?>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(result);
+
+            var request = _fixture.MakeSearchCategoriesRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.CurrentPage.Should().Be(result.CurrentPage);
+            response.Order.Should().Be(result.Order);
+            response.OrderBy.Should().Be(result.OrderBy);
+            response.PerPage.Should().Be(result.PerPage);
+            response.Total.Should().Be(result.Total);
+            response.Items.ToList().ForEach((item) =>
+            {
+                var category = result.Items.FirstOrDefault(x => x.Id == item.CategoryId);
+                category?.AccountId.Should().Be(item.AccountId);
+                category?.Active.Should().Be(item.Active);
+                category?.CategoryType.Should().Be(item.CategoryType);
+                category?.Color.Should().Be(item.Color);
+                category?.CreatedAt.Should().Be(item.CreatedAt);
+                category?.Icon.Should().Be(item.Icon);
+                category?.Id.Should().Be(item.CategoryId);
+                category?.Name.Should().Be(item.Name);
+                category?.UpdatedAt.Should().Be(item.UpdatedAt);
+            });
+        }
     }
 }

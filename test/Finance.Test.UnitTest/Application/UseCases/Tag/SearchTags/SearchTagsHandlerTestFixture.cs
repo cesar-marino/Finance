@@ -14,7 +14,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.SearchTags
             active: Faker.Random.Bool(),
             name: Faker.Random.String(5));
 
-        public SearchResult<TagEntity> MakeTagEntityList() => new(
+        public SearchResult<TagEntity> MakeSearchResult() => new(
             currentPage: Faker.Random.Int(),
             perPage: Faker.Random.Int(),
             total: Faker.Random.Int(),
