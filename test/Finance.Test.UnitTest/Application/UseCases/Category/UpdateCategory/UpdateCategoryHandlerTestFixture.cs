@@ -8,6 +8,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.UpdateCategory
         public UpdateCategoryRequest MakeUpdateCategoryRequest() => new(
             accountId: Faker.Random.Guid(),
             categoryId: Faker.Random.Guid(),
+            active: Faker.Random.Bool(),
             categoryType: Domain.Enums.CategoryType.Revenue,
             name: Faker.Random.String(5),
             icon: Faker.Random.String(5),

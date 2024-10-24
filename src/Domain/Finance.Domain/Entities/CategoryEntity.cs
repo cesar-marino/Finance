@@ -56,11 +56,13 @@ namespace Finance.Domain.Entities
         }
 
         public void Updated(
+            bool active,
             CategoryType categoryType,
             string name,
             string? icon,
             string? color)
         {
+            Active = active;
             CategoryType = categoryType;
             Name = name;
             Icon = icon;

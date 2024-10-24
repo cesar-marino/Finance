@@ -111,7 +111,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.UpdateCategory
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.AccountId.Should().Be(category.AccountId);
-            response.Active.Should().Be(category.Active);
+            response.Active.Should().Be(request.Active);
             response.CategoryId.Should().Be(category.Id);
             response.CategoryType.Should().Be(request.CategoryType);
             response.Color.Should().Be(request.Color);

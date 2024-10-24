@@ -7,6 +7,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
     public class UpdateCategoryRequest(
         Guid accountId,
         Guid categoryId,
+        bool active,
         CategoryType categoryType,
         string name,
         string? icon,
@@ -14,6 +15,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
     {
         public Guid AccountId { get; } = accountId;
         public Guid CategoryId { get; } = categoryId;
+        public bool Active { get; } = active;
         public CategoryType CategoryType { get; } = categoryType;
         public string Name { get; } = name;
         public string? Icon { get; } = icon;

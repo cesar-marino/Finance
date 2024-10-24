@@ -16,6 +16,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
                 cancellationToken);
 
             category.Updated(
+                active: request.Active,
                 categoryType: request.CategoryType,
                 name: request.Name,
                 icon: request.Icon,
