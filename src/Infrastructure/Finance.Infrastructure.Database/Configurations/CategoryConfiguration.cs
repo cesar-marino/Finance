@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Finance.Infrastructure.Database.Configurations
 {
-    public class TagConfiguration : IEntityTypeConfiguration<TagModel>
+    public class CategoryConfiguration : IEntityTypeConfiguration<CategoryModel>
     {
-        public void Configure(EntityTypeBuilder<TagModel> builder)
+        public void Configure(EntityTypeBuilder<CategoryModel> builder)
         {
-            builder.ToTable("tags");
-            builder.HasKey(x => new { x.AccountId, x.TagId });
+            builder.ToTable("category");
+            builder.HasKey(x => new { x.AccountId, x.CategoryId });
 
-            builder.Property(x => x.TagId)
-                .HasColumnName("tag_id")
+            builder.Property(x => x.CategoryId)
+                .HasColumnName("category_id")
                 .IsRequired();
 
             builder.Property(x => x.AccountId)
@@ -20,16 +20,25 @@ namespace Finance.Infrastructure.Database.Configurations
                 .IsRequired();
 
             builder.HasOne(x => x.Account)
-                .WithMany(a => a.Tags)
+                .WithMany(a => a.Categories)
                 .HasForeignKey(x => x.AccountId);
 
             builder.Property(x => x.Active)
                 .HasColumnName("active")
                 .IsRequired();
 
+            builder.Property(x => x.CategoryType)
+                .HasColumnName("category_type");
+
             builder.Property(x => x.Name)
                 .HasColumnName("name")
                 .IsRequired();
+
+            builder.Property(x => x.Icon)
+                .HasColumnName("name");
+
+            builder.Property(x => x.Color)
+                .HasColumnName("color");
 
             builder.Property(p => p.CreatedAt)
                 .HasColumnName("created_at")

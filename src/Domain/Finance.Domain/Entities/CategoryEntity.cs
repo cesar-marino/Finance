@@ -6,14 +6,14 @@ namespace Finance.Domain.Entities
     public class CategoryEntity : AggregateRoot
     {
         public bool Active { get; private set; }
-        public CategoryType CategoryType { get; private set; }
+        public CategoryType? CategoryType { get; private set; }
         public string Name { get; private set; }
         public string? Icon { get; private set; }
         public string? Color { get; private set; }
 
         public CategoryEntity(
             Guid accountId,
-            CategoryType categoryType,
+            CategoryType? categoryType,
             string name,
             string? icon,
             string? color) : base(accountId: accountId)
@@ -29,7 +29,7 @@ namespace Finance.Domain.Entities
             Guid accountId,
             Guid categoryId,
             bool active,
-            CategoryType categoryType,
+            CategoryType? categoryType,
             string name,
             string? icon,
             string? color,

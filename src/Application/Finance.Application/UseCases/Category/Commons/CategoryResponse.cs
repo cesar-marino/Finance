@@ -7,7 +7,7 @@ namespace Finance.Application.UseCases.Category.Commons
         Guid accountId,
         Guid categoryId,
         bool active,
-        CategoryType categoryType,
+        CategoryType? categoryType,
         string name,
         string? icon,
         string? color,
@@ -17,7 +17,7 @@ namespace Finance.Application.UseCases.Category.Commons
         public Guid AccountId { get; } = accountId;
         public Guid CategoryId { get; } = categoryId;
         public bool Active { get; } = active;
-        public CategoryType CategoryType { get; } = categoryType;
+        public CategoryType? CategoryType { get; } = categoryType;
         public string Name { get; } = name;
         public string? Icon { get; } = icon;
         public string? Color { get; } = color;
