@@ -5,7 +5,6 @@ using Finance.Domain.SeedWork;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace Finance.Infrastructure.Database.Repositories
 {
