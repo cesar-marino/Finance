@@ -5,11 +5,6 @@ using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Finance.Test.UnitTest.Application.UseCases.Category.SearchCategories
 {
