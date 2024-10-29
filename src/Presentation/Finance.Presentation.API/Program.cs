@@ -40,6 +40,8 @@ builder.Services.AddDbContext<FinanceContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, FinanceContext>();
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 builder.Services.AddScoped<ICreateTagHandler, CreateTagHandler>();
 builder.Services.AddScoped<IDisableTagHandler, DisableTagHandler>();
 builder.Services.AddScoped<IEnableTagHandler, EnableTagHandler>();
