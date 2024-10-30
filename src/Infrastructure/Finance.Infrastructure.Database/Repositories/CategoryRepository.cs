@@ -31,9 +31,17 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public Task<IReadOnlyList<CategoryEntity>> FindSubcategoriesAsync(Guid categoryId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<CategoryEntity>> FindSubcategoriesAsync(Guid categoryId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var models = await context.Categories.Where(x => x.SuperCategoryId == categoryId).ToListAsync(cancellationToken);
+                return models.Select(x => x.ToEntity()).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new UnexpectedException(innerException: ex);
+            }
         }
 
         public async Task InsertAsync(CategoryEntity aggregate, CancellationToken cancellationToken = default)
