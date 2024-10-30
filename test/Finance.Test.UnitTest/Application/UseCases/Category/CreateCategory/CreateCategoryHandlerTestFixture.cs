@@ -10,6 +10,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
             categoryType: Domain.Enums.CategoryType.Revenue,
             name: Faker.Random.String(5),
             icon: Faker.Random.String(5),
-            color: Faker.Random.String(5));
+            color: Faker.Random.String(5),
+            superCategoryId: Faker.Random.Guid());
     }
 }

@@ -9,12 +9,14 @@ namespace Finance.Application.UseCases.Category.CreateCategory
         CategoryType categoryType,
         string name,
         string? icon,
-        string? color) : IRequest<CategoryResponse>
+        string? color,
+        Guid? superCategoryId) : IRequest<CategoryResponse>
     {
         public Guid AccountId { get; } = accountId;
         public CategoryType CategoryType { get; } = categoryType;
         public string Name { get; } = name;
         public string? Icon { get; } = icon;
         public string? Color { get; } = color;
+        public Guid? SuperCategoryId { get; } = superCategoryId;
     }
 }

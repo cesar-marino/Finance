@@ -23,7 +23,7 @@ namespace Finance.Application.UseCases.Category.SearchCategories
                 total: result.Total,
                 orderBy: result.OrderBy,
                 order: result.Order,
-                items: result.Items.Select(CategoryResponse.FromEntity).ToList());
+                items: result.Items.Select(x => CategoryResponse.FromEntity(x)).ToList());
         }
     }
 }

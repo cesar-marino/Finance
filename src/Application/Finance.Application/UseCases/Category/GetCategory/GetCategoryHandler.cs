@@ -12,7 +12,9 @@ namespace Finance.Application.UseCases.Category.GetCategory
                 entityId: request.CategoryId,
                 cancellationToken);
 
-            return CategoryResponse.FromEntity(category);
+            var subCategories = await categoryRepository.FindSubcategoriesAsync(category.Id, cancellationToken);
+
+            return CategoryResponse.FromEntity(category: category, subCategories: subCategories);
         }
     }
 }

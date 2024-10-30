@@ -40,6 +40,9 @@ namespace Finance.Infrastructure.Database.Configurations
             builder.Property(x => x.Color)
                 .HasColumnName("color");
 
+            builder.Property(x => x.SuperCategoryId)
+                .HasColumnName("super_category_id");
+
             builder.Property(p => p.CreatedAt)
                 .HasColumnName("created_at")
                 .HasColumnType("timestamp without time zone")

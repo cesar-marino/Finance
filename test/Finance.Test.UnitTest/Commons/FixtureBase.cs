@@ -31,6 +31,7 @@ namespace Finance.Test.UnitTest.Commons
             string? name = null,
             string? icon = null,
             string? color = null,
+            Guid? superCategoryId = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
                 accountId: accountId ?? Faker.Random.Guid(),
@@ -40,6 +41,7 @@ namespace Finance.Test.UnitTest.Commons
                 name: name ?? Faker.Random.String(5),
                 icon: icon ?? Faker.Random.String(5),
                 color: color ?? Faker.Random.String(5),
+                superCategoryId: superCategoryId,
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
     }

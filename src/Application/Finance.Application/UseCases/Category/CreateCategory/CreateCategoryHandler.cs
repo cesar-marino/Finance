@@ -16,7 +16,8 @@ namespace Finance.Application.UseCases.Category.CreateCategory
                 categoryType: request.CategoryType,
                 name: request.Name,
                 icon: request.Icon,
-                color: request.Color);
+                color: request.Color,
+                superCategoryId: request.SuperCategoryId);
 
             await categoryRepository.InsertAsync(category, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);

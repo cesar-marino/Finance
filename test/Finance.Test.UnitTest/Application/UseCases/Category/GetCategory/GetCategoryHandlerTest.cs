@@ -40,6 +40,32 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.GetCategory
                 .WithMessage("Category not found");
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindSubCategoriesAsyncThrows))]
+        [Trait("Unit/UseCase", "Category - GetCategory")]
+        public async Task ShouldRethrowSameExceptionThatFindSubCategoriesAsyncThrows()
+        {
+            var category = _fixture.MakeCategoryEntity();
+            _categoryRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+
+            _categoryRepositoryMock
+                .Setup(x => x.FindSubcategoriesAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeGetCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfFindAsyncReturnsValidCategory))]
         [Trait("Unit/UseCase", "Category - GetCategory")]
         public async Task ShouldReturnTheCorrectResponseIfFindAsyncReturnsValidCategory()
@@ -52,6 +78,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.GetCategory
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(category);
 
+            var subCategories = _fixture.MakeSubCategories(category.Id);
+            _categoryRepositoryMock
+                .Setup(x => x.FindSubcategoriesAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(subCategories);
+
             var request = _fixture.MakeGetCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
@@ -63,6 +96,16 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.GetCategory
             response.CreatedAt.Should().Be(category.CreatedAt);
             response.Icon.Should().Be(category.Icon);
             response.Name.Should().Be(category.Name);
+            response.SuperCategory?.Id.Should().Be(category.SuperCategoryId);
+
+            response.SubCategories?.ToList().ForEach((subCategory) =>
+            {
+                var cat = subCategories.FirstOrDefault(x => x.Id == subCategory.Id);
+                subCategory.Id.Should().Be(cat?.Id);
+                subCategory.Color.Should().Be(cat?.Color);
+                subCategory.Icon.Should().Be(cat?.Icon);
+                subCategory.Name.Should().Be(cat?.Name);
+            });
         }
     }
 }

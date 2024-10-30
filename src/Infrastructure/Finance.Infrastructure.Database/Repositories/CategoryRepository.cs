@@ -31,6 +31,11 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
+        public Task<IReadOnlyList<CategoryEntity>> FindSubcategoriesAsync(Guid categoryId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task InsertAsync(CategoryEntity aggregate, CancellationToken cancellationToken = default)
         {
             try

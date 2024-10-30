@@ -71,6 +71,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
             response.Color.Should().Be(request.Color);
             response.Icon.Should().Be(request.Icon);
             response.Name.Should().Be(request.Name);
+            response.SuperCategory?.Id.Should().Be(response.SuperCategory.Id);
         }
     }
 }

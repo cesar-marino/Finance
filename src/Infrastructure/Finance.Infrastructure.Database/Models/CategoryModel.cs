@@ -12,6 +12,7 @@ namespace Finance.Infrastructure.Database.Models
         string normalizedName,
         string? icon,
         string? color,
+        Guid? superCategoryId,
         DateTime createdAt,
         DateTime updatedAt)
     {
@@ -24,6 +25,7 @@ namespace Finance.Infrastructure.Database.Models
         public string? Color { get; set; } = color;
         public DateTime CreatedAt { get; set; } = createdAt;
         public DateTime UpdatedAt { get; set; } = updatedAt;
+        public Guid? SuperCategoryId { get; set; } = superCategoryId;
 
         public Guid AccountId { get; set; } = accountId;
         public virtual AccountModel? Account { get; set; }
@@ -36,6 +38,7 @@ namespace Finance.Infrastructure.Database.Models
             name: Name,
             icon: Icon,
             color: Color,
+            superCategoryId: SuperCategoryId,
             createdAt: CreatedAt,
             updatedAt: UpdatedAt);
 
@@ -48,6 +51,7 @@ namespace Finance.Infrastructure.Database.Models
             normalizedName: category.Name.Trim().ToUpper(),
             icon: category.Icon,
             color: category.Color,
+            superCategoryId: category.SuperCategoryId,
             createdAt: category.CreatedAt,
             updatedAt: category.UpdatedAt);
     }

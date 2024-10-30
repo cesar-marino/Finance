@@ -10,19 +10,22 @@ namespace Finance.Domain.Entities
         public string Name { get; private set; }
         public string? Icon { get; private set; }
         public string? Color { get; private set; }
+        public Guid? SuperCategoryId { get; private set; }
 
         public CategoryEntity(
             Guid accountId,
             CategoryType? categoryType,
             string name,
             string? icon,
-            string? color) : base(accountId: accountId)
+            string? color,
+            Guid? superCategoryId = null) : base(accountId: accountId)
         {
             Active = true;
             CategoryType = categoryType;
             Name = name;
             Icon = icon;
             Color = color;
+            SuperCategoryId = superCategoryId;
         }
 
         public CategoryEntity(
@@ -33,6 +36,7 @@ namespace Finance.Domain.Entities
             string name,
             string? icon,
             string? color,
+            Guid? superCategoryId,
             DateTime createdAt,
             DateTime updatedAt) : base(accountId, categoryId, createdAt, updatedAt)
         {
@@ -41,6 +45,7 @@ namespace Finance.Domain.Entities
             Name = name;
             Icon = icon;
             Color = color;
+            SuperCategoryId = superCategoryId;
         }
 
         public void Disable()
