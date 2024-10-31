@@ -8,7 +8,7 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
     {
         public async Task<LimitResponse> Handle(UpdateLimitRequest request, CancellationToken cancellationToken)
         {
-            _ = await limitRepository.FindAsync(
+            var limit = await limitRepository.FindAsync(
                 accountId: request.AccountId,
                 entityId: request.LimitId,
                 cancellationToken);
@@ -20,6 +20,8 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
             var existCategory = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
             if (!existCategory)
                 throw new NotFoundException("Category");
+
+            await limitRepository.UpdateAsync(limit, cancellationToken);
 
             throw new NotImplementedException();
         }

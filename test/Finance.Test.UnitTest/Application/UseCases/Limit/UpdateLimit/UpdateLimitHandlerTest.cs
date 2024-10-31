@@ -1,4 +1,5 @@
 ﻿using Finance.Application.UseCases.Limit.UpdateLimit;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -154,6 +155,44 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Category not found");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "Limit - UpdateLimit")]
+        public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var limit = _fixture.MakeLimitEntity();
+            _limitRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(limit);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<LimitEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
