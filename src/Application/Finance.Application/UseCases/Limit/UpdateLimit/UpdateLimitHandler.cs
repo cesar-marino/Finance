@@ -17,6 +17,8 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
             if (!existAccount)
                 throw new NotFoundException("Account");
 
+            _ = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
