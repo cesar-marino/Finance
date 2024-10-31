@@ -1,10 +1,13 @@
 ﻿using Finance.Application.UseCases.Limit.Commons;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Limit.UpdateLimit
 {
-    public class UpdateLimitHandler(ILimitRepository limitRepository) : IUpdateLimitHandler
+    public class UpdateLimitHandler(
+        ILimitRepository limitRepository,
+        IUnitOfWork unitOfWork) : IUpdateLimitHandler
     {
         public async Task<LimitResponse> Handle(UpdateLimitRequest request, CancellationToken cancellationToken)
         {
@@ -22,6 +25,7 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
                 throw new NotFoundException("Category");
 
             await limitRepository.UpdateAsync(limit, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
