@@ -2,10 +2,13 @@
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Limit.CreateLimit
 {
-    public class CreateLimitHandler(ILimitRepository limitRepository) : ICreateLimitHandler
+    public class CreateLimitHandler(
+        ILimitRepository limitRepository,
+        IUnitOfWork unitOfWork) : ICreateLimitHandler
     {
         public async Task<LimitResponse> Handle(CreateLimitRequest request, CancellationToken cancellationToken)
         {
@@ -19,8 +22,14 @@ namespace Finance.Application.UseCases.Limit.CreateLimit
             if (!existCategory)
                 throw new NotFoundException("Category");
 
-            var limit = new LimitEntity(accountId: request.AccountId, categoryId: request.CategoryId, name: request.Name, limitAmount: request.LimitAmount);
+            var limit = new LimitEntity(
+                accountId: request.AccountId,
+                categoryId: request.CategoryId,
+                name: request.Name,
+                limitAmount: request.LimitAmount);
+
             await limitRepository.InsertAsync(limit, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }

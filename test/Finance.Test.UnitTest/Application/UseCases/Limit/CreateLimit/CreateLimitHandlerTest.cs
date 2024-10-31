@@ -2,6 +2,7 @@
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,14 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         private readonly CreateLimitHandlerTestFixture _fixture;
         private readonly CreateLimitHandler _sut;
         private readonly Mock<ILimitRepository> _limitRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public CreateLimitHandlerTest(CreateLimitHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _limitRepositoryMock = new();
+            _unitOfWorkMock = new();
 
             _sut = new(
-                limitRepository: _limitRepositoryMock.Object);
+                limitRepository: _limitRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows))]
@@ -126,6 +130,34 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .Setup(x => x.InsertAsync(
                     It.IsAny<LimitEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Limit - CreateLimit")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeCreateLimitRequest();
