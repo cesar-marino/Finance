@@ -44,5 +44,15 @@ namespace Finance.Test.UnitTest.Commons
                 superCategoryId: superCategoryId,
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
+
+        public LimitEntity MakeLimitEntity() => new(
+            accountId: Faker.Random.Guid(),
+            categoryId: Faker.Random.Guid(),
+            limitId: Faker.Random.Guid(),
+            name: Faker.Random.String(5),
+            currentAmount: Faker.Random.Double(),
+            limitAmount: Faker.Random.Double(),
+            createdAt: Faker.Date.Past(),
+            updatedAt: Faker.Date.Past());
     }
 }

@@ -12,6 +12,8 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
                 entityId: request.LimitId,
                 cancellationToken);
 
+            _ = await limitRepository.CheckAccountByIdAsync(request.AccountId, cancellationToken);
+
             throw new NotImplementedException();
         }
     }

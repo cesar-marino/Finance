@@ -1,4 +1,5 @@
 ﻿using Finance.Application.UseCases.Limit.UpdateLimit;
+using Finance.Domain.Entities;
 using Finance.Test.UnitTest.Commons;
 
 namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
