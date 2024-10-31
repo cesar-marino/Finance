@@ -36,5 +36,12 @@ namespace Finance.Domain.Entities
             LimitAmount = limitAmount;
             CurrentAmount = currentAmount;
         }
+
+        public void Update(string name, double limitAmount, Guid categoryId)
+        {
+            Name = name;
+            LimitAmount = limitAmount;
+            CategoryId = categoryId;
+        }
     }
 }

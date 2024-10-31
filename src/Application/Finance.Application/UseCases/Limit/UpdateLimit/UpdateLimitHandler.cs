@@ -24,10 +24,14 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
             if (!existCategory)
                 throw new NotFoundException("Category");
 
+            limit.Update(
+                name: request.Name,
+                limitAmount: request.LimitAmount,
+                categoryId: request.CategoryId);
+
             await limitRepository.UpdateAsync(limit, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return LimitResponse.FromEntity(limit);
         }
     }
 }

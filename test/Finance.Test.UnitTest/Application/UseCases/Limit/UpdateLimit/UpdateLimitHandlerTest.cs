@@ -234,5 +234,39 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfLimitIsUpdatedSuccessfully))]
+        [Trait("Unit/UseCase", "Limit - UpdateLimit")]
+        public async Task ShouldReturnTheCorrectResponseIfLimitIsUpdatedSuccessfully()
+        {
+            var limit = _fixture.MakeLimitEntity();
+            _limitRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(limit);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeUpdateLimitRequest(accountId: limit.AccountId, limitId: limit.Id);
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(request.AccountId);
+            response.Category.Id.Should().Be(request.CategoryId);
+            response.LimitAmount.Should().Be(request.LimitAmount);
+            response.LimitId.Should().Be(request.LimitId);
+            response.Name.Should().Be(request.Name);
+        }
     }
 }
