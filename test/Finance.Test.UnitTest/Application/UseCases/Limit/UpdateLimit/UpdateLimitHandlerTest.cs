@@ -65,5 +65,31 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionThatCheckAccountByIdAsyncReturnsFalse))]
+        [Trait("Unit/UseCase", "Limit - UpdateLimit")]
+        public async Task ShouldThrowNotFoundExceptionThatCheckAccountByIdAsyncReturnsFalse()
+        {
+            var limit = _fixture.MakeLimitEntity();
+            _limitRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(limit);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeUpdateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Account not found");
+        }
     }
 }
