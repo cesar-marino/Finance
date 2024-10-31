@@ -1,8 +1,11 @@
 ﻿using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Limit.RemoveLimit
 {
-    public class RemoveLimitHandler(ILimitRepository limitRepository) : IRemoveLimitHandler
+    public class RemoveLimitHandler(
+        ILimitRepository limitRepository,
+        IUnitOfWork unitOfWork) : IRemoveLimitHandler
     {
         public async Task<bool> Handle(RemoveLimitRequest request, CancellationToken cancellationToken)
         {
@@ -10,6 +13,8 @@ namespace Finance.Application.UseCases.Limit.RemoveLimit
                 accountId: request.AccountId,
                 limitId: request.LimitId,
                 cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
