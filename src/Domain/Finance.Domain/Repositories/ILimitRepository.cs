@@ -5,7 +5,8 @@ namespace Finance.Domain.Repositories
 {
     public interface ILimitRepository : IRepository<LimitEntity>
     {
-        Task<bool> CheckAccountByIdAsync(Guid guid, CancellationToken cancellationToken = default);
-        Task<bool> CheckCategoryByIdAsync(Guid guid, CancellationToken cancellationToken = default);
+        Task<bool> CheckAccountByIdAsync(Guid accountId, CancellationToken cancellationToken = default);
+        Task<bool> CheckCategoryByIdAsync(Guid categoryId, CancellationToken cancellationToken = default);
+        Task RemoveAsync(Guid accountId, Guid limitId, CancellationToken cancellationToken = default);
     }
 }
