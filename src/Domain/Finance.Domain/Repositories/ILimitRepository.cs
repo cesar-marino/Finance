@@ -5,5 +5,6 @@ namespace Finance.Domain.Repositories
 {
     public interface ILimitRepository : IRepository<LimitEntity>
     {
+        Task<bool> CheckAccountByIdAsync(Guid guid, CancellationToken cancellationToken = default);
     }
 }

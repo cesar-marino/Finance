@@ -22,9 +22,27 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 limitRepository: _limitRepositoryMock.Object);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsynccThrows))]
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
-        public async Task ShouldRethrowSameExceptionThatInsertAsynccThrows()
+        public async Task ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows()
+        {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
+        [Trait("Unit/UseCase", "Limit - CreateLimit")]
+        public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _limitRepositoryMock
                 .Setup(x => x.InsertAsync(
