@@ -15,8 +15,7 @@ namespace Finance.Application.UseCases.Limit.RemoveLimit
                 cancellationToken);
 
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

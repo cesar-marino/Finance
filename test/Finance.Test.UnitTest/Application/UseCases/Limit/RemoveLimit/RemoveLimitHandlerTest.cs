@@ -59,5 +59,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.RemoveLimit
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTrueIfLimitIsRemovedSuccessfully))]
+        [Trait("Unit/UseCase", "Limit - RemoveLimit")]
+        public async Task ShouldReturnTrueIfLimitIsRemovedSuccessfully()
+        {
+            var request = _fixture.MakeRemoveLimitRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.Should().BeTrue();
+        }
     }
 }
