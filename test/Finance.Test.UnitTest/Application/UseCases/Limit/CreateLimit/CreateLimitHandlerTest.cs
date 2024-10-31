@@ -167,5 +167,31 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfLimitIsAddedSucccessfully))]
+        [Trait("Unit/UseCase", "Limit - CreateLimit")]
+        public async Task ShouldReturnTheCorrectResponseIfLimitIsAddedSucccessfully()
+        {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeCreateLimitRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(request.AccountId);
+            response.Category.Id.Should().Be(request.CategoryId);
+            response.CurrentAmount.Should().Be(0);
+            response.LimitAmount.Should().Be(request.LimitAmount);
+            response.Name.Should().Be(request.Name);
+        }
     }
 }

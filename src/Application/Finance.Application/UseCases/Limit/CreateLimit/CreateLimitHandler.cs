@@ -30,8 +30,7 @@ namespace Finance.Application.UseCases.Limit.CreateLimit
 
             await limitRepository.InsertAsync(limit, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return LimitResponse.FromEntity(limit);
         }
     }
 }

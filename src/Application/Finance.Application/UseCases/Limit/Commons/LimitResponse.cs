@@ -22,7 +22,7 @@ namespace Finance.Application.UseCases.Limit.Commons
 
         public virtual CategoryLimitResponse Category { get; } = category;
 
-        public static LimitResponse FromEntity(LimitEntity limit, CategoryEntity category) => new(
+        public static LimitResponse FromEntity(LimitEntity limit, CategoryEntity? category = null) => new(
             accountId: limit.AccountId,
             limit.Id,
             name: limit.Name,
