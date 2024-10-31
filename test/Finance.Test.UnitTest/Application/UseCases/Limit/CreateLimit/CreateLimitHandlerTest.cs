@@ -40,10 +40,34 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .WithMessage("An unexpected error occurred");
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows))]
+        [Trait("Unit/UseCase", "Limit - CreateLimit")]
+        public async Task ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse()
+        {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeCreateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Account not found");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
             _limitRepositoryMock
                 .Setup(x => x.InsertAsync(
                     It.IsAny<LimitEntity>(),
