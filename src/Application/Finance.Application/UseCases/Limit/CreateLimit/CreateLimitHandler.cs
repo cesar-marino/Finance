@@ -14,6 +14,8 @@ namespace Finance.Application.UseCases.Limit.CreateLimit
             if (!existAccount)
                 throw new NotFoundException("Account");
 
+            _ = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
+
             var limit = new LimitEntity(accountId: request.AccountId, categoryId: request.CategoryId, name: request.Name, limitAmount: request.LimitAmount);
             await limitRepository.InsertAsync(limit, cancellationToken);
 

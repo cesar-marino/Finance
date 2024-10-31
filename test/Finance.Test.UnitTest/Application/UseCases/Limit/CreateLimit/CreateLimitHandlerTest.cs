@@ -40,7 +40,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
         public async Task ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse()
         {
@@ -58,12 +58,42 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .WithMessage("Account not found");
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckCategoryByIdAsyncThrows))]
+        [Trait("Unit/UseCase", "Limit - CreateLimit")]
+        public async Task ShouldRethrowSameExceptionThatCheckCategoryByIdAsyncThrows()
+        {
+            _limitRepositoryMock
+                .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateLimitRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _limitRepositoryMock
                 .Setup(x => x.CheckAccountByIdAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _limitRepositoryMock
+                .Setup(x => x.CheckCategoryByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
