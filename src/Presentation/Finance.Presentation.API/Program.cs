@@ -1,16 +1,10 @@
 using Finance.Application.UseCases.Tag.CreateTag;
-using Finance.Application.UseCases.Tag.DisableTag;
-using Finance.Application.UseCases.Tag.EnableTag;
-using Finance.Application.UseCases.Tag.GetTag;
-using Finance.Application.UseCases.Tag.SerachTags;
-using Finance.Application.UseCases.Tag.UpdateTag;
 using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Repositories;
 using Finance.Presentation.API.Filters;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,26 +25,17 @@ builder.Services.Configure<RouteOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(CreateTagHandler).Assembly));
+
 builder.Services.AddDbContext<FinanceContext>(options =>
 {
     options.UseInMemoryDatabase("memory");
 });
 
 builder.Services.AddScoped<IUnitOfWork, FinanceContext>();
-
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ILimitRepository, LimitRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-builder.Services.AddScoped<ICreateTagHandler, CreateTagHandler>();
-builder.Services.AddScoped<IDisableTagHandler, DisableTagHandler>();
-builder.Services.AddScoped<IEnableTagHandler, EnableTagHandler>();
-builder.Services.AddScoped<IGetTagHandler, GetTagHandler>();
-builder.Services.AddScoped<ISearchTagsHandler, SearchTagsHandler>();
-builder.Services.AddScoped<IUpdateTagHandler, UpdateTagHandler>();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
 
 var app = builder.Build();
 

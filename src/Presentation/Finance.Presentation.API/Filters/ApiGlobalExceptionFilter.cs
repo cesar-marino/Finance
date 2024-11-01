@@ -28,6 +28,14 @@ namespace Finance.Presentation.API.Filters
                 details.Type = unexpectedException?.GetType().ToString();
                 details.Detail = unexpectedException?.Message;
             }
+            else
+            {
+                details.Title = "unexpected";
+                details.Status = StatusCodes.Status500InternalServerError;
+                details.Type = "UnexpectedException";
+                details.Detail = exception.Message;
+                details.Instance = exception.Source;
+            }
 
             context.HttpContext.Response.StatusCode = (int)details.Status!;
             context.Result = new ObjectResult(details);
