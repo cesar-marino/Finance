@@ -5,7 +5,6 @@ namespace Finance.Domain.Entities
     public class LimitEntity : AggregateRoot
     {
         public string Name { get; private set; }
-        public double CurrentAmount { get; private set; }
         public double LimitAmount { get; private set; }
         public Guid CategoryId { get; private set; }
 
@@ -18,7 +17,6 @@ namespace Finance.Domain.Entities
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;
-            CurrentAmount = 0;
         }
 
         public LimitEntity(
@@ -26,7 +24,6 @@ namespace Finance.Domain.Entities
             Guid limitId,
             Guid categoryId,
             string name,
-            double currentAmount,
             double limitAmount,
             DateTime createdAt,
             DateTime updatedAt) : base(accountId, limitId, createdAt, updatedAt)
@@ -34,7 +31,6 @@ namespace Finance.Domain.Entities
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;
-            CurrentAmount = currentAmount;
         }
 
         public void Update(string name, double limitAmount, Guid categoryId)

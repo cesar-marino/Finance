@@ -189,7 +189,6 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
 
             response.AccountId.Should().Be(request.AccountId);
             response.Category.Id.Should().Be(request.CategoryId);
-            response.CurrentAmount.Should().Be(0);
             response.LimitAmount.Should().Be(request.LimitAmount);
             response.Name.Should().Be(request.Name);
         }

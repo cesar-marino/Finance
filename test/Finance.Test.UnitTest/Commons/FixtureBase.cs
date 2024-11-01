@@ -50,7 +50,6 @@ namespace Finance.Test.UnitTest.Commons
             categoryId: Faker.Random.Guid(),
             limitId: Faker.Random.Guid(),
             name: Faker.Random.String(5),
-            currentAmount: Faker.Random.Double(),
             limitAmount: Faker.Random.Double(),
             createdAt: Faker.Date.Past(),
             updatedAt: Faker.Date.Past());
