@@ -8,15 +8,17 @@ namespace Finance.Infrastructure.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<CategoryModel> builder)
         {
-            builder.ToTable("category");
+            builder.ToTable("categories");
             builder.HasKey(x => new { x.AccountId, x.CategoryId });
 
             builder.Property(x => x.CategoryId)
                 .HasColumnName("category_id")
+                .ValueGeneratedNever()
                 .IsRequired();
 
             builder.Property(x => x.AccountId)
                 .HasColumnName("account_id")
+                .ValueGeneratedNever()
                 .IsRequired();
 
             builder.HasOne(x => x.Account)

@@ -6,5 +6,6 @@
 
         public List<TagModel>? Tags { get; set; }
         public List<CategoryModel>? Categories { get; set; }
+        public List<LimitModel>? Limits { get; set; }
     }
 }

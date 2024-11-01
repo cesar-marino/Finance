@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Finance.Infrastructure.Database.Configurations
 {
-    public class TagConfiguration : IEntityTypeConfiguration<TagModel>
+    public class LimitConfiguration : IEntityTypeConfiguration<LimitModel>
     {
-        public void Configure(EntityTypeBuilder<TagModel> builder)
+        public void Configure(EntityTypeBuilder<LimitModel> builder)
         {
-            builder.ToTable("tags");
-            builder.HasKey(x => new { x.AccountId, x.TagId });
+            builder.ToTable("limits");
+            builder.HasKey(x => new { x.AccountId, x.LimitId });
 
-            builder.Property(x => x.TagId)
-                .HasColumnName("tag_id")
+            builder.Property(x => x.LimitId)
+                .HasColumnName("limit_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
@@ -22,15 +22,24 @@ namespace Finance.Infrastructure.Database.Configurations
                 .IsRequired();
 
             builder.HasOne(x => x.Account)
-                .WithMany(a => a.Tags)
+                .WithMany(a => a.Limits)
                 .HasForeignKey(x => x.AccountId);
 
-            builder.Property(x => x.Active)
-                .HasColumnName("active")
+            builder.Property(x => x.CategoryId)
+                .HasColumnName("category_id")
+                .ValueGeneratedNever()
                 .IsRequired();
+
+            builder.HasOne(x => x.Category)
+                .WithMany(a => a.Limits)
+                .HasForeignKey(x => x.CategoryId);
 
             builder.Property(x => x.Name)
                 .HasColumnName("name")
+                .IsRequired();
+
+            builder.Property(x => x.LimitAmount)
+                .HasColumnName("limit_amount")
                 .IsRequired();
 
             builder.Property(p => p.CreatedAt)

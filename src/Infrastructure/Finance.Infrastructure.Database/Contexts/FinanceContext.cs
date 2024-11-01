@@ -10,6 +10,7 @@ namespace Finance.Infrastructure.Database.Contexts
     {
         public DbSet<TagModel> Tags { get; private set; }
         public DbSet<CategoryModel> Categories { get; private set; }
+        public DbSet<LimitModel> Limits { get; private set; }
 
         public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
@@ -27,6 +28,7 @@ namespace Finance.Infrastructure.Database.Contexts
         {
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new LimitConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

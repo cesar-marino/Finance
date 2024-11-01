@@ -30,6 +30,8 @@ namespace Finance.Infrastructure.Database.Models
         public Guid AccountId { get; set; } = accountId;
         public virtual AccountModel? Account { get; set; }
 
+        public virtual List<LimitModel>? Limits { get; set; }
+
         public CategoryEntity ToEntity() => new(
             accountId: AccountId,
             categoryId: CategoryId,
