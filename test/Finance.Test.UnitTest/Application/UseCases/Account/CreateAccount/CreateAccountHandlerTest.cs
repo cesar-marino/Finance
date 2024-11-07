@@ -1,4 +1,6 @@
+using Finance.Application.Services;
 using Finance.Application.UseCases.Account.CreateAccount;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -11,15 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
         private readonly CreateAccountHandlerTestFixture _fixture;
         private readonly CreateAccountHandler _sut;
         private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
 
         public CreateAccountHandlerTest(CreateAccountHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _accountRepositoryMock = new();
+            _tokenServiceMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object
-            );
+                accountRepository: _accountRepositoryMock.Object,
+                tokenService: _tokenServiceMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckEmailAsyncThrows))]
@@ -104,6 +108,36 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
             await act.Should().ThrowExactlyAsync<UsernameInUseException>()
                 .Where(x => x.Code == "username-in-use")
                 .WithMessage("Username is already in use");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - CreateAccount")]
+        public async Task ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateAccessTokenAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateAccountRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }

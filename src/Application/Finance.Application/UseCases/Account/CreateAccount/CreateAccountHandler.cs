@@ -1,10 +1,14 @@
+using Finance.Application.Services;
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Account.CreateAccount
 {
-    public class CreateAccountHandler(IAccountRepository accountRepository) : ICreateAccountHandler
+    public class CreateAccountHandler(
+            IAccountRepository accountRepository,
+            ITokenService tokenService) : ICreateAccountHandler
     {
         public async Task<AccountResponse> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
         {
@@ -15,6 +19,14 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             var usernameInUse = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
             if (usernameInUse)
                 throw new UsernameInUseException();
+
+            var account = new AccountEntity(
+                username: request.Username,
+                email: request.Email,
+                password: request.Password,
+                phone: request.Phone);
+
+            await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
 
             throw new NotImplementedException();
         }
