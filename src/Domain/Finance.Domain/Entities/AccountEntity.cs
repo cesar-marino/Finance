@@ -1,3 +1,4 @@
+using Finance.Domain.Enums;
 using Finance.Domain.SeedWork;
 using Finance.Domain.ValueObjects;
 
@@ -14,12 +15,14 @@ namespace Finance.Domain.Entities
         public string Password { get; private set; }
         public AccountToken? AccessToken { get; private set; }
         public AccountToken? RefreshToken { get; private set; }
+        public Role Role { get; private set; }
 
         public AccountEntity(
             string username,
             string email,
             string password,
-            string? phone = null)
+            string? phone = null,
+            Role? role = null)
         {
             Active = true;
             Username = username;
@@ -28,6 +31,7 @@ namespace Finance.Domain.Entities
             Phone = phone;
             PhoneConfirmed = false;
             Password = password;
+            Role = role ?? Role.User;
         }
 
         public AccountEntity(
@@ -39,6 +43,7 @@ namespace Finance.Domain.Entities
             string? phone,
             bool phoneConfirmed,
             string password,
+            Role role,
             DateTime createdAt,
             DateTime updatedAt) : base(accountId, createdAt, updatedAt)
         {
@@ -49,6 +54,7 @@ namespace Finance.Domain.Entities
             Phone = phone;
             PhoneConfirmed = phoneConfirmed;
             Password = password;
+            Role = role;
         }
     }
 }
