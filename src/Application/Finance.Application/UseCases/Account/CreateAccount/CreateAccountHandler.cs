@@ -12,7 +12,9 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             if (emailInUse)
                 throw new EmailInUseException();
 
-            _ = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+            var usernameInUse = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+            if (usernameInUse)
+                throw new UsernameInUseException();
 
             throw new NotImplementedException();
         }

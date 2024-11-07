@@ -58,7 +58,6 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .WithMessage("Email is already in use");
         }
 
-
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckUsernameAsyncThrows))]
         [Trait("Unit/UseCase", "Account - CreateAccount")]
         public async Task ShouldRethrowSameExceptionThatCheckUsernameAsyncThrows()
@@ -83,5 +82,28 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .WithMessage("An unexpected error occurred");
         }
 
+        [Fact(DisplayName = nameof(ShouldThrowUsernameInUseExceptionIfCheckEmailAsyncReturnsTrue))]
+        [Trait("Unit/UseCase", "Account - CreateAccount")]
+        public async Task ShouldThrowUsernameInUseExceptionIfCheckEmailAsyncReturnsTrue()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeCreateAccountRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UsernameInUseException>()
+                .Where(x => x.Code == "username-in-use")
+                .WithMessage("Username is already in use");
+        }
     }
 }
