@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Finance.Domain.Entities;
 using Finance.Domain.Enums;
+using Finance.Domain.ValueObjects;
 
 namespace Finance.Test.UnitTest.Commons
 {
@@ -53,6 +54,10 @@ namespace Finance.Test.UnitTest.Commons
             limitAmount: Faker.Random.Double(),
             createdAt: Faker.Date.Past(),
             updatedAt: Faker.Date.Past());
+
+        public AccountToken MakeAccountToken() => new(
+            value: Faker.Random.String(50),
+            expiresIn: Faker.Date.Future());
 
         // public AccountEntity MakeAccountEntity(bool active = true) => new(
         //     accountId: Faker.Random.Guid(),

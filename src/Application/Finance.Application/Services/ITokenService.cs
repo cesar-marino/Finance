@@ -8,5 +8,7 @@ namespace Finance.Application.Services
         Task<AccountToken> GenerateAccessTokenAsync(
             AccountEntity account,
             CancellationToken cancellationToken = default);
+
+        Task<AccountToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default);
     }
 }

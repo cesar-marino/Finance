@@ -27,6 +27,7 @@ namespace Finance.Application.UseCases.Account.CreateAccount
                 phone: request.Phone);
 
             await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
