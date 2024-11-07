@@ -3,12 +3,14 @@ using Finance.Application.UseCases.Account.Commons;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Account.CreateAccount
 {
     public class CreateAccountHandler(
             IAccountRepository accountRepository,
-            ITokenService tokenService) : ICreateAccountHandler
+            ITokenService tokenService,
+            IUnitOfWork unitOfWork) : ICreateAccountHandler
     {
         public async Task<AccountResponse> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
         {
@@ -30,6 +32,7 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
             await accountRepository.InsertAsync(account, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
