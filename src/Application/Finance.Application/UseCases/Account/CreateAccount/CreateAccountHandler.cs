@@ -12,6 +12,8 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             if (emailInUse)
                 throw new EmailInUseException();
 
+            _ = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
