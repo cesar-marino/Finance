@@ -1,17 +1,12 @@
 ﻿namespace Finance.Domain.SeedWork
 {
-    public abstract class AggregateRoot : EntityBase
+    public abstract class AggregateRoot(
+        Guid? entityId = null,
+        DateTime? createdAt = null,
+        DateTime? updatedAt = null) : EntityBase(
+            entityId,
+            createdAt,
+            updatedAt)
     {
-        protected AggregateRoot(
-            Guid accountId,
-            Guid? entityId = null,
-            DateTime? createdAt = null,
-            DateTime? updatedAt = null) : base(
-                accountId,
-                entityId,
-                createdAt,
-                updatedAt)
-        {
-        }
     }
 }

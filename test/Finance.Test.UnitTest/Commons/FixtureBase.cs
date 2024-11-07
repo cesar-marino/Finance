@@ -10,8 +10,8 @@ namespace Finance.Test.UnitTest.Commons
         public Faker Faker { get; } = new("pt_BR");
 
         public TagEntity MakeTagEntity(
-            Guid? accountId = null,
             Guid? tagId = null,
+            Guid? accountId = null,
             bool active = true,
             string? name = null,
             DateTime? createdAt = null,
@@ -24,8 +24,8 @@ namespace Finance.Test.UnitTest.Commons
                 updatedAt: updatedAt ?? Faker.Date.Past());
 
         public CategoryEntity MakeCategoryEntity(
-            Guid? accountId = null,
             Guid? categoryId = null,
+            Guid? accountId = null,
             bool active = true,
             CategoryType categoryType = CategoryType.Expenditure,
             string? name = null,
@@ -46,9 +46,9 @@ namespace Finance.Test.UnitTest.Commons
                 updatedAt: updatedAt ?? Faker.Date.Past());
 
         public LimitEntity MakeLimitEntity() => new(
+            limitId: Faker.Random.Guid(),
             accountId: Faker.Random.Guid(),
             categoryId: Faker.Random.Guid(),
-            limitId: Faker.Random.Guid(),
             name: Faker.Random.String(5),
             limitAmount: Faker.Random.Double(),
             createdAt: Faker.Date.Past(),

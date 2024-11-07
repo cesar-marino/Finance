@@ -1,22 +1,12 @@
 ﻿namespace Finance.Domain.SeedWork
 {
-    public abstract class EntityBase
+    public abstract class EntityBase(
+        Guid? entityId = null,
+        DateTime? createdAt = null,
+        DateTime? updatedAt = null)
     {
-        public Guid AccountId { get; }
-        public Guid Id { get; }
-        public DateTime CreatedAt { get; }
-        public DateTime UpdatedAt { get; set; }
-
-        protected EntityBase(
-            Guid accountId,
-            Guid? entityId = null,
-            DateTime? createdAt = null,
-            DateTime? updatedAt = null)
-        {
-            AccountId = accountId;
-            Id = entityId ?? Guid.NewGuid();
-            CreatedAt = createdAt ?? DateTime.UtcNow;
-            UpdatedAt = updatedAt ?? DateTime.UtcNow;
-        }
+        public Guid Id { get; } = entityId ?? Guid.NewGuid();
+        public DateTime CreatedAt { get; } = createdAt ?? DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = updatedAt ?? DateTime.UtcNow;
     }
 }

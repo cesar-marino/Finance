@@ -25,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finance.Presentation.API", "src\Presentation\Finance.Presentation.API\Finance.Presentation.API.csproj", "{1A494BE2-E3B2-4102-84C1-51B562E26023}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finance.Infrastructure.Identity", "src\Infrastructure\Finance.Infrastructure.Identity\Finance.Infrastructure.Identity.csproj", "{8F036944-41EF-4B24-AAFB-2843C9EFA98B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{1A494BE2-E3B2-4102-84C1-51B562E26023}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A494BE2-E3B2-4102-84C1-51B562E26023}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A494BE2-E3B2-4102-84C1-51B562E26023}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F036944-41EF-4B24-AAFB-2843C9EFA98B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F036944-41EF-4B24-AAFB-2843C9EFA98B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F036944-41EF-4B24-AAFB-2843C9EFA98B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F036944-41EF-4B24-AAFB-2843C9EFA98B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,7 +65,6 @@ Global
 		{E4312B12-B4AA-405F-BF5C-3FBFB0849313} = {AB990BF9-FEA8-450E-96B2-EF84585C5805}
 		{81DFF53F-FEC4-48AB-825E-812E683B7EFF} = {D9500507-C62B-4AC2-B1D1-9F8D4CE1E065}
 		{1A494BE2-E3B2-4102-84C1-51B562E26023} = {81DFF53F-FEC4-48AB-825E-812E683B7EFF}
-		{8F036944-41EF-4B24-AAFB-2843C9EFA98B} = {AB990BF9-FEA8-450E-96B2-EF84585C5805}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84E69AD5-4A5F-4572-B1C7-3EDA787993E0}

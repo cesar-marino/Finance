@@ -4,6 +4,7 @@ namespace Finance.Domain.Entities
 {
     public class LimitEntity : AggregateRoot
     {
+        public Guid AccountId { get; }
         public string Name { get; private set; }
         public double LimitAmount { get; private set; }
         public Guid CategoryId { get; private set; }
@@ -12,22 +13,24 @@ namespace Finance.Domain.Entities
             Guid accountId,
             Guid categoryId,
             string name,
-            double limitAmount) : base(accountId)
+            double limitAmount)
         {
+            AccountId = accountId;
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;
         }
 
         public LimitEntity(
-            Guid accountId,
             Guid limitId,
+            Guid accountId,
             Guid categoryId,
             string name,
             double limitAmount,
             DateTime createdAt,
-            DateTime updatedAt) : base(accountId, limitId, createdAt, updatedAt)
+            DateTime updatedAt) : base(limitId, createdAt, updatedAt)
         {
+            AccountId = accountId;
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;
