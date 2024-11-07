@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Account.CreateAccount
@@ -7,7 +8,9 @@ namespace Finance.Application.UseCases.Account.CreateAccount
     {
         public async Task<AccountResponse> Handle(CreateAccountRequest request, CancellationToken cancellationToken)
         {
-            await accountRepository.CheckEmailAsync(request.Email, cancellationToken);
+            var emailInUse = await accountRepository.CheckEmailAsync(request.Email, cancellationToken);
+            if (emailInUse)
+                throw new EmailInUseException();
 
             throw new NotImplementedException();
         }
