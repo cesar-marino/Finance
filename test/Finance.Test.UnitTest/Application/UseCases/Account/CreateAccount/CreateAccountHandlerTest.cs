@@ -37,5 +37,19 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsCreatedSuccessfully))]
+        [Trait("Unit/UseCase", "Account - CreateAccount")]
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsCreatedSuccessfully()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountServiceMock.Setup(x => x.CreateAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            var request = _fixture.MakeCreateAccountRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+        }
     }
 }

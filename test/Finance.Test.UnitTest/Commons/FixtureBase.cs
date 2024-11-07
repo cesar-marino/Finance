@@ -53,5 +53,14 @@ namespace Finance.Test.UnitTest.Commons
             limitAmount: Faker.Random.Double(),
             createdAt: Faker.Date.Past(),
             updatedAt: Faker.Date.Past());
+
+        public AccountEntity MakeAccountEntity(bool active = true) => new(
+            accountId: Faker.Random.Guid(),
+            active: active,
+            username: Faker.Internet.UserName(),
+            email: Faker.Internet.Email(),
+            password: Faker.Internet.Password(),
+            createdAt: Faker.Date.Past(),
+            updatedAt: Faker.Date.Past());
     }
 }
