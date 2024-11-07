@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.CreateAccount;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
@@ -24,7 +25,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
         [Trait("Unit/UseCase", "Account - CreateAccount")]
         public async Task ShouldRethrowSameExceptionThatCreateAsyncThrows()
         {
-            _accountServiceMock.Setup(x => x.CreateAsync())
+            _accountServiceMock.Setup(x => x.CreateAsync(
+                It.IsAny<AccountEntity>(),
+                It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeCreateAccountRequest();

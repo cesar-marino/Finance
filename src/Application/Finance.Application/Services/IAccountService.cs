@@ -1,7 +1,9 @@
+using Finance.Domain.Entities;
+
 namespace Finance.Application.Services
 {
     public interface IAccountService
     {
-        Task CreateAsync(Guid accountId, string email, string username, string passwrd);
+        Task<AccountEntity> CreateAsync(AccountEntity account, CancellationToken cancellationToken = default);
     }
 }

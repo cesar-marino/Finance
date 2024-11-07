@@ -15,6 +15,7 @@ namespace Finance.Domain.Entities
             string email,
             string password)
         {
+            AccountId = Guid.NewGuid();
             Active = true;
             Username = username;
             Email = email;
