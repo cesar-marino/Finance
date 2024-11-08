@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.RefreshToken;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -66,6 +67,38 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Account not found");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        public async void ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
+        {
+            var username = _fixture.Faker.Internet.UserName();
+            _tokenServiceMock
+                .Setup(x => x.GetUsernameFromTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(username);
+
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateAccessTokenAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeRefreshTokenRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
