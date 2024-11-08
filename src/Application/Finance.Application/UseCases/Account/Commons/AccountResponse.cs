@@ -1,4 +1,5 @@
 using Finance.Domain.Entities;
+using Finance.Domain.Enums;
 
 namespace Finance.Application.UseCases.Account.Commons
 {
@@ -12,6 +13,7 @@ namespace Finance.Application.UseCases.Account.Commons
         bool phoneConfirmed,
         TokenResponse? accessToken,
         TokenResponse? refreshToken,
+        Role role,
         DateTime createdAt,
         DateTime updatedAt)
     {
@@ -24,6 +26,7 @@ namespace Finance.Application.UseCases.Account.Commons
         public bool PhoneConfirmed { get; } = phoneConfirmed;
         public TokenResponse? AccessToken { get; } = accessToken;
         public TokenResponse? RefreshToken { get; } = refreshToken;
+        public Role Role { get; } = role;
         public DateTime CreatdAt { get; } = createdAt;
         public DateTime UpdatedAt { get; } = updatedAt;
 
@@ -35,8 +38,9 @@ namespace Finance.Application.UseCases.Account.Commons
             emailConfirmed: account.EmailConfirmed,
             phone: account.Phone,
             phoneConfirmed: account.PhoneConfirmed,
-            accessToken: account.AccessToken != null ? new(account.AccessToken.Value, account.AccessToken.ExpiresIn) : null,
-            refreshToken: account.RefreshToken != null ? new(account.RefreshToken.Value, account.RefreshToken.ExpiresIn) : null,
+            accessToken: account.AccessToken is not null ? new(account.AccessToken.Value, account.AccessToken.ExpiresIn) : null,
+            refreshToken: account.RefreshToken is not null ? new(account.RefreshToken.Value, account.RefreshToken.ExpiresIn) : null,
+            role: account.Role,
             createdAt: account.CreatedAt,
             updatedAt: account.UpdatedAt);
     }

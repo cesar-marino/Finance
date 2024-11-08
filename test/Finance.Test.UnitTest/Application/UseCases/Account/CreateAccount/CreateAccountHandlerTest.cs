@@ -1,6 +1,7 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.CreateAccount;
 using Finance.Domain.Entities;
+using Finance.Domain.Enums;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
@@ -261,6 +262,50 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .WithMessage("An unexpected error occurred");
         }
 
-        //should return the correct response if account is created successfully
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsCreatedSuccessfully))]
+        [Trait("Unit/UseCase", "Account - CreateAccount")]
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsCreatedSuccessfully()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var accessToken = _fixture.MakeAccountToken();
+            _tokenServiceMock
+                .Setup(x => x.GenerateAccessTokenAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accessToken);
+
+            var refreshToken = _fixture.MakeAccountToken();
+            _tokenServiceMock
+                .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(refreshToken);
+
+            var request = _fixture.MakeCreateAccountRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccessToken.Should().NotBeNull();
+            response.AccessToken?.Value.Should().Be(accessToken.Value);
+            response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
+            response.Active.Should().BeTrue();
+            response.Email.Should().Be(request.Email);
+            response.EmailConfirmed.Should().BeFalse();
+            response.Phone.Should().Be(request.Phone);
+            response.PhoneConfirmed.Should().BeFalse();
+            response.RefreshToken.Should().NotBeNull();
+            response.RefreshToken?.Value.Should().Be(refreshToken.Value);
+            response.RefreshToken?.ExpiresIn.Should().Be(refreshToken.ExpiresIn);
+            response.Role.Should().Be(Role.User);
+            response.Username.Should().Be(request.Username);
+        }
     }
 }

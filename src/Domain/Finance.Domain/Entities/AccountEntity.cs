@@ -56,5 +56,13 @@ namespace Finance.Domain.Entities
             Password = password;
             Role = role;
         }
+
+        public void ChangeTokens(
+            AccountToken accessToken,
+            AccountToken refreshToken)
+        {
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+        }
     }
 }

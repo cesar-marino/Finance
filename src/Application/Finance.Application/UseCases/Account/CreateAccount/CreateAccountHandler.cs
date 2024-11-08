@@ -28,13 +28,14 @@ namespace Finance.Application.UseCases.Account.CreateAccount
                 password: request.Password,
                 phone: request.Phone);
 
-            await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
-            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            var accessToken = await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+
+            account.ChangeTokens(accessToken, refreshToken);
 
             await accountRepository.InsertAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
