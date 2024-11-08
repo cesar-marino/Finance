@@ -11,11 +11,11 @@ namespace Finance.Application.UseCases.Account.DisableAccount
         public async Task<AccountResponse> Handle(DisableAccountRequest request, CancellationToken cancellationToken)
         {
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
+            account.Disable();
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }

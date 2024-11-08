@@ -77,5 +77,11 @@ namespace Finance.Domain.Entities
             Username = username;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void Disable()
+        {
+            Active = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
