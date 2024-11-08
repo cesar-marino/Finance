@@ -1,12 +1,14 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.Commons;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Account.RefreshToken
 {
     public class RefreshTokenHandler(
         ITokenService tokenService,
-        IAccountRepository accountRepository) : IRefreshTokenHandler
+        IAccountRepository accountRepository,
+        IUnitOfWork unitOfWork) : IRefreshTokenHandler
     {
         public async Task<AccountResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
@@ -17,6 +19,7 @@ namespace Finance.Application.UseCases.Account.RefreshToken
             await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
