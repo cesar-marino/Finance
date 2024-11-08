@@ -7,7 +7,9 @@ namespace Finance.Application.UseCases.Account.RevokeAccess
     {
         public async Task<AccountResponse> Handle(RevokeAccessRequest request, CancellationToken cancellationToken)
         {
-            await accountRepository.FindAsync(request.AccountId, cancellationToken);
+            var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
+
+            await accountRepository.UpdateAsync(account, cancellationToken);
 
             throw new NotImplementedException();
         }
