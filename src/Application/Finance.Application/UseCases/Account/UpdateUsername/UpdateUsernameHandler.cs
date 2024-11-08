@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
 
@@ -10,7 +11,10 @@ namespace Finance.Application.UseCases.Account.UpdateUsername
     {
         public async Task<AccountResponse> Handle(UpdateUsernameRequest request, CancellationToken cancellationToken)
         {
-            await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+            var usernameInUse = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+
+            if (usernameInUse)
+                throw new UsernameInUseException();
 
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
             account.ChangeUsername(request.Username);

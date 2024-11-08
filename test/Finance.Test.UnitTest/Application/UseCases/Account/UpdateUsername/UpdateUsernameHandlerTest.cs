@@ -44,10 +44,34 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
                 .WithMessage("An unexpected error occurred");
         }
 
+        [Fact(DisplayName = nameof(ShouldThrowUsernameInUseExceptionIfCheckUsernameAsyncReturnsTrue))]
+        [Trait("Unit/UseCase", "Account - UpdateUsername")]
+        public async Task ShouldThrowUsernameInUseExceptionIfCheckUsernameAsyncReturnsTrue()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeUpdateUsernameRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UsernameInUseException>()
+                .Where(x => x.Code == "username-in-use")
+                .WithMessage("Username is already in use");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
         [Trait("Unit/UseCase", "Account - UpdateUsername")]
         public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -66,6 +90,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
         [Trait("Unit/UseCase", "Account - UpdateUsername")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
+            _accountRepositoryMock
+               .Setup(x => x.CheckUsernameAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
@@ -91,6 +121,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
         [Trait("Unit/UseCase", "Account - UpdateUsername")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
@@ -114,6 +150,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
         [Trait("Unit/UseCase", "Account - UpdateUsername")]
         public async Task ShouldReturnTheCorrectResponseIfAccountIsUpdatedSuccessfully()
         {
+            _accountRepositoryMock
+               .Setup(x => x.CheckUsernameAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
