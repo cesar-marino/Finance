@@ -1,11 +1,14 @@
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Account.UpdateUsername
 {
-    public class UpdateUsernameHandler : IUpdateUsernameHandler
+    public class UpdateUsernameHandler(IAccountRepository accountRepository) : IUpdateUsernameHandler
     {
-        public Task<AccountResponse> Handle(UpdateUsernameRequest request, CancellationToken cancellationToken)
+        public async Task<AccountResponse> Handle(UpdateUsernameRequest request, CancellationToken cancellationToken)
         {
+            await accountRepository.FindAsync(request.AccountId, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
