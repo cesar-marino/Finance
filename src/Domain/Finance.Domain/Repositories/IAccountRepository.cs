@@ -7,5 +7,6 @@ namespace Finance.Domain.Repositories
     {
         Task<bool> CheckEmailAsync(string email, CancellationToken cancellationToken = default);
         Task<bool> CheckUsernameAsync(string email, CancellationToken cancellationToken = default);
+        Task<AccountEntity> FindByUsernameAsync(string username, CancellationToken cancellationToken = default);
     }
 }
