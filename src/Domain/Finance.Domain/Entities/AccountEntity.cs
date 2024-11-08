@@ -71,5 +71,11 @@ namespace Finance.Domain.Entities
             EmailConfirmed = false;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void ChangeUsername(string username)
+        {
+            Username = username;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

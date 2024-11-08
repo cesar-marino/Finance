@@ -11,11 +11,11 @@ namespace Finance.Application.UseCases.Account.UpdateUsername
         public async Task<AccountResponse> Handle(UpdateUsernameRequest request, CancellationToken cancellationToken)
         {
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
+            account.ChangeUsername(request.Username);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
