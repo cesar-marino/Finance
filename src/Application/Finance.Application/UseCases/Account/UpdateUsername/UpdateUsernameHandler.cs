@@ -10,6 +10,8 @@ namespace Finance.Application.UseCases.Account.UpdateUsername
     {
         public async Task<AccountResponse> Handle(UpdateUsernameRequest request, CancellationToken cancellationToken)
         {
+            await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
+
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
             account.ChangeUsername(request.Username);
 

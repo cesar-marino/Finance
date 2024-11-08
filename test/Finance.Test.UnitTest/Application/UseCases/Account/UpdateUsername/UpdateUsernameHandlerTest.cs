@@ -26,6 +26,24 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
                 unitOfWork: _unitOfWork.Object);
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckUsernameAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - UpdateUsername")]
+        public async Task ShouldRethrowSameExceptionThatCheckUsernameAsyncThrows()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateUsernameRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
         [Trait("Unit/UseCase", "Account - UpdateUsername")]
         public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
