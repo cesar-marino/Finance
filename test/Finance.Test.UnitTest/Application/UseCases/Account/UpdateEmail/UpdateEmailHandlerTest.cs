@@ -26,6 +26,24 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckEmailAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - UpdateEmail")]
+        public async Task ShouldRethrowSameExceptionThatCheckEmailAsyncThrows()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateEmailRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
         [Trait("Unit/UseCase", "Account - UpdateEmail")]
         public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()

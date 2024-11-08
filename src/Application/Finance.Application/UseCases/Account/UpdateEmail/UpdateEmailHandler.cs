@@ -10,6 +10,8 @@ namespace Finance.Application.UseCases.Account.UpdateEmail
     {
         public async Task<AccountResponse> Handle(UpdateEmailRequest request, CancellationToken cancellationToken)
         {
+            await accountRepository.CheckEmailAsync(request.Email, cancellationToken);
+
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
             account.ChangeEmail(request.Email);
 
