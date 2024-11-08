@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Account.UpdateEmail;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,13 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
         private readonly UpdateEmailHandlerTestFixture _fixture;
         private readonly UpdateEmailHandler _sut;
         private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public UpdateEmailHandlerTest(UpdateEmailHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _accountRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(accountRepository: _accountRepositoryMock.Object);
+            _sut = new(
+                accountRepository: _accountRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -54,6 +59,29 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<AccountEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateEmailRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - UpdateEmail")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeUpdateEmailRequest();
