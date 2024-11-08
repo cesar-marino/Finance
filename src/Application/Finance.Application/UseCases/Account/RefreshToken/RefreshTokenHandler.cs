@@ -15,13 +15,14 @@ namespace Finance.Application.UseCases.Account.RefreshToken
             var username = await tokenService.GetUsernameFromTokenAsync(request.AccessToken, cancellationToken);
             var account = await accountRepository.FindByUsernameAsync(username, cancellationToken);
 
-            await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
-            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            var accessToken = await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+
+            account.ChangeTokens(accessToken, refreshToken);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
