@@ -91,5 +91,32 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked))]
+        [Trait("Unit/UseCase", "Account - RevokeAccess")]
+        public async Task ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            var request = _fixture.MakeRevokeAccessRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccessToken.Should().BeNull();
+            response.AccountId.Should().Be(account.Id);
+            response.Active.Should().Be(account.Active);
+            response.CreatdAt.Should().Be(account.CreatedAt);
+            response.Email.Should().Be(account.Email);
+            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
+            response.Phone.Should().Be(account.Phone);
+            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.RefreshToken.Should().BeNull();
+            response.Role.Should().Be(account.Role);
+            response.Username.Should().Be(account.Username);
+        }
     }
 }

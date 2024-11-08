@@ -44,6 +44,8 @@ namespace Finance.Domain.Entities
             bool phoneConfirmed,
             string password,
             Role role,
+            AccountToken accessToken,
+            AccountToken refreshToken,
             DateTime createdAt,
             DateTime updatedAt) : base(accountId, createdAt, updatedAt)
         {
@@ -55,6 +57,8 @@ namespace Finance.Domain.Entities
             PhoneConfirmed = phoneConfirmed;
             Password = password;
             Role = role;
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
         }
 
         public void ChangeTokens(
@@ -87,6 +91,13 @@ namespace Finance.Domain.Entities
         public void Enable()
         {
             Active = true;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void RemoveTokens()
+        {
+            AccessToken = null;
+            RefreshToken = null;
             UpdatedAt = DateTime.UtcNow;
         }
     }

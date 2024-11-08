@@ -73,6 +73,8 @@ namespace Finance.Test.UnitTest.Commons
                 phoneConfirmed: phoneConfirmed,
                 password: Faker.Internet.Password(),
                 role: role,
+                accessToken: new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
+                refreshToken: new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
                 createdAt: Faker.Date.Past(),
                 updatedAt: Faker.Date.Past());
     }
