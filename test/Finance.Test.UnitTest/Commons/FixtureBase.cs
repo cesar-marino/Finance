@@ -59,13 +59,21 @@ namespace Finance.Test.UnitTest.Commons
             value: Faker.Random.String(50),
             expiresIn: Faker.Date.Future());
 
-        // public AccountEntity MakeAccountEntity(bool active = true) => new(
-        //     accountId: Faker.Random.Guid(),
-        //     active: active,
-        //     username: Faker.Internet.UserName(),
-        //     email: Faker.Internet.Email(),
-        //     password: Faker.Internet.Password(),
-        //     createdAt: Faker.Date.Past(),
-        //     updatedAt: Faker.Date.Past());
+        public AccountEntity MakeAccountEntity(
+            bool active = true,
+            bool emailConfirmed = false,
+            bool phoneConfirmed = false,
+            Role role = Role.User) => new(
+                accountId: Faker.Random.Guid(),
+                active: active,
+                username: Faker.Internet.UserName(),
+                email: Faker.Internet.Email(),
+                emailConfirmed: emailConfirmed,
+                phone: Faker.Phone.PhoneNumber(),
+                phoneConfirmed: phoneConfirmed,
+                password: Faker.Internet.Password(),
+                role: role,
+                createdAt: Faker.Date.Past(),
+                updatedAt: Faker.Date.Past());
     }
 }

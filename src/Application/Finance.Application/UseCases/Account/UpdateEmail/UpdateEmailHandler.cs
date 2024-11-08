@@ -7,7 +7,9 @@ namespace Finance.Application.UseCases.Account.UpdateEmail
     {
         public async Task<AccountResponse> Handle(UpdateEmailRequest request, CancellationToken cancellationToken)
         {
-            await accountRepository.FindAsync(request.AccountId, cancellationToken);
+            var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
+
+            await accountRepository.UpdateAsync(account, cancellationToken);
 
             throw new NotImplementedException();
         }
