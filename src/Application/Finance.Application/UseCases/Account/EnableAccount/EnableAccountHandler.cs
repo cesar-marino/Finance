@@ -1,11 +1,14 @@
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Account.EnableAccount
 {
-    public class EnableAccountHandler : IEnableAccountHandler
+    public class EnableAccountHandler(IAccountRepository accountRepository) : IEnableAccountHandler
     {
-        public Task<AccountResponse> Handle(EnableAccountRequest request, CancellationToken cancellationToken)
+        public async Task<AccountResponse> Handle(EnableAccountRequest request, CancellationToken cancellationToken)
         {
+            await accountRepository.FindAsync(request.AccountId, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
