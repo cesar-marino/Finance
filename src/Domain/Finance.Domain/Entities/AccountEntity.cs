@@ -64,5 +64,12 @@ namespace Finance.Domain.Entities
             AccessToken = accessToken;
             RefreshToken = refreshToken;
         }
+
+        public void ChangeEmail(string email)
+        {
+            Email = email;
+            EmailConfirmed = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

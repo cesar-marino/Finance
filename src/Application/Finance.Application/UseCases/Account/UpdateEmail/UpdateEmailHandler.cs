@@ -11,11 +11,11 @@ namespace Finance.Application.UseCases.Account.UpdateEmail
         public async Task<AccountResponse> Handle(UpdateEmailRequest request, CancellationToken cancellationToken)
         {
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
+            account.ChangeEmail(request.Email);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
