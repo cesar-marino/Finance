@@ -14,6 +14,7 @@ namespace Finance.Application.UseCases.Account.RefreshToken
             var account = await accountRepository.FindByUsernameAsync(username, cancellationToken);
 
             await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
