@@ -44,10 +44,34 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
                 .WithMessage("An unexpected error occurred");
         }
 
+        [Fact(DisplayName = nameof(ShouldThrowEmailInUseExceptionIfCheckEmailAsyncReturnsTrue))]
+        [Trait("Unit/UseCase", "Account - UpdateEmail")]
+        public async Task ShouldThrowEmailInUseExceptionIfCheckEmailAsyncReturnsTrue()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeUpdateEmailRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<EmailInUseException>()
+                .Where(x => x.Code == "email-in-use")
+                .WithMessage("Email is already in use");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
         [Trait("Unit/UseCase", "Account - UpdateEmail")]
         public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -66,6 +90,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
         [Trait("Unit/UseCase", "Account - UpdateEmail")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
@@ -91,6 +121,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
         [Trait("Unit/UseCase", "Account - UpdateEmail")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
@@ -114,6 +150,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateEmail
         [Trait("Unit/UseCase", "Account - UpdateEmail")]
         public async Task ShouldReturnTheCorrectResponseIfAccountIsUpdatedSuccessfully()
         {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             var account = _fixture.MakeAccountEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
