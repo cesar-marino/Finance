@@ -21,6 +21,8 @@ namespace Finance.Application.UseCases.Account.Authentication
             await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
             await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
+            await accountRepository.UpdateAsync(account, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
