@@ -14,12 +14,12 @@ namespace Finance.Application.UseCases.Account.RevokeAllAccess
 
             foreach (var account in accounts)
             {
+                account.RevokeTokens();
                 await accountRepository.UpdateAsync(account, cancellationToken);
             }
 
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            await Task.CompletedTask;
         }
     }
 }

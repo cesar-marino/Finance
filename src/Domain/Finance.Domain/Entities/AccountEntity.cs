@@ -94,7 +94,7 @@ namespace Finance.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void RemoveTokens()
+        public void RevokeTokens()
         {
             AccessToken = null;
             RefreshToken = null;

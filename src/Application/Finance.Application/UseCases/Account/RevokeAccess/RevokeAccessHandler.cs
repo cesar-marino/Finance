@@ -11,7 +11,7 @@ namespace Finance.Application.UseCases.Account.RevokeAccess
         public async Task<AccountResponse> Handle(RevokeAccessRequest request, CancellationToken cancellationToken)
         {
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
-            account.RemoveTokens();
+            account.RevokeTokens();
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);

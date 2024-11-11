@@ -28,7 +28,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows))]
         [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
-        public async void ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows()
         {
             _accountRepositoryMock
                 .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
@@ -44,7 +44,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
         [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
-        public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
             var accounts = _fixture.MakeAccountList();
             _accountRepositoryMock
@@ -67,7 +67,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
         [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
-        public async void ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
             var accounts = _fixture.MakeAccountList();
             _accountRepositoryMock
@@ -84,6 +84,25 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccessAreSuccessfullyRevoked))]
+        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
+        public async Task ShouldReturnTheCorrectResponseIfAccessAreSuccessfullyRevoked()
+        {
+            var accounts = _fixture.MakeAccountList();
+            _accountRepositoryMock
+                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accounts);
+
+            var request = _fixture.MakeRevokeAllAccessRequest();
+            await _sut.Handle(request, _fixture.CancellationToken);
+
+            accounts.ToList().ForEach((account) =>
+            {
+                account.AccessToken.Should().BeNull();
+                account.RefreshToken.Should().BeNull();
+            });
         }
     }
 }
