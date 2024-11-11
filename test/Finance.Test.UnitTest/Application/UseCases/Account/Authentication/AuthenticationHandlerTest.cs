@@ -284,46 +284,54 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .WithMessage("An unexpected error occurred");
         }
 
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated))]
+        [Trait("Unit/UseCase", "Account - Authentication")]
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindByEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
 
+            _encryptionServiceMock
+               .Setup(x => x.VerifyAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(true);
 
-        // [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated))]
-        // [Trait("Unit/UseCase", "Account - Authentication")]
-        // public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated()
-        // {
-        //     var account = _fixture.MakeAccountEntity();
-        //     _accountRepositoryMock
-        //         .Setup(x => x.FindByEmailAsync(
-        //             It.IsAny<string>(),
-        //             It.IsAny<CancellationToken>()))
-        //         .ReturnsAsync(account);
+            var accessToken = _fixture.MakeAccountToken();
+            _tokenServiceMock
+                .Setup(x => x.GenerateAccessTokenAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accessToken);
 
-        //     _encryptionServiceMock
-        //        .Setup(x => x.VerifyAsync(
-        //            It.IsAny<string>(),
-        //            It.IsAny<string>(),
-        //            It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(true);
+            var refreshToken = _fixture.MakeAccountToken();
+            _tokenServiceMock
+                .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(refreshToken);
 
-        //     var accessToken = _fixture.MakeAccountToken();
-        //     _tokenServiceMock
-        //         .Setup(x => x.GenerateAccessTokenAsync(
-        //             It.IsAny<AccountEntity>(),
-        //             It.IsAny<CancellationToken>()))
-        //         .ReturnsAsync(accessToken);
+            var request = _fixture.MakeAuthenticationRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-        //     var refreshToken = _fixture.MakeAccountToken();
-        //     _tokenServiceMock
-        //         .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
-        //         .ReturnsAsync(refreshToken);
-
-        //     var request = _fixture.MakeAuthenticationRequest();
-        //     var response = await _sut.Handle(request, _fixture.CancellationToken);
-
-        //     response.AccessToken.Should().NotBeNull();
-        //     response.AccessToken?.Value.Should().Be(accessToken.Value);
-        //     response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
-        //     response.AccountId.Should().Be(account.Id);
-        //     response.Active.Should().BeTrue();
-        // }
+            response.AccessToken.Should().NotBeNull();
+            response.AccessToken?.Value.Should().Be(accessToken.Value);
+            response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
+            response.AccountId.Should().Be(account.Id);
+            response.Active.Should().BeTrue();
+            response.CreatdAt.Should().Be(account.CreatedAt);
+            response.Email.Should().Be(account.Email);
+            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
+            response.Phone.Should().Be(account.Phone);
+            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.RefreshToken.Should().NotBeNull();
+            response.RefreshToken?.Value.Should().Be(refreshToken.Value);
+            response.RefreshToken?.ExpiresIn.Should().Be(refreshToken.ExpiresIn);
+            response.Role.Should().Be(account.Role);
+            response.Username.Should().Be(account.Username);
+        }
     }
 }

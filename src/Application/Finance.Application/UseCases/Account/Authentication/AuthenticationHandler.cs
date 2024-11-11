@@ -23,13 +23,13 @@ namespace Finance.Application.UseCases.Account.Authentication
             if (!account.Active)
                 throw new DisableAccountException();
 
-            await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
-            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            var accessToken = await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            account.ChangeTokens(accessToken, refreshToken);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
