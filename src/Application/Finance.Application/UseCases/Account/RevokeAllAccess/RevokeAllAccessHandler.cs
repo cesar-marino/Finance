@@ -1,9 +1,12 @@
 
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Account.RevokeAllAccess
 {
-    public class RevokeAllAccessHandler(IAccountRepository accountRepository) : IRevokeAllAccessHandler
+    public class RevokeAllAccessHandler(
+            IAccountRepository accountRepository,
+            IUnitOfWork unitOfWork) : IRevokeAllAccessHandler
     {
         public async Task Handle(RevokeAllAccessRequest request, CancellationToken cancellationToken)
         {
@@ -13,6 +16,8 @@ namespace Finance.Application.UseCases.Account.RevokeAllAccess
             {
                 await accountRepository.UpdateAsync(account, cancellationToken);
             }
+
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
