@@ -154,7 +154,6 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .WithMessage("An unexpected error occurred");
         }
 
-
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
         [Trait("Unit/UseCase", "Account - CreateAccount")]
         public async Task ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
@@ -170,6 +169,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
 
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
@@ -200,6 +206,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
 
             var accessToken = _fixture.MakeAccountToken();
             _tokenServiceMock
@@ -235,6 +248,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
 
             var accessToken = _fixture.MakeAccountToken();
             _tokenServiceMock
@@ -278,6 +298,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
+
             var accessToken = _fixture.MakeAccountToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
@@ -317,6 +344,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
 
             var accessToken = _fixture.MakeAccountToken();
             _tokenServiceMock

@@ -23,12 +23,14 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             if (usernameInUse)
                 throw new UsernameInUseException();
 
-            await encryptionService.EcnryptAsync(request.Password, cancellationToken);
+            var password = await encryptionService.EcnryptAsync(
+                request.Password,
+                cancellationToken);
 
             var account = new AccountEntity(
                 username: request.Username,
                 email: request.Email,
-                password: request.Password,
+                password: password,
                 phone: request.Phone);
 
             var accessToken = await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
