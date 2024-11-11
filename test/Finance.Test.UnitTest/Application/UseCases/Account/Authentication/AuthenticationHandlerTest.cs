@@ -103,6 +103,32 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .WithMessage("Incorrect password");
         }
 
+        [Fact(DisplayName = nameof(ShouldThrowDisabledAccountExceptionIfAccountIsDisabled))]
+        [Trait("Unit/UseCase", "Account - Authentication")]
+        public async Task ShouldThrowDisabledAccountExceptionIfAccountIsDisabled()
+        {
+            var account = _fixture.MakeAccountEntity(active: false);
+            _accountRepositoryMock
+                .Setup(x => x.FindByEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _encryptionServiceMock
+               .Setup(x => x.VerifyAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(true);
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<DisableAccountException>()
+                .Where(x => x.Code == "disable-account")
+                .WithMessage("Disable account");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
         [Trait("Unit/UseCase", "Account - Authentication")]
         public async Task ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
@@ -257,5 +283,47 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+
+
+        // [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated))]
+        // [Trait("Unit/UseCase", "Account - Authentication")]
+        // public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated()
+        // {
+        //     var account = _fixture.MakeAccountEntity();
+        //     _accountRepositoryMock
+        //         .Setup(x => x.FindByEmailAsync(
+        //             It.IsAny<string>(),
+        //             It.IsAny<CancellationToken>()))
+        //         .ReturnsAsync(account);
+
+        //     _encryptionServiceMock
+        //        .Setup(x => x.VerifyAsync(
+        //            It.IsAny<string>(),
+        //            It.IsAny<string>(),
+        //            It.IsAny<CancellationToken>()))
+        //        .ReturnsAsync(true);
+
+        //     var accessToken = _fixture.MakeAccountToken();
+        //     _tokenServiceMock
+        //         .Setup(x => x.GenerateAccessTokenAsync(
+        //             It.IsAny<AccountEntity>(),
+        //             It.IsAny<CancellationToken>()))
+        //         .ReturnsAsync(accessToken);
+
+        //     var refreshToken = _fixture.MakeAccountToken();
+        //     _tokenServiceMock
+        //         .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
+        //         .ReturnsAsync(refreshToken);
+
+        //     var request = _fixture.MakeAuthenticationRequest();
+        //     var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+        //     response.AccessToken.Should().NotBeNull();
+        //     response.AccessToken?.Value.Should().Be(accessToken.Value);
+        //     response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
+        //     response.AccountId.Should().Be(account.Id);
+        //     response.Active.Should().BeTrue();
+        // }
     }
 }

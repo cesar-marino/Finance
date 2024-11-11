@@ -20,6 +20,9 @@ namespace Finance.Application.UseCases.Account.Authentication
             if (!passwordIsValid)
                 throw new InvalidPasswordException();
 
+            if (!account.Active)
+                throw new DisableAccountException();
+
             await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
             await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
