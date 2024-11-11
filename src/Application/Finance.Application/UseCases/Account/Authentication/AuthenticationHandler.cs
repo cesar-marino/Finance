@@ -19,6 +19,7 @@ namespace Finance.Application.UseCases.Account.Authentication
                 throw new InvalidPasswordException();
 
             await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
+            await tokenService.GenerateRefreshTokenAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
