@@ -68,5 +68,31 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowInvalidPasswordExceptionIfVerifyAsyncReturnsFalse))]
+        [Trait("Unit/UseCase", "Account - Authentication")]
+        public async Task ShouldThrowInvalidPasswordExceptionIfVerifyAsyncReturnsFalse()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindByEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _encryptionServiceMock
+               .Setup(x => x.VerifyAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(false);
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<InvalidPasswordException>()
+                .Where(x => x.Code == "invalid-password")
+                .WithMessage("Incorrect password");
+        }
     }
 }
