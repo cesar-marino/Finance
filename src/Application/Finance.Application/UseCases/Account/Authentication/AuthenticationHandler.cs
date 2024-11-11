@@ -7,7 +7,8 @@ namespace Finance.Application.UseCases.Account.Authentication
 {
     public class AuthenticationHandler(
         IAccountRepository accountRepository,
-        IEncryptionService encryptionService) : IAuthenticationHandler
+        IEncryptionService encryptionService,
+        ITokenService tokenService) : IAuthenticationHandler
     {
         public async Task<AccountResponse> Handle(AuthenticationRequest request, CancellationToken cancellationToken)
         {
@@ -16,6 +17,8 @@ namespace Finance.Application.UseCases.Account.Authentication
 
             if (!passwordIsValid)
                 throw new InvalidPasswordException();
+
+            await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
 
             throw new NotImplementedException();
         }

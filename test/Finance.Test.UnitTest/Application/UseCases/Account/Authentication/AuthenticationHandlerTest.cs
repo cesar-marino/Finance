@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.Authentication;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -13,16 +14,19 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         private readonly AuthenticationHandler _sut;
         private readonly Mock<IAccountRepository> _accountRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
 
         public AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _accountRepositoryMock = new();
             _encryptionServiceMock = new();
+            _tokenServiceMock = new();
 
             _sut = new(
                 accountRepository: _accountRepositoryMock.Object,
-                encryptionService: _encryptionServiceMock.Object);
+                encryptionService: _encryptionServiceMock.Object,
+                tokenService: _tokenServiceMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByEmailAsyncThrows))]
@@ -93,6 +97,38 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
             await act.Should().ThrowExactlyAsync<InvalidPasswordException>()
                 .Where(x => x.Code == "invalid-password")
                 .WithMessage("Incorrect password");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - Authentication")]
+        public async Task ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindByEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _encryptionServiceMock
+               .Setup(x => x.VerifyAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(true);
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateAccessTokenAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
