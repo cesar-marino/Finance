@@ -9,6 +9,7 @@ namespace Finance.Application.UseCases.Account.CreateAccount
 {
     public class CreateAccountHandler(
             IAccountRepository accountRepository,
+            IEncryptionService encryptionService,
             ITokenService tokenService,
             IUnitOfWork unitOfWork) : ICreateAccountHandler
     {
@@ -21,6 +22,8 @@ namespace Finance.Application.UseCases.Account.CreateAccount
             var usernameInUse = await accountRepository.CheckUsernameAsync(request.Username, cancellationToken);
             if (usernameInUse)
                 throw new UsernameInUseException();
+
+            await encryptionService.EcnryptAsync(request.Password, cancellationToken);
 
             var account = new AccountEntity(
                 username: request.Username,

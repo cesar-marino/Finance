@@ -15,6 +15,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
         private readonly CreateAccountHandlerTestFixture _fixture;
         private readonly CreateAccountHandler _sut;
         private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
@@ -24,9 +25,11 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
             _accountRepositoryMock = new();
             _tokenServiceMock = new();
             _unitOfWorkMock = new();
+            _encryptionServiceMock = new();
 
             _sut = new(
                 accountRepository: _accountRepositoryMock.Object,
+                encryptionService: _encryptionServiceMock.Object,
                 tokenService: _tokenServiceMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
@@ -107,6 +110,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
             var request = _fixture.MakeCreateAccountRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
@@ -114,6 +123,37 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
                 .Where(x => x.Code == "username-in-use")
                 .WithMessage("Username is already in use");
         }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatEncrypAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - CreateAccount")]
+        public async Task ShouldRethrowSameExceptionThatEncrypAsyncThrows()
+        {
+            _accountRepositoryMock
+                .Setup(x => x.CheckEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _accountRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateAccountRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
         [Trait("Unit/UseCase", "Account - CreateAccount")]
