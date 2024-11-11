@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Account.RevokeAllAccess;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -27,6 +28,29 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
         {
             _accountRepositoryMock
                 .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeRevokeAllAccessRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
+        public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var accounts = _fixture.MakeAccountList();
+            _accountRepositoryMock
+                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accounts);
+
+            _accountRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<AccountEntity>(),
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeRevokeAllAccessRequest();
