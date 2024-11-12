@@ -13,7 +13,7 @@ namespace Finance.Application.UseCases.Account.Commons
         bool phoneConfirmed,
         TokenResponse? accessToken,
         TokenResponse? refreshToken,
-        Role role,
+        Roles role,
         DateTime createdAt,
         DateTime updatedAt)
     {
@@ -26,7 +26,7 @@ namespace Finance.Application.UseCases.Account.Commons
         public bool PhoneConfirmed { get; } = phoneConfirmed;
         public TokenResponse? AccessToken { get; } = accessToken;
         public TokenResponse? RefreshToken { get; } = refreshToken;
-        public Role Role { get; } = role;
+        public Roles Role { get; } = role;
         public DateTime CreatdAt { get; } = createdAt;
         public DateTime UpdatedAt { get; } = updatedAt;
 

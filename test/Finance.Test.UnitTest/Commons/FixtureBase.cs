@@ -63,7 +63,7 @@ namespace Finance.Test.UnitTest.Commons
             bool active = true,
             bool emailConfirmed = false,
             bool phoneConfirmed = false,
-            Role role = Role.User) => new(
+            Roles role = Roles.User) => new(
                 accountId: Faker.Random.Guid(),
                 active: active,
                 username: Faker.Internet.UserName(),

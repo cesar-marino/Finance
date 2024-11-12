@@ -1,6 +1,6 @@
 namespace Finance.Domain.Enums
 {
-    public enum Role
+    public enum Roles
     {
         User,
         Subscriber,

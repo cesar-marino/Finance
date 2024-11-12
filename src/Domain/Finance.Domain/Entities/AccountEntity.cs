@@ -15,14 +15,14 @@ namespace Finance.Domain.Entities
         public string Password { get; private set; }
         public AccountToken? AccessToken { get; private set; }
         public AccountToken? RefreshToken { get; private set; }
-        public Role Role { get; private set; }
+        public Roles Role { get; private set; }
 
         public AccountEntity(
             string username,
             string email,
             string password,
             string? phone = null,
-            Role? role = null)
+            Roles? role = null)
         {
             Active = true;
             Username = username;
@@ -31,7 +31,7 @@ namespace Finance.Domain.Entities
             Phone = phone;
             PhoneConfirmed = false;
             Password = password;
-            Role = role ?? Role.User;
+            Role = role ?? Roles.User;
         }
 
         public AccountEntity(
@@ -43,9 +43,9 @@ namespace Finance.Domain.Entities
             string? phone,
             bool phoneConfirmed,
             string password,
-            Role role,
-            AccountToken accessToken,
-            AccountToken refreshToken,
+            Roles role,
+            AccountToken? accessToken,
+            AccountToken? refreshToken,
             DateTime createdAt,
             DateTime updatedAt) : base(accountId, createdAt, updatedAt)
         {

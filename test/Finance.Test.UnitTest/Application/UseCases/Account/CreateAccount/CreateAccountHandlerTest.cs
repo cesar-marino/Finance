@@ -378,7 +378,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
             response.RefreshToken.Should().NotBeNull();
             response.RefreshToken?.Value.Should().Be(refreshToken.Value);
             response.RefreshToken?.ExpiresIn.Should().Be(refreshToken.ExpiresIn);
-            response.Role.Should().Be(Role.User);
+            response.Role.Should().Be(Roles.User);
             response.Username.Should().Be(request.Username);
         }
     }
