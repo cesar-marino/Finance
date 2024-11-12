@@ -20,6 +20,8 @@ namespace Finance.Application.UseCases.Account.UpdatePassword
             if (!passwordIsValid)
                 throw new InvalidPasswordException();
 
+            _ = await encryptionService.EcnryptAsync(request.NewPassword, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
