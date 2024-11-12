@@ -207,5 +207,50 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfPasswordIsSuccessfullyUpdated))]
+        [Trait("Unit/UseCase", "Account - UpdatePassword")]
+        public async void ShouldReturnTheCorrectResponseIfPasswordIsSuccessfullyUpdated()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _encryptionServiceMock
+                .Setup(x => x.VerifyAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
+
+            var request = _fixture.MakeUpdatePasswordRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            account.Password.Should().Be(password);
+
+            response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
+            response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
+            response.AccountId.Should().Be(account.Id);
+            response.Active.Should().Be(account.Active);
+            response.CreatdAt.Should().Be(account.CreatedAt);
+            response.Email.Should().Be(account.Email);
+            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
+            response.Phone.Should().Be(account.Phone);
+            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.RefreshToken?.Value.Should().Be(account.RefreshToken?.Value);
+            response.RefreshToken?.ExpiresIn.Should().Be(account.RefreshToken?.ExpiresIn);
+            response.Role.Should().Be(account.Role);
+            response.Username.Should().Be(account.Username);
+        }
     }
 }

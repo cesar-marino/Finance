@@ -100,5 +100,11 @@ namespace Finance.Domain.Entities
             RefreshToken = null;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void ChangePassword(string password)
+        {
+            Password = password;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

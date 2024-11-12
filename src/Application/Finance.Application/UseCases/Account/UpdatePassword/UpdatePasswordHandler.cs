@@ -22,12 +22,12 @@ namespace Finance.Application.UseCases.Account.UpdatePassword
             if (!passwordIsValid)
                 throw new InvalidPasswordException();
 
-            _ = await encryptionService.EcnryptAsync(request.NewPassword, cancellationToken);
+            var password = await encryptionService.EcnryptAsync(request.NewPassword, cancellationToken);
+            account.ChangePassword(password);
 
             await accountRepository.UpdateAsync(account, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return AccountResponse.FromEntity(account);
         }
     }
 }
