@@ -8,6 +8,7 @@ namespace Finance.Infrastructure.Database.Contexts
 {
     public class FinanceContext(DbContextOptions<FinanceContext> options) : DbContext(options), IUnitOfWork
     {
+        public DbSet<AccountModel> Accounts { get; private set; }
         public DbSet<TagModel> Tags { get; private set; }
         public DbSet<CategoryModel> Categories { get; private set; }
         public DbSet<LimitModel> Limits { get; private set; }
