@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.UpdatePassword;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -116,6 +117,45 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
             _encryptionServiceMock
                 .Setup(x => x.EcnryptAsync(
                     It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdatePasswordRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "Account - UpdatePassword")]
+        public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            _encryptionServiceMock
+                .Setup(x => x.VerifyAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EcnryptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
+
+            _accountRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<AccountEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 

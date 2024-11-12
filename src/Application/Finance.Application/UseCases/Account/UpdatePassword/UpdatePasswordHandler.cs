@@ -22,6 +22,8 @@ namespace Finance.Application.UseCases.Account.UpdatePassword
 
             _ = await encryptionService.EcnryptAsync(request.NewPassword, cancellationToken);
 
+            await accountRepository.UpdateAsync(account, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
