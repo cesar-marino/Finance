@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Account.UpdatePassword
@@ -11,7 +12,13 @@ namespace Finance.Application.UseCases.Account.UpdatePassword
         public async Task<AccountResponse> Handle(UpdatePasswordRequest request, CancellationToken cancellationToken)
         {
             var account = await accountRepository.FindAsync(request.AccountId, cancellationToken);
-            await encryptionService.VerifyAsync(request.CurrentPassword, account.Password, cancellationToken);
+            var passwordIsValid = await encryptionService.VerifyAsync(
+                request.CurrentPassword,
+                account.Password,
+                cancellationToken);
+
+            if (!passwordIsValid)
+                throw new InvalidPasswordException();
 
             throw new NotImplementedException();
         }
