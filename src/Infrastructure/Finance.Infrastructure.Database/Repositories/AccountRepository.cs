@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;

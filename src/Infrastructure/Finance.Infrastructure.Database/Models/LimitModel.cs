@@ -1,4 +1,6 @@
-﻿namespace Finance.Infrastructure.Database.Models
+﻿using Finance.Domain.Entities;
+
+namespace Finance.Infrastructure.Database.Models
 {
     public class LimitModel(
         Guid accountId,
@@ -20,5 +22,23 @@
 
         public Guid CategoryId { get; set; } = categoryId;
         public virtual CategoryModel? Category { get; set; }
+
+        public static LimitModel FromEntity(LimitEntity limit) => new(
+            accountId: limit.AccountId,
+            limitId: limit.Id,
+            categoryId: limit.CategoryId,
+            name: limit.Name,
+            limitAmount: limit.LimitAmount,
+            createdAt: limit.CreatedAt,
+            updatedAt: limit.UpdatedAt);
+
+        public LimitEntity ToEntity() => new(
+            limitId: LimitId,
+            accountId: AccountId,
+            categoryId: CategoryId,
+            name: Name,
+            limitAmount: LimitAmount,
+            createdAt: CreatedAt,
+            updatedAt: UpdatedAt);
     }
 }
