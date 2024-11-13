@@ -1,5 +1,6 @@
 using Finance.Application.Services;
 using Finance.Application.UseCases.Account.Commons;
+using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
 
@@ -14,6 +15,10 @@ namespace Finance.Application.UseCases.Account.RefreshToken
         {
             var username = await tokenService.GetUsernameFromTokenAsync(request.AccessToken, cancellationToken);
             var account = await accountRepository.FindByUsernameAsync(username, cancellationToken);
+
+            if (account.RefreshToken?.Value != request.RefreshToken
+                || account.RefreshToken.ExpiresIn < DateTime.UtcNow)
+                throw new UnauthorizedException();
 
             var accessToken = await tokenService.GenerateAccessTokenAsync(account, cancellationToken);
             var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);

@@ -79,10 +79,11 @@ namespace Finance.Presentation.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Refresh(
-            [FromHeader] string token,
+            [FromHeader] string accessToken,
+            [FromHeader] string refreshToken,
             CancellationToken cancellationToken = default)
         {
-            var request = new RefreshTokenRequest(accessToken: token);
+            var request = new RefreshTokenRequest(accessToken: accessToken, refreshToken: refreshToken);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }

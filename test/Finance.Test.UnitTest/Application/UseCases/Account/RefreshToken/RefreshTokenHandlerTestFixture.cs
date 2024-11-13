@@ -5,6 +5,8 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
 {
     public class RefreshTokenHandlerTestFixture : FixtureBase
     {
-        public RefreshTokenRequest MakeRefreshTokenRequest() => new(accessToken: Faker.Random.Guid().ToString());
+        public RefreshTokenRequest MakeRefreshTokenRequest(string? refreshToken = null) => new(
+            accessToken: Faker.Random.Guid().ToString(),
+            refreshToken: refreshToken ?? Faker.Random.Guid().ToString());
     }
 }

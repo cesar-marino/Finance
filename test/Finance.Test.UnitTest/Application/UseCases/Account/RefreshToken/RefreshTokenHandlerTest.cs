@@ -73,7 +73,37 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                 .WithMessage("Account not found");
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldThrowUnauthorizedExceptionIfRefreshTokenIsInvalid))]
+        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        public async Task ShouldThrowUnauthorizedExceptionIfRefreshTokenIsInvalid()
+        {
+            var refreshToken = _fixture.MakeAccountToken(
+                value: _fixture.Faker.Random.Guid().ToString(),
+                expiresIn: _fixture.Faker.Date.Past());
+
+            var username = _fixture.Faker.Internet.UserName();
+            _tokenServiceMock
+                .Setup(x => x.GetUsernameFromTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(username);
+
+            var account = _fixture.MakeAccountEntity(refreshToken: refreshToken);
+            _accountRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            var request = _fixture.MakeRefreshTokenRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnauthorizedException>()
+                .Where(x => x.Code == "unauthorized")
+                .WithMessage("Unauthorized access");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
         [Trait("Unit/UseCase", "Account - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
         {
@@ -97,7 +127,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest();
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -134,7 +164,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest();
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -178,7 +208,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest();
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -220,7 +250,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest();
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -258,7 +288,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
 
-            var request = _fixture.MakeRefreshTokenRequest();
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.AccessToken.Should().NotBeNull();

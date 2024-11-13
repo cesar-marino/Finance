@@ -55,15 +55,18 @@ namespace Finance.Test.UnitTest.Commons
             createdAt: Faker.Date.Past(),
             updatedAt: Faker.Date.Past());
 
-        public AccountToken MakeAccountToken() => new(
-            value: Faker.Random.String(50),
-            expiresIn: Faker.Date.Future());
+        public AccountToken MakeAccountToken(
+            string? value = null,
+            DateTime? expiresIn = null) => new(
+                value: value ?? Faker.Random.String(50),
+                expiresIn: expiresIn ?? Faker.Date.Future());
 
         public AccountEntity MakeAccountEntity(
             bool active = true,
             bool emailConfirmed = false,
             bool phoneConfirmed = false,
-            Roles role = Roles.User) => new(
+            Roles role = Roles.User,
+            AccountToken? refreshToken = null) => new(
                 accountId: Faker.Random.Guid(),
                 active: active,
                 username: Faker.Internet.UserName(),
@@ -74,7 +77,7 @@ namespace Finance.Test.UnitTest.Commons
                 password: Faker.Internet.Password(),
                 role: role,
                 accessToken: new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
-                refreshToken: new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
+                refreshToken: refreshToken ?? new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
                 createdAt: Faker.Date.Past(),
                 updatedAt: Faker.Date.Past());
     }
