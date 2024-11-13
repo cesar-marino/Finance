@@ -33,6 +33,7 @@ builder.Services.AddDbContext<FinanceContext>(options =>
 });
 
 builder.Services.AddScoped<IUnitOfWork, FinanceContext>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ILimitRepository, LimitRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
