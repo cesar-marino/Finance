@@ -4,6 +4,11 @@ using Finance.Application.UseCases.Account.CreateAccount;
 using Finance.Application.UseCases.Account.DisableAccount;
 using Finance.Application.UseCases.Account.EnableAccount;
 using Finance.Application.UseCases.Account.RefreshToken;
+using Finance.Application.UseCases.Account.RevokeAccess;
+using Finance.Application.UseCases.Account.RevokeAllAccess;
+using Finance.Application.UseCases.Account.UpdateEmail;
+using Finance.Application.UseCases.Account.UpdatePassword;
+using Finance.Application.UseCases.Account.UpdateUsername;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -78,6 +83,73 @@ namespace Finance.Presentation.API.Controllers
             CancellationToken cancellationToken = default)
         {
             var request = new RefreshTokenRequest(accessToken: token);
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut("{accountId:Guid}/revoke")]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Revoke(
+            [FromRoute] Guid accountId,
+            CancellationToken cancellationToken = default)
+        {
+            var request = new RevokeAccessRequest(accountId: accountId);
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RevokeAll(
+            [FromRoute] Guid accountId,
+            CancellationToken cancellationToken = default)
+        {
+            var request = new RevokeAllAccessRequest();
+            await mediator.Send(request, cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateEmail(
+            [FromBody] UpdateEmailRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdatePassword(
+            [FromBody] UpdatePasswordRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateUsername(
+            [FromBody] UpdateUsernameRequest request,
+            CancellationToken cancellationToken = default)
+        {
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
