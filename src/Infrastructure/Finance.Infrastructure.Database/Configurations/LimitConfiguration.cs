@@ -32,7 +32,7 @@ namespace Finance.Infrastructure.Database.Configurations
 
             builder.HasOne(x => x.Category)
                 .WithMany(a => a.Limits)
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => new { x.AccountId, x.CategoryId });
 
             builder.Property(x => x.Name)
                 .HasColumnName("name")
