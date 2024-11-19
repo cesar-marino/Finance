@@ -1,7 +1,9 @@
 using Bogus;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Models;
+using Finance.Infrastructure.Services.Token;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Finance.Test.IntegrationTest.Commons
 {
@@ -13,6 +15,20 @@ namespace Finance.Test.IntegrationTest.Commons
         public FinanceContext MakeFinanceContext() => new(
             new DbContextOptionsBuilder<FinanceContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+
+        public IConfiguration MakeConfiguration()
+        {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                { "ArrayKeySample:0", "valueA" },
+                { "ArrayKeySample:1", "valueB" },
+                { "ArrayKeySample:2", "valueC" }
+            };
+
+            return new ConfigurationBuilder()
+                .AddInMemoryCollection(initialData: myConfiguration!)
+                .Build();
+        }
 
         public AccountModel MakeAccountModel(
             Guid? accountId = null,
