@@ -18,7 +18,7 @@ namespace Finance.Presentation.API.Controllers
     [ApiController]
     public class AccountController(IMediator mediator) : Controller
     {
-        [HttpPost]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
@@ -32,7 +32,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
@@ -73,7 +73,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("refresh")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
@@ -102,7 +102,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("revoke_all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RevokeAll(
@@ -114,7 +114,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("update_email")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
@@ -128,7 +128,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("update_password")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
@@ -141,7 +141,7 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("update_username")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
