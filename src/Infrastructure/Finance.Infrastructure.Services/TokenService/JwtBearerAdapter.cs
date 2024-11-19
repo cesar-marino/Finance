@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Finance.Application.Services;
 using Finance.Domain.Entities;
@@ -44,14 +45,58 @@ namespace Finance.Infrastructure.Services.TokenService
             }
         }
 
-        public Task<AccountToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default)
+        public async Task<AccountToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _ = int.TryParse(configuration["JWT:RefreshTokenValidityInMinutes"], out int refreshTokenValidityInMinutes);
+                var refreshTokenExpiration = DateTime.Now.AddMinutes(refreshTokenValidityInMinutes);
+
+                var randomNumber = new byte[64];
+                using var rng = RandomNumberGenerator.Create();
+                rng.GetBytes(randomNumber);
+                return await Task.Run(() => new AccountToken(Convert.ToBase64String(randomNumber), refreshTokenExpiration), cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw new UnexpectedException(innerException: ex);
+            }
         }
 
-        public Task<string> GetUsernameFromTokenAsync(string token, CancellationToken cancellationToken)
+        public async Task<string> GetUsernameFromTokenAsync(string token, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await Task.Run(string () =>
+                {
+                    var tokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]!)),
+                        ValidateLifetime = false
+                    };
+
+                    var principal = new JwtSecurityTokenHandler().ValidateToken(
+                        token,
+                        tokenValidationParameters,
+                        out SecurityToken securityToken);
+
+                    if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                        !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                        StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new SecurityTokenException("Invalid token");
+                    }
+
+                    return principal.Identity?.Name ?? throw new SecurityTokenException("Invalid token");
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new UnexpectedException(innerException: ex);
+            }
         }
     }
 }
