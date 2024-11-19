@@ -19,7 +19,7 @@ namespace Finance.Test.IntegrationTest.Commons
         {
             var myConfiguration = new Dictionary<string, string>
             {
-                { "JWT:SecretKey", "supersecretkey_@123456" },
+                { "JWT:SecretKey", "Minha@Super#Secreta&Chave*Privada!2024" },
                 { "JWT:AccessTokenValidityInMinutes", "1440" },
                 { "JWT:ValidIssuer", "localhost:8080" },
                 { "JWT:ValidAudience", "localhost:8080" },
