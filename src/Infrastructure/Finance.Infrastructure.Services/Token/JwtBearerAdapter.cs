@@ -9,7 +9,7 @@ using Finance.Domain.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Finance.Infrastructure.Services.TokenService
+namespace Finance.Infrastructure.Services.Token
 {
     public class JwtBearerAdapter(IConfiguration configuration) : ITokenService
     {
