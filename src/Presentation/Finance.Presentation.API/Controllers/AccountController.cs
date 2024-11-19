@@ -3,6 +3,7 @@ using Finance.Application.UseCases.Account.Commons;
 using Finance.Application.UseCases.Account.CreateAccount;
 using Finance.Application.UseCases.Account.DisableAccount;
 using Finance.Application.UseCases.Account.EnableAccount;
+using Finance.Application.UseCases.Account.GetCurrentAccount;
 using Finance.Application.UseCases.Account.RefreshToken;
 using Finance.Application.UseCases.Account.RevokeAccess;
 using Finance.Application.UseCases.Account.RevokeAllAccess;
@@ -72,6 +73,20 @@ namespace Finance.Presentation.API.Controllers
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
+
+        [HttpGet("current_account")]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CurrentAccount(
+            [FromHeader] string accessToken,
+            CancellationToken cancellationToken = default)
+        {
+            var request = new GetCurrentAccountRequest(accessToken: accessToken);
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
 
         [HttpPut("refresh")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
