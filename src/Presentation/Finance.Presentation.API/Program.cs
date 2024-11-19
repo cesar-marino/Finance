@@ -1,8 +1,11 @@
+using Finance.Application.Services;
 using Finance.Application.UseCases.Tag.CreateTag;
 using Finance.Domain.Repositories;
 using Finance.Domain.SeedWork;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Repositories;
+using Finance.Infrastructure.Services.Encryption;
+using Finance.Infrastructure.Services.Token;
 using Finance.Presentation.API.Filters;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +34,9 @@ builder.Services.AddDbContext<FinanceContext>(options =>
 {
     options.UseInMemoryDatabase("memory");
 });
+
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<ITokenService, JwtBearerAdapter>();
 
 builder.Services.AddScoped<IUnitOfWork, FinanceContext>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
