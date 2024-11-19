@@ -1,7 +1,6 @@
 using Bogus;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Models;
-using Finance.Infrastructure.Services.Token;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -20,9 +19,11 @@ namespace Finance.Test.IntegrationTest.Commons
         {
             var myConfiguration = new Dictionary<string, string>
             {
-                { "ArrayKeySample:0", "valueA" },
-                { "ArrayKeySample:1", "valueB" },
-                { "ArrayKeySample:2", "valueC" }
+                { "JWT:SecretKey", "supersecretkey_@123456" },
+                { "JWT:AccessTokenValidityInMinutes", "1440" },
+                { "JWT:ValidIssuer", "localhost:8080" },
+                { "JWT:ValidAudience", "localhost:8080" },
+                { "JWT:RefreshTokenValidityInMinutes", "10080" },
             };
 
             return new ConfigurationBuilder()
