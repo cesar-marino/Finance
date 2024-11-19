@@ -160,5 +160,59 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.Authenticatio
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated))]
+        [Trait("Integration/UseCase", "Account - Authentication")]
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated()
+        {
+            var password = _fixture.Faker.Internet.Password();
+            var account = _fixture.MakeAccountModel(password: password);
+            var tokenService = new JwtBearerAdapter(configuration: _configuration);
+            var encryptionService = new EncryptionService();
+
+            var accessToken = await tokenService.GenerateAccessTokenAsync(account.ToEntity(), _fixture.CancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(_fixture.CancellationToken);
+
+            account.AccessTokenValue = accessToken.Value;
+            account.AccessTokenExpiresIn = accessToken.ExpiresIn;
+            account.RefreshTokenValue = refreshToken.Value;
+            account.RefreshTokenExpiresIn = refreshToken.ExpiresIn;
+            account.Passwrd = await encryptionService.EcnryptAsync(account.Passwrd);
+
+            var context = _fixture.MakeFinanceContext();
+            await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+
+            var repository = new AccountRepository(context);
+
+            var sut = new AuthenticationHandler(
+                accountRepository: repository,
+                encryptionService: encryptionService,
+                tokenService: tokenService,
+                unitOfWork: context);
+
+            var request = _fixture.MakeAuthenticationRequest(email: account.Email, password: password);
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            var accountDb = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == response.AccountId);
+
+            accountDb.Should().NotBeNull();
+            accountDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
+            accountDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
+            accountDb?.AccountId.Should().Be(response.AccountId);
+            accountDb?.Active.Should().Be(response.Active);
+            accountDb?.CreatedAt.Should().Be(response.CreatdAt);
+            accountDb?.Email.Should().Be(response.Email);
+            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            accountDb?.Phone.Should().Be(response.Phone);
+            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            accountDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
+            accountDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
+            accountDb?.Role.Should().Be(response.Role.ToString());
+            accountDb?.UpdatedAt.Should().Be(response.UpdatedAt);
+            accountDb?.Username.Should().Be(response.Username);
+        }
     }
 }
