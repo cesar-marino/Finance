@@ -67,5 +67,43 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Account not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsFound))]
+        [Trait("Unit/UseCase", "Account - GetCurrentAccount")]
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsFound()
+        {
+            var username = _fixture.Faker.Internet.UserName();
+            _tokenServiceMock
+                .Setup(x => x.GetUsernameFromTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(username);
+
+            var account = _fixture.MakeAccountEntity();
+            _accountRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(account);
+
+            var request = _fixture.MakeGetCurrentAccountRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccessToken.Should().NotBeNull();
+            response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
+            response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
+            response.AccountId.Should().Be(account.Id);
+            response.Active.Should().BeTrue();
+            response.CreatdAt.Should().Be(account.CreatedAt);
+            response.Email.Should().Be(account.Email);
+            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
+            response.Phone.Should().Be(account.Phone);
+            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.RefreshToken.Should().NotBeNull();
+            response.RefreshToken?.Value.Should().Be(account.RefreshToken?.Value);
+            response.RefreshToken?.ExpiresIn.Should().Be(account.RefreshToken?.ExpiresIn);
+            response.Role.Should().Be(account.Role);
+            response.Username.Should().Be(account.Username);
+        }
     }
 }

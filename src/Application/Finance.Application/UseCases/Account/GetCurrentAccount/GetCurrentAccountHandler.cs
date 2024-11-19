@@ -11,9 +11,8 @@ namespace Finance.Application.UseCases.Account.GetCurrentAccount
         public async Task<AccountResponse> Handle(GetCurrentAccountRequest request, CancellationToken cancellationToken)
         {
             var username = await tokenService.GetUsernameFromTokenAsync(request.AccessToken, cancellationToken);
-            await accountRepository.FindByUsernameAsync(username, cancellationToken);
-
-            throw new NotImplementedException();
+            var account = await accountRepository.FindByUsernameAsync(username, cancellationToken);
+            return AccountResponse.FromEntity(account);
         }
     }
 }
