@@ -6,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Finance.Test.IntegrationTest.Application.UseCase.Account.DisableAccount
 {
-    public class DisableAccountHandlerTest : IClassFixture<DisableAccountHandlerTestFixture>
+    public class DisableAccountHandlerTest(DisableAccountHandlerTestFixture fixture) : IClassFixture<DisableAccountHandlerTestFixture>
     {
-        private readonly DisableAccountHandlerTestFixture _fixture;
-
-        public DisableAccountHandlerTest(DisableAccountHandlerTestFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        private readonly DisableAccountHandlerTestFixture _fixture = fixture;
 
         [Fact(DisplayName = nameof(ShouldThrowNotFoundException))]
         [Trait("Integration/UseCase", "Account - DisableAccount")]
