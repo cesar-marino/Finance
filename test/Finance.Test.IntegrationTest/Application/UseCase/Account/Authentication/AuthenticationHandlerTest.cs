@@ -119,5 +119,46 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.Authenticatio
                 .Where(x => x.Code == "disable-account")
                 .WithMessage("Disable account");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
+        [Trait("Integration/UseCase", "Account - Authentication")]
+        public async Task ShouldThrowUnexpectedException()
+        {
+            var password = _fixture.Faker.Internet.Password();
+            var account = _fixture.MakeAccountModel(password: password);
+            var tokenService = new JwtBearerAdapter(configuration: _configuration);
+            var encryptionService = new EncryptionService();
+
+            var accessToken = await tokenService.GenerateAccessTokenAsync(account.ToEntity(), _fixture.CancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(_fixture.CancellationToken);
+
+            account.AccessTokenValue = accessToken.Value;
+            account.AccessTokenExpiresIn = accessToken.ExpiresIn;
+            account.RefreshTokenValue = refreshToken.Value;
+            account.RefreshTokenExpiresIn = refreshToken.ExpiresIn;
+            account.Passwrd = await encryptionService.EcnryptAsync(account.Passwrd);
+
+            var context = _fixture.MakeFinanceContext();
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var repository = new AccountRepository(context);
+
+            var sut = new AuthenticationHandler(
+                accountRepository: repository,
+                encryptionService: encryptionService,
+                tokenService: tokenService,
+                unitOfWork: context);
+
+            await context.DisposeAsync();
+
+            var request = _fixture.MakeAuthenticationRequest(email: account.Email, password: password);
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
