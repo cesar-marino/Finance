@@ -87,7 +87,6 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-
         [HttpPut("refresh")]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
