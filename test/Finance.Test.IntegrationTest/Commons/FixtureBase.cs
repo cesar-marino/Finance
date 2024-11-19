@@ -59,7 +59,7 @@ namespace Finance.Test.IntegrationTest.Commons
                 accessTokenExpiresIn: accessTokenExpiresIn ?? Faker.Date.Future(),
                 refreshTokenValue: refreshTokenValue ?? Faker.Random.Guid().ToString(),
                 refreshTokenExpiresIn: refreshTokenExpiresIn ?? Faker.Date.Future(),
-                role: role ?? Faker.Random.String(),
+                role: role ?? "User",
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
     }
