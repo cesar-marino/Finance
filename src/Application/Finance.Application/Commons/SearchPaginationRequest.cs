@@ -2,23 +2,15 @@
 
 namespace Finance.Application.Commons
 {
-    public abstract class SearchPaginationRequest
+    public abstract class SearchPaginationRequest(
+        int? currentPage,
+        int? perPage,
+        string? orderBy,
+        SearchOrder? order)
     {
-        public int? CurrentPage { get; set; }
-        public int? PerPage { get; set; }
-        public string? OrderBy { get; set; }
-        public SearchOrder? Order { get; set; }
-
-        protected SearchPaginationRequest(
-            int? currentPage,
-            int? perPage,
-            string? orderBy,
-            SearchOrder? order)
-        {
-            CurrentPage = currentPage;
-            PerPage = perPage;
-            OrderBy = orderBy;
-            Order = order;
-        }
+        public int? CurrentPage { get; set; } = currentPage;
+        public int? PerPage { get; set; } = perPage;
+        public string? OrderBy { get; set; } = orderBy;
+        public SearchOrder? Order { get; set; } = order;
     }
 }
