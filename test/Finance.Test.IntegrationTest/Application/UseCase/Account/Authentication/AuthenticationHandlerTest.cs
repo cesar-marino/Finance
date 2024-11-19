@@ -204,9 +204,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.Authenticatio
             accountDb?.CreatedAt.Should().Be(response.CreatdAt);
             accountDb?.Email.Should().Be(response.Email);
             accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
-            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
             accountDb?.Phone.Should().Be(response.Phone);
-            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
             accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
             accountDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
             accountDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
