@@ -87,5 +87,57 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.UpdatePasswor
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfPasswordIsSuccessfullyUpdated))]
+        [Trait("Integration/UseCase", "Account - UpdatePassword")]
+        public async Task ShouldReturnTheCorrectResponseIfPasswordIsSuccessfullyUpdated()
+        {
+            var context = _fixture.MakeFinanceContext();
+            var repository = new AccountRepository(context);
+            var encryptionService = new EncryptionService();
+
+            var currentPassword = _fixture.Faker.Internet.Password();
+            var currentPasswordEncrypted = await encryptionService.EcnryptAsync(currentPassword);
+            var newPassword = _fixture.Faker.Internet.Password();
+            var newPasswordEncrypted = await encryptionService.EcnryptAsync(newPassword);
+
+            var account = _fixture.MakeAccountModel();
+            account.Passwrd = currentPasswordEncrypted;
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new UpdatePasswordHandler(
+                accountRepository: repository,
+                encryptionService: encryptionService,
+                unitOfWork: context);
+
+            var request = _fixture.MakeUpdatePasswordRequest(
+                accountId: account.AccountId,
+                currentPassword: currentPassword,
+                newPassword: newPassword);
+
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            var accountDb = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == response.AccountId);
+            accountDb.Should().NotBeNull();
+            accountDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
+            accountDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
+            accountDb?.AccountId.Should().Be(response.AccountId);
+            accountDb?.Active.Should().Be(response.Active);
+            accountDb?.Active.Should().Be(response.Active);
+            accountDb?.CreatedAt.Should().Be(response.CreatdAt);
+            accountDb?.Email.Should().Be(response.Email);
+            accountDb?.Email.Should().Be(response.Email);
+            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            accountDb?.Phone.Should().Be(response.Phone);
+            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            accountDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
+            accountDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
+            accountDb?.Role.Should().Be(response.Role.ToString());
+            accountDb?.UpdatedAt.Should().Be(response.UpdatedAt);
+            accountDb?.Username.Should().Be(response.Username);
+            // accountDb?.Passwrd.Should().Be(newPasswordEncrypted);
+        }
     }
 }
