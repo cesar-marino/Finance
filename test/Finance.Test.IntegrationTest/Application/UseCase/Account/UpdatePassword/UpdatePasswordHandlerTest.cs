@@ -58,5 +58,34 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.UpdatePasswor
                 .Where(x => x.Code == "invalid-password")
                 .WithMessage("Incorrect password");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
+        [Trait("Integration/UseCase", "Account - UpdatePassword")]
+        public async Task ShouldThrowUnexpectedException()
+        {
+            var context = _fixture.MakeFinanceContext();
+            var repository = new AccountRepository(context);
+            var encryptionService = new EncryptionService();
+
+            var account = _fixture.MakeAccountModel();
+            account.Passwrd = await encryptionService.EcnryptAsync(account.Passwrd);
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new UpdatePasswordHandler(
+                accountRepository: repository,
+                encryptionService: encryptionService,
+                unitOfWork: context);
+
+            await context.DisposeAsync();
+
+            var request = _fixture.MakeUpdatePasswordRequest(accountId: account.AccountId, currentPassword: account.Passwrd);
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
