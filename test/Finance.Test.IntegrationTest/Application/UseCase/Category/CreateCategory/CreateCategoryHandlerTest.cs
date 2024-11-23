@@ -50,5 +50,33 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfCategoryIsSuccessfullyCreated))]
+        [Trait("Integration/UseCase", "Category - CreateCategory")]
+        public async Task ShouldReturnTheCorrectResponseIfCategoryIsSuccessfullyCreated()
+        {
+            var context = _fixture.MakeFinanceContext();
+            var repository = new CategoryRepository(context);
+
+            var account = _fixture.MakeAccountModel();
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new CreateCategoryHandler(categoryRepository: repository, unitOfWork: context);
+
+            var request = _fixture.MakeCreateCategoryRequest(accountId: account.AccountId);
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            var categoryDb = await context.Categories.FirstOrDefaultAsync();
+            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.Active.Should().Be(response.Active);
+            categoryDb?.CategoryType.Should().Be(response.CategoryType);
+            categoryDb?.Color.Should().Be(response.Color);
+            categoryDb?.CreatedAt.Should().Be(response.CreatedAt);
+            categoryDb?.Icon.Should().Be(response.Icon);
+            categoryDb?.Name.Should().Be(response.Name);
+            categoryDb?.SuperCategoryId.Should().Be(response.SuperCategory?.Id);
+        }
     }
 }
