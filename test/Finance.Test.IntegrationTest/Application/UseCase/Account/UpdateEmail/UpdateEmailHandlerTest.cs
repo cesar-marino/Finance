@@ -53,5 +53,29 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.UpdateEmail
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Account not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
+        [Trait("INtegration/UseCase", "Account - UpdateEmail")]
+        public async Task ShouldThrowUnexpectedException()
+        {
+            var context = _fixture.MakeFinanceContext();
+            var repository = new AccountRepository(context);
+
+            var account = _fixture.MakeAccountModel();
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new UpdateEmailHandler(accountRepository: repository, unitOfWork: context);
+
+            await context.DisposeAsync();
+
+            var request = _fixture.MakeUpdateEmailRequest();
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
