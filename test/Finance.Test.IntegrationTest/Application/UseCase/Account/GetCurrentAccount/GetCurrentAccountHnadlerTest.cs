@@ -10,6 +10,24 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.GetCurrentAcc
     {
         private readonly GetCurrentAccountHandlerTestFixture _fixture = fixture;
 
+        [Fact(DisplayName = nameof(ShouldThrowInvalidTokenException))]
+        [Trait("Integration/UseCase", "Account - GetCurrentAccount")]
+        public async Task ShouldThrowInvalidTokenException()
+        {
+            var tokenService = new JwtBearerAdapter(_fixture.MakeConfiguration());
+            var context = _fixture.MakeFinanceContext();
+            var repository = new AccountRepository(context);
+
+            var sut = new GetCurrentAccountHandler(tokenService, repository);
+
+            var request = _fixture.MakeGetCurrentAccountRequest();
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<InvalidTokenException>()
+                .Where(x => x.Code == "invalid-token")
+                .WithMessage("Token is invalid");
+        }
+
         [Fact(DisplayName = nameof(ShouldThrowNotFoundException))]
         [Trait("Integration/UseCase", "Account - GetCurrentAccount")]
         public async Task ShouldThrowNotFoundException()
