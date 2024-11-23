@@ -11,6 +11,19 @@ namespace Finance.Infrastructure.Database.Repositories
 {
     public class CategoryRepository(FinanceContext context) : ICategoryRepository
     {
+        public async Task<bool> CheckAccountAsync(Guid accountId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var account = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
+                return account != null;
+            }
+            catch (Exception ex)
+            {
+                throw new UnexpectedException(innerException: ex);
+            }
+        }
+
         public async Task<CategoryEntity> FindAsync(Guid accountId, Guid entityId, CancellationToken cancellationToken = default)
         {
             try

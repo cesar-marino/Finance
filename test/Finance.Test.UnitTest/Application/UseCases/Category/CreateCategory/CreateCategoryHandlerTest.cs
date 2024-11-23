@@ -26,10 +26,52 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountAsyncThrows))]
+        [Trait("Unit/UseCase", "Category - CreateCategory")]
+        public async Task ShouldRethrowSameExceptionThatCheckAccountAsyncThrows()
+        {
+            _categoryRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse))]
+        [Trait("Unit/UseCase", "Category - CreateCategory")]
+        public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
+        {
+            _categoryRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeCreateCategoryRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Account not found");
+        }
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
         [Trait("Unit/UseCase", "Category - CreateCategory")]
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
+            _categoryRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
             _categoryRepositoryMock
                 .Setup(x => x.InsertAsync(It.IsAny<CategoryEntity>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -46,6 +88,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         [Trait("Unit/UseCase", "Category - CreateCategory")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
+            _categoryRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
             _unitOfWorkMock
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -62,6 +110,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         [Trait("Unit/UseCase", "Category - CreateCategory")]
         public async Task ShouldReturnTheCorrectResponseIfCategoryIsAddedSuccessfully()
         {
+            _categoryRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
             var request = _fixture.MakeCreateCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
