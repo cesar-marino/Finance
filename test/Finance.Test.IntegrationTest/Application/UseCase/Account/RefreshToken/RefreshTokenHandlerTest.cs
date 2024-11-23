@@ -85,5 +85,37 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RefreshToken
                 .Where(x => x.Code == "unauthorized")
                 .WithMessage("Unauthorized access");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
+        [Trait("Integration/UseCase", "Account - RefreshToken")]
+        public async Task ShouldThrowUnexpectedException()
+        {
+            var tokenService = new JwtBearerAdapter(_fixture.MakeConfiguration());
+            var account = _fixture.MakeAccountModel();
+            var token = await tokenService.GenerateAccessTokenAsync(account.ToEntity());
+            account.AccessTokenValue = token.Value;
+            account.AccessTokenExpiresIn = token.ExpiresIn;
+
+            var context = _fixture.MakeFinanceContext();
+            var repository = new AccountRepository(context);
+
+            var trackingInfo = await context.Accounts.AddAsync(account);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new RefreshTokenHandler(
+                tokenService: tokenService,
+                accountRepository: repository,
+                unitOfWork: context);
+
+            await context.DisposeAsync();
+
+            var request = _fixture.MakeRefreshTokenRequest(accessToken: token.Value);
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
