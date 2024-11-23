@@ -129,12 +129,16 @@ namespace Finance.Infrastructure.Database.Repositories
         {
             try
             {
-                await Task.Run(() =>
+                var category = CategoryModel.FromEntity(aggregate);
+
+                var existingCategory = await context.Categories
+                    .FirstOrDefaultAsync(x => x.AccountId == category.AccountId && x.CategoryId == category.CategoryId, cancellationToken: cancellationToken);
+
+                if (existingCategory != null)
                 {
-                    var model = CategoryModel.FromEntity(aggregate);
-                    var item = context.Entry(model);
-                    item.State = EntityState.Modified;
-                }, cancellationToken);
+                    context.Entry(existingCategory).CurrentValues.SetValues(category);
+                    context.Categories.Entry(existingCategory).State = EntityState.Modified;
+                }
             }
             catch (Exception ex)
             {

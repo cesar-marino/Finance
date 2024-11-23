@@ -1,4 +1,5 @@
 using Bogus;
+using Finance.Domain.Enums;
 using Finance.Infrastructure.Database.Contexts;
 using Finance.Infrastructure.Database.Models;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,29 @@ namespace Finance.Test.IntegrationTest.Commons
                 refreshTokenValue: refreshTokenValue ?? Faker.Random.Guid().ToString(),
                 refreshTokenExpiresIn: refreshTokenExpiresIn ?? Faker.Date.Future(),
                 role: role ?? "User",
+                createdAt: createdAt ?? Faker.Date.Past(),
+                updatedAt: updatedAt ?? Faker.Date.Past());
+
+        public CategoryModel MakeCategoryModel(
+            Guid? accountId = null,
+            Guid? categoryId = null,
+            bool active = true,
+            CategoryType categoryType = CategoryType.Expenditure,
+            string? name = null,
+            string? icon = null,
+            string? color = null,
+            Guid? superCategoryId = null,
+            DateTime? createdAt = null,
+            DateTime? updatedAt = null) => new(
+                accountId: accountId ?? Faker.Random.Guid(),
+                categoryId: categoryId ?? Faker.Random.Guid(),
+                active: active,
+                categoryType: categoryType,
+                name: name ?? Faker.Random.String(5),
+                normalizedName: name ?? Faker.Random.String(5),
+                icon: icon ?? Faker.Random.String(5),
+                color: color ?? Faker.Random.String(5),
+                superCategoryId: superCategoryId,
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
     }
