@@ -95,7 +95,7 @@ namespace Finance.Infrastructure.Services.Token
             }
             catch (Exception ex)
             {
-                throw new UnexpectedException(innerException: ex);
+                throw new InvalidTokenException(innerException: ex);
             }
         }
     }
