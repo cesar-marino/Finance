@@ -25,5 +25,12 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Category not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsFound))]
+        [Trait("Integration/UseCase", "Category - GetCategory")]
+        public Task ShouldReturnTheCorrectResponseIfAccountIsFound()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
