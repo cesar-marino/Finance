@@ -25,5 +25,24 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.EnableCatego
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Category not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
+        [Trait("Integration/UseCase", "Category - EnableCategory")]
+        public async Task ShouldThrowUnexpectedException()
+        {
+            var context = _fixture.MakeFinanceContext();
+            var repository = new CategoryRepository(context);
+
+            var sut = new EnableCategoryHandler(categoryRepository: repository, unitOfWork: context);
+
+            await context.DisposeAsync();
+
+            var request = _fixture.MakeEnableCategoryRequest();
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
