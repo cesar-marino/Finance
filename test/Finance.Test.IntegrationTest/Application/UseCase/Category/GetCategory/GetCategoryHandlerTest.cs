@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Category.GetCategory;
 using Finance.Domain.Exceptions;
 using Finance.Infrastructure.Database.Repositories;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
 {
@@ -28,9 +29,52 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsFound))]
         [Trait("Integration/UseCase", "Category - GetCategory")]
-        public Task ShouldReturnTheCorrectResponseIfAccountIsFound()
+        public async Task ShouldReturnTheCorrectResponseIfAccountIsFound()
         {
-            throw new NotImplementedException();
+            var context = _fixture.MakeFinanceContext();
+            var repository = new CategoryRepository(context);
+
+            var category = _fixture.MakeCategoryModel();
+            var categories = _fixture.MakeCategoryList(superCategoryId: category.CategoryId);
+
+            var trackingInfo = await context.Categories.AddAsync(category);
+            await context.Categories.AddRangeAsync(categories);
+            await context.SaveChangesAsync();
+            trackingInfo.State = EntityState.Detached;
+
+            var sut = new GetCategoryHandler(categoryRepository: repository);
+
+            var request = _fixture.MakeGetCategoryRequest(accountId: category.AccountId, categoryId: category.CategoryId);
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            var categoryDb = await context.Categories
+                .Include(x => x.SubCategories)
+                .FirstOrDefaultAsync(x => x.CategoryId == category.CategoryId);
+
+            var categoriesDb = await context.Categories
+                .Where(x => x.SuperCategoryId == category.CategoryId)
+                .ToListAsync();
+
+            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.Active.Should().Be(response.Active);
+            categoryDb?.CategoryId.Should().Be(response.CategoryId);
+            categoryDb?.CategoryType.Should().Be(response.CategoryType);
+            categoryDb?.Color.Should().Be(response.Color);
+            categoryDb?.CreatedAt.Should().Be(response.CreatedAt);
+            categoryDb?.Icon.Should().Be(response.Icon);
+            categoryDb?.Name.Should().Be(response.Name);
+            categoryDb?.SuperCategoryId.Should().Be(response.SuperCategory?.Id);
+            categoriesDb?.Count.Should().Be(response.SubCategories?.Count);
+
+            categoriesDb?.ForEach((subCategory) =>
+            {
+                var categoryResponse = response.SubCategories?.FirstOrDefault(x => x.Id == subCategory.CategoryId);
+                categoryResponse?.Should().NotBeNull();
+                categoryResponse?.Color.Should().Be(subCategory.Color);
+                categoryResponse?.Icon.Should().Be(subCategory.Icon);
+                categoryResponse?.Id.Should().Be(subCategory.CategoryId);
+                categoryResponse?.Name.Should().Be(subCategory.Name);
+            });
         }
     }
 }

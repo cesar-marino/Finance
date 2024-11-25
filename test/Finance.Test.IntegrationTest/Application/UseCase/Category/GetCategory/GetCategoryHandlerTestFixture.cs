@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Category.GetCategory;
+using Finance.Infrastructure.Database.Models;
 using Finance.Test.IntegrationTest.Commons;
 
 namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
@@ -10,5 +11,12 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
             Guid? categoryId = null) => new(
                 accountId: accountId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid());
+
+        public List<CategoryModel> MakeCategoryList(Guid superCategoryId) => [
+                MakeCategoryModel(superCategoryId: superCategoryId),
+                MakeCategoryModel(superCategoryId: superCategoryId),
+                MakeCategoryModel(superCategoryId: superCategoryId),
+                MakeCategoryModel(superCategoryId: superCategoryId),
+            ];
     }
 }

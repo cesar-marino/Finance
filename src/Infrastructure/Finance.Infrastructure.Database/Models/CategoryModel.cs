@@ -25,7 +25,10 @@ namespace Finance.Infrastructure.Database.Models
         public string? Color { get; set; } = color;
         public DateTime CreatedAt { get; set; } = createdAt;
         public DateTime UpdatedAt { get; set; } = updatedAt;
+
         public Guid? SuperCategoryId { get; set; } = superCategoryId;
+        public virtual CategoryModel? SuperCategory { get; set; }
+        public virtual List<CategoryModel>? SubCategories { get; set; }
 
         public Guid AccountId { get; set; } = accountId;
         public virtual AccountModel? Account { get; set; }
