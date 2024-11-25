@@ -80,49 +80,56 @@ namespace Finance.Infrastructure.Database.Repositories
             SearchOrder? order,
             CancellationToken cancellationToken = default)
         {
-            var query = context.Categories.AsNoTracking();
-
-            if (active is not null)
-                query = query.Where(x => x.Active == active);
-
-            if (name is not null)
-                query = query.Where(x => x.NormalizedName.Contains(name.Trim(), StringComparison.CurrentCultureIgnoreCase));
-
-            query = (orderBy?.ToLower(), order) switch
+            try
             {
-                ("active", SearchOrder.Asc) => query.OrderBy(x => x.Active),
-                ("active", SearchOrder.Desc) => query.OrderByDescending(x => x.Active),
-                ("name", SearchOrder.Desc) => query.OrderByDescending(x => x.NormalizedName),
-                ("createdat", SearchOrder.Asc) => query.OrderBy(x => x.CreatedAt),
-                ("createdat", SearchOrder.Desc) => query.OrderByDescending(x => x.CreatedAt),
-                ("updatedat", SearchOrder.Asc) => query.OrderBy(x => x.UpdatedAt),
-                ("updatedat", SearchOrder.Desc) => query.OrderByDescending(x => x.UpdatedAt),
-                _ => query.OrderBy(x => x.NormalizedName),
-            };
+                var query = context.Categories.AsNoTracking();
 
-            List<CategoryModel> models;
-            if (currentPage != null && perPage != null)
-            {
-                _ = int.TryParse(currentPage.ToString(), out int skip);
-                _ = int.TryParse(perPage.ToString(), out int take);
+                if (active is not null)
+                    query = query.Where(x => x.Active == active);
 
-                models = await query
-                    .Skip((skip - 1) * take)
-                    .Take(take)
-                    .ToListAsync(cancellationToken);
+                if (name is not null)
+                    query = query.Where(x => x.NormalizedName.Contains(name.Trim(), StringComparison.CurrentCultureIgnoreCase));
+
+                query = (orderBy?.ToLower(), order) switch
+                {
+                    ("active", SearchOrder.Asc) => query.OrderBy(x => x.Active),
+                    ("active", SearchOrder.Desc) => query.OrderByDescending(x => x.Active),
+                    ("name", SearchOrder.Desc) => query.OrderByDescending(x => x.NormalizedName),
+                    ("createdat", SearchOrder.Asc) => query.OrderBy(x => x.CreatedAt),
+                    ("createdat", SearchOrder.Desc) => query.OrderByDescending(x => x.CreatedAt),
+                    ("updatedat", SearchOrder.Asc) => query.OrderBy(x => x.UpdatedAt),
+                    ("updatedat", SearchOrder.Desc) => query.OrderByDescending(x => x.UpdatedAt),
+                    _ => query.OrderBy(x => x.NormalizedName),
+                };
+
+                List<CategoryModel> models;
+                if (currentPage != null && perPage != null)
+                {
+                    _ = int.TryParse(currentPage.ToString(), out int skip);
+                    _ = int.TryParse(perPage.ToString(), out int take);
+
+                    models = await query
+                        .Skip((skip - 1) * take)
+                        .Take(take)
+                        .ToListAsync(cancellationToken);
+                }
+                else
+                {
+                    models = await query.ToListAsync(cancellationToken);
+                }
+
+                return new(
+                    currentPage: currentPage,
+                    perPage: perPage,
+                    total: models.Count,
+                    orderBy: orderBy,
+                    order: order,
+                    items: models.Select(x => x.ToEntity()).ToList());
             }
-            else
+            catch (Exception ex)
             {
-                models = await query.ToListAsync(cancellationToken);
+                throw new UnexpectedException(innerException: ex);
             }
-
-            return new(
-                currentPage: currentPage,
-                perPage: perPage,
-                total: models.Count,
-                orderBy: orderBy,
-                order: order,
-                items: models.Select(x => x.ToEntity()).ToList());
         }
 
         public async Task UpdateAsync(CategoryEntity aggregate, CancellationToken cancellationToken = default)
