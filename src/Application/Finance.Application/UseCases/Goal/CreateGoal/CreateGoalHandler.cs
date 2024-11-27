@@ -2,10 +2,13 @@ using Finance.Application.UseCases.Goal.Commons;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 
 namespace Finance.Application.UseCases.Goal.CreateGoal
 {
-    public class CreateGoalHandler(IGoalRepository goalRepository) : ICreateGoalHandler
+    public class CreateGoalHandler(
+        IGoalRepository goalRepository,
+        IUnitOfWork unitOfWork) : ICreateGoalHandler
     {
         public async Task<GoalResponse> Handle(CreateGoalRequest request, CancellationToken cancellationToken)
         {
@@ -20,6 +23,7 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
                 expectedAmount: request.ExpectedAmount);
 
             await goalRepository.InsertAsync(goal, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }

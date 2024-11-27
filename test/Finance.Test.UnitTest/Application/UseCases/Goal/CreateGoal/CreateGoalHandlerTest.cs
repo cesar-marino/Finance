@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Goal.CreateGoal;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,13 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         private readonly CreateGoalHandlerTestFixture _fixture;
         private readonly CreateGoalHandler _sut;
         private readonly Mock<IGoalRepository> _goalRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public CreateGoalHandlerTest(CreateGoalHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _goalRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(goalRepository: _goalRepositoryMock.Object);
+            _sut = new(
+                goalRepository: _goalRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountAsyncThrows))]
@@ -71,6 +76,28 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
                 .Setup(x => x.InsertAsync(
                     It.IsAny<GoalEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateGoalRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Goal - CreateGoal")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            _goalRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeCreateGoalRequest();
