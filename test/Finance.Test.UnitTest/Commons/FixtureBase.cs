@@ -80,5 +80,21 @@ namespace Finance.Test.UnitTest.Commons
                 refreshToken: refreshToken ?? new(Faker.Random.Guid().ToString(), Faker.Date.Future()),
                 createdAt: Faker.Date.Past(),
                 updatedAt: Faker.Date.Past());
+
+        public GoalEntity MakeGoalEntity(
+            Guid? accountId = null,
+            Guid? goalId = null,
+            string? name = null,
+            double? expectedAmount = null,
+            double? currentAmount = null,
+            DateTime? createdAt = null,
+            DateTime? updatedAt = null) => new(
+                accountId: accountId ?? Faker.Random.Guid(),
+                goalId: goalId ?? Faker.Random.Guid(),
+                name: name ?? Faker.Random.String(5),
+                expectedAmount: expectedAmount ?? Faker.Random.Double(),
+                currentAmount: currentAmount ?? Faker.Random.Double(),
+                createdAt: createdAt ?? Faker.Date.Past(),
+                updatedAt: updatedAt ?? Faker.Date.Past());
     }
 }

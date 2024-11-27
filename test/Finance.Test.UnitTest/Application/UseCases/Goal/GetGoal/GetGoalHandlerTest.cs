@@ -38,5 +38,29 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.GetGoal
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Goal not found");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfGoalIsFound))]
+        [Trait("Unit/UseCase", "Goal - GetGoal")]
+        public async Task ShouldReturnTheCorrectResponseIfGoalIsFound()
+        {
+            var goal = _fixture.MakeGoalEntity();
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(goal);
+
+            var request = _fixture.MakeGetGoalRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(response.AccountId);
+            response.CreatedAt.Should().Be(response.CreatedAt);
+            response.CurrentAmount.Should().Be(response.CurrentAmount);
+            response.ExpectedAmount.Should().Be(response.ExpectedAmount);
+            response.GoalId.Should().Be(response.GoalId);
+            response.Name.Should().Be(response.Name);
+            response.UpdatedAt.Should().Be(response.UpdatedAt);
+        }
     }
 }
