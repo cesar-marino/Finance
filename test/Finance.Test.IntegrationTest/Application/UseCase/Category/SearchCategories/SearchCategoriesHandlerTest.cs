@@ -47,5 +47,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.SearchCatego
             response.Total.Should().Be(response.Items.Count);
             response.Items.Should().BeEmpty();
         }
+
+        //should return the correct response if SearchAsync returns filtered categories
     }
 }
