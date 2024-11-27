@@ -37,5 +37,23 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse))]
+        [Trait("Unit/UseCase", "Goal - CreateGoal")]
+        public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
+        {
+            _goalRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeCreateGoalRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Account not found");
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Goal.Commons;
+using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Goal.CreateGoal
@@ -7,7 +8,10 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
     {
         public async Task<GoalResponse> Handle(CreateGoalRequest request, CancellationToken cancellationToken)
         {
-            await goalRepository.CheckAccountAsync(request.AccountId, cancellationToken);
+            var existAccount = await goalRepository.CheckAccountAsync(request.AccountId, cancellationToken);
+
+            if (!existAccount)
+                throw new NotFoundException("Account");
 
             throw new NotImplementedException();
         }
