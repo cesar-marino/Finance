@@ -107,5 +107,24 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfGoalIsSuccessfullyCreated))]
+        [Trait("Unit/UseCase", "Goal - CreateGoal")]
+        public async Task ShouldReturnTheCorrectResponseIfGoalIsSuccessfullyCreated()
+        {
+            _goalRepositoryMock
+                .Setup(x => x.CheckAccountAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeCreateGoalRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(request.AccountId);
+            response.CurrentAmount.Should().Be(0);
+            response.ExpectedAmount.Should().Be(request.ExpectedAmount);
+            response.Name.Should().Be(request.Name);
+        }
     }
 }

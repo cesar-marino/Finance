@@ -25,7 +25,7 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
             await goalRepository.InsertAsync(goal, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
 
-            throw new NotImplementedException();
+            return GoalResponse.FromEntity(goal);
         }
     }
 }
