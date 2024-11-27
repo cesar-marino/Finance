@@ -5,9 +5,9 @@ namespace Finance.Domain.Entities
     public class GoalEntity : AggregateRoot
     {
         public Guid AccountId { get; }
-        public string Name { get; }
-        public double ExpectedAmount { get; }
-        public double CurrentAmount { get; }
+        public string Name { get; private set; }
+        public double ExpectedAmount { get; private set; }
+        public double CurrentAmount { get; private set; }
 
         public GoalEntity(
             Guid accountId,
@@ -33,6 +33,13 @@ namespace Finance.Domain.Entities
             Name = name;
             ExpectedAmount = expectedAmount;
             CurrentAmount = currentAmount;
+        }
+
+        public void Updated(string name, double expectedAmount)
+        {
+            Name = name;
+            ExpectedAmount = expectedAmount;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }
