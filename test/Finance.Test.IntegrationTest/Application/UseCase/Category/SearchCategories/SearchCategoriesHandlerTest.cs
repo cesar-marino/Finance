@@ -38,9 +38,14 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.SearchCatego
             var sut = new SearchCategoriesHandler(categoryRepository: repository);
 
             var request = _fixture.MakeSearchCategoriesRequest();
-            _ = await sut.Handle(request, _fixture.CancellationToken);
+            var response = await sut.Handle(request, _fixture.CancellationToken);
 
-            throw new NotImplementedException();
+            response.CurrentPage.Should().Be(request.CurrentPage);
+            response.Order.Should().Be(request.Order);
+            response.OrderBy.Should().Be(request.OrderBy);
+            response.PerPage.Should().Be(request.PerPage);
+            response.Total.Should().Be(response.Items.Count);
+            response.Items.Should().BeEmpty();
         }
     }
 }
