@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Goal.Commons;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 
@@ -12,6 +13,13 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
 
             if (!existAccount)
                 throw new NotFoundException("Account");
+
+            var goal = new GoalEntity(
+                accountId: request.AccountId,
+                name: request.Name,
+                expectedAmount: request.ExpectedAmount);
+
+            await goalRepository.InsertAsync(goal, cancellationToken);
 
             throw new NotImplementedException();
         }
