@@ -1,5 +1,6 @@
 using Bogus;
 using Finance.Application.UseCases.Goal.UpdateGoal;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -40,5 +41,30 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.UpdateGoal
                 .WithMessage("Goal not found");
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsycnThrows))]
+        [Trait("Unit/UseCase", "Goal - UpdateGoal")]
+        public async Task ShouldRethrowSameExceptionThatUpdateAsycnThrows()
+        {
+            var goal = _fixture.MakeGoalEntity();
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(goal);
+
+            _goalRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<GoalEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateGoalRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
     }
 }
