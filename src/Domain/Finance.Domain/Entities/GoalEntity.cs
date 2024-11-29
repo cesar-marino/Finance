@@ -41,5 +41,11 @@ namespace Finance.Domain.Entities
             ExpectedAmount = expectedAmount;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void AddAmount(double amount)
+        {
+            CurrentAmount += amount;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
