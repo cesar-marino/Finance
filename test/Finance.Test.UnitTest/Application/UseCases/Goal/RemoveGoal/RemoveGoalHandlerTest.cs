@@ -94,5 +94,23 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.RemoveGoal
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldRemoveGoalSuccessfully))]
+        [Trait("Unit/UseCase", "Goal - RemoveGoal")]
+        public void ShouldRemoveGoalSuccessfully()
+        {
+            var goal = _fixture.MakeGoalEntity();
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(goal);
+
+            var request = _fixture.MakeRemoveGoalRequest();
+            var response = _sut.Handle(request, _fixture.CancellationToken);
+
+            response.IsCompletedSuccessfully.Should().Be(true);
+        }
     }
 }

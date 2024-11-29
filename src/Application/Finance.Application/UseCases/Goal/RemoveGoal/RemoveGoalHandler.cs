@@ -13,7 +13,6 @@ namespace Finance.Application.UseCases.Goal.RemoveGoal
             // await goalRepository.FindAsync(request.AccountId, request.GoalId, cancellationToken);
             await goalRepository.RemoveAsync(request.AccountId, request.GoalId, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-            throw new NotImplementedException();
         }
     }
 }
