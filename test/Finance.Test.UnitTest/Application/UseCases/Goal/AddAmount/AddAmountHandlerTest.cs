@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Goal.AddAmount;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,13 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.AddAmount
         private readonly AddAmountHandlerTestFixture _fixture;
         private readonly AddAmountHandler _sut;
         private readonly Mock<IGoalRepository> _goalRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public AddAmountHandlerTest(AddAmountHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _goalRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(goalRepository: _goalRepositoryMock.Object);
+            _sut = new(
+                goalRepository: _goalRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -52,10 +57,8 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.AddAmount
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(goal);
 
-            _goalRepositoryMock
-                .Setup(x => x.UpdateAsync(
-                    It.IsAny<GoalEntity>(),
-                    It.IsAny<CancellationToken>()))
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeAddAmountRequest();
