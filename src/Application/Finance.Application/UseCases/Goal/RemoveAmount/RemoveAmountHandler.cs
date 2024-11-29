@@ -11,11 +11,11 @@ namespace Finance.Application.UseCases.Goal.RemoveAmount
         public async Task<GoalResponse> Handle(RemoveAmountRequest request, CancellationToken cancellationToken)
         {
             var goal = await goalRepository.FindAsync(request.AccountId, request.GoalId, cancellationToken);
+            goal.RemoveAmount(request.Amount);
 
             await goalRepository.UpdateAsync(goal, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return GoalResponse.FromEntity(goal);
         }
     }
 }

@@ -47,5 +47,11 @@ namespace Finance.Domain.Entities
             CurrentAmount += amount;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void RemoveAmount(double amount)
+        {
+            CurrentAmount -= amount;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

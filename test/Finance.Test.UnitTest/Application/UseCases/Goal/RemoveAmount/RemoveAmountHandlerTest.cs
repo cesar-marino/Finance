@@ -94,5 +94,30 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.RemoveAmount
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAmountIsSuccessfullyRemoved))]
+        [Trait("Unit/UseCase", "Goal - RemoveAmount")]
+        public async Task ShouldReturnTheCorrectResponseIfAmountIsSuccessfullyRemoved()
+        {
+            var goal = _fixture.MakeGoalEntity();
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(goal);
+
+            var currentAmount = goal.CurrentAmount;
+
+            var request = _fixture.MakeRemoveAmountRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.AccountId.Should().Be(goal.AccountId);
+            response.CreatedAt.Should().Be(goal.CreatedAt);
+            response.ExpectedAmount.Should().Be(goal.ExpectedAmount);
+            response.GoalId.Should().Be(goal.Id);
+            response.Name.Should().Be(goal.Name);
+            response.CurrentAmount.Should().Be(currentAmount - request.Amount);
+        }
     }
 }
