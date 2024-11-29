@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Goal.RemoveAmount;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,13 +13,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.RemoveAmount
         private readonly RemoveAmountHandlerTestFixture _fixture;
         private readonly RemoveAmountHandler _sut;
         private readonly Mock<IGoalRepository> _goalRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RemoveAmountHandlerTest(RemoveAmountHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _goalRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(goalRepository: _goalRepositoryMock.Object);
+            _sut = new(
+                goalRepository: _goalRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -56,6 +61,30 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.RemoveAmount
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<GoalEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeRemoveAmountRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Goal - RemoveAmount")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var goal = _fixture.MakeGoalEntity();
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(goal);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeRemoveAmountRequest();
