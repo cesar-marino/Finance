@@ -1,0 +1,42 @@
+using Finance.Application.UseCases.Goal.RemoveAmount;
+using Finance.Domain.Exceptions;
+using Finance.Domain.Repositories;
+using FluentAssertions;
+using Moq;
+
+namespace Finance.Test.UnitTest.Application.UseCases.Goal.RemoveAmount
+{
+    public class RemoveAmountHandlerTest : IClassFixture<RemoveAmountHandlerTestFixture>
+    {
+        private readonly RemoveAmountHandlerTestFixture _fixture;
+        private readonly RemoveAmountHandler _sut;
+        private readonly Mock<IGoalRepository> _goalRepositoryMock;
+
+        public RemoveAmountHandlerTest(RemoveAmountHandlerTestFixture fixture)
+        {
+            _fixture = fixture;
+            _goalRepositoryMock = new();
+
+            _sut = new(goalRepository: _goalRepositoryMock.Object);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
+        [Trait("Unit/UseCase", "Goal - RemoveAmount")]
+        public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
+        {
+            _goalRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new NotFoundException("Goal"));
+
+            var request = _fixture.MakeRemoveAmountRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<NotFoundException>()
+                .Where(x => x.Code == "not-found")
+                .WithMessage("Goal not found");
+        }
+    }
+}
