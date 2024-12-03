@@ -7,5 +7,12 @@ namespace Finance.Domain.Repositories
     {
         Task<bool> CheckAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
         Task RemoveAsync(Guid accountId, Guid goalId, CancellationToken cancellationToken = default);
+        Task<SearchResult<GoalEntity>> SearchAsync(
+            string? name,
+            int? currentPage,
+            int? perPage,
+            string? orderBy,
+            SearchOrder? order,
+            CancellationToken cancellationToken = default);
     }
 }
