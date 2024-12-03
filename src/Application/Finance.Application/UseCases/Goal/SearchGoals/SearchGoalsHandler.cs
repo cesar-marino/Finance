@@ -1,4 +1,5 @@
 
+using Finance.Application.UseCases.Goal.Commons;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Goal.SearchGoals
@@ -7,7 +8,7 @@ namespace Finance.Application.UseCases.Goal.SearchGoals
     {
         public async Task<SearchGoalsResponse> Handle(SearchGoalsRequest request, CancellationToken cancellationToken)
         {
-            await goalRepository.SearchAsync(
+            var result = await goalRepository.SearchAsync(
                 name: request.Name,
                 currentPage: request.CurrentPage,
                 perPage: request.PerPage,
@@ -15,7 +16,13 @@ namespace Finance.Application.UseCases.Goal.SearchGoals
                 order: request.Order,
                 cancellationToken);
 
-            throw new NotImplementedException();
+            return new(
+                currentPage: result.CurrentPage,
+                perPage: result.PerPage,
+                total: result.Total,
+                orderBy: result.OrderBy,
+                order: result.Order,
+                items: result.Items.Select(GoalResponse.FromEntity).ToList());
         }
     }
 }
