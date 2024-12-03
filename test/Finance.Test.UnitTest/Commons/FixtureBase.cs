@@ -12,12 +12,12 @@ namespace Finance.Test.UnitTest.Commons
 
         public TagEntity MakeTagEntity(
             Guid? tagId = null,
-            Guid? accountId = null,
+            Guid? userId = null,
             bool active = true,
             string? name = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                userId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 tagId: tagId ?? Faker.Random.Guid(),
                 active: active,
                 name: name ?? Faker.Random.String(5),
@@ -26,7 +26,7 @@ namespace Finance.Test.UnitTest.Commons
 
         public CategoryEntity MakeCategoryEntity(
             Guid? categoryId = null,
-            Guid? accountId = null,
+            Guid? userId = null,
             bool active = true,
             CategoryType categoryType = CategoryType.Expenditure,
             string? name = null,
@@ -35,7 +35,7 @@ namespace Finance.Test.UnitTest.Commons
             Guid? superCategoryId = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                userId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid(),
                 active: active,
                 categoryType: categoryType,
@@ -82,14 +82,14 @@ namespace Finance.Test.UnitTest.Commons
                 updatedAt: Faker.Date.Past());
 
         public GoalEntity MakeGoalEntity(
-            Guid? accountId = null,
+            Guid? userId = null,
             Guid? goalId = null,
             string? name = null,
             double? expectedAmount = null,
             double? currentAmount = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                userId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 goalId: goalId ?? Faker.Random.Guid(),
                 name: name ?? Faker.Random.String(5),
                 expectedAmount: expectedAmount ?? Faker.Random.Double(),

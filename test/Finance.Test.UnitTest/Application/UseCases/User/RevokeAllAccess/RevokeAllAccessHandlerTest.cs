@@ -12,25 +12,25 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
     {
         private readonly RevokeAllAccessHandlerTestFixture _fixture;
         private readonly RevokeAllAccessHandler _sut;
-        private readonly Mock<IUserRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RevokeAllAccessHandlerTest(RevokeAllAccessHandlerTestFixture fixture)
         {
             _fixture = fixture;
-            _accountRepositoryMock = new();
+            _userRepositoryMock = new();
             _unitOfWorkMock = new();
 
             _sut = new(
-                userRepository: _accountRepositoryMock.Object,
+                userRepository: _userRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
-        public async Task ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows()
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindLoggedUsersAsyncThrows))]
+        [Trait("Unit/UseCase", "User - RevokeAllAccess")]
+        public async Task ShouldRethrowSameExceptionThatFindLoggedUsersAsyncThrows()
         {
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -43,15 +43,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAllAccess")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var accounts = _fixture.MakeAccountList();
-            _accountRepositoryMock
+            var users = _fixture.MakeUserList();
+            _userRepositoryMock
                 .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(accounts);
+                .ReturnsAsync(users);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
@@ -66,13 +66,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAllAccess")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var accounts = _fixture.MakeAccountList();
-            _accountRepositoryMock
+            var users = _fixture.MakeUserList();
+            _userRepositoryMock
                 .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(accounts);
+                .ReturnsAsync(users);
 
             _unitOfWorkMock
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
@@ -87,21 +87,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
         }
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccessAreSuccessfullyRevoked))]
-        [Trait("Unit/UseCase", "Account - RevokeAllAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAllAccess")]
         public async Task ShouldReturnTheCorrectResponseIfAccessAreSuccessfullyRevoked()
         {
-            var accounts = _fixture.MakeAccountList();
-            _accountRepositoryMock
+            var users = _fixture.MakeUserList();
+            _userRepositoryMock
                 .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(accounts);
+                .ReturnsAsync(users);
 
             var request = _fixture.MakeRevokeAllAccessRequest();
             await _sut.Handle(request, _fixture.CancellationToken);
 
-            accounts.ToList().ForEach((account) =>
+            users.ToList().ForEach((user) =>
             {
-                account.AccessToken.Should().BeNull();
-                account.RefreshToken.Should().BeNull();
+                user.AccessToken.Should().BeNull();
+                user.RefreshToken.Should().BeNull();
             });
         }
     }

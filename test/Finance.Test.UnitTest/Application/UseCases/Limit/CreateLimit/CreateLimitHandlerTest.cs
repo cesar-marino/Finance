@@ -26,9 +26,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckUserByIdAsyncThrows))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
-        public async Task ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatCheckUserByIdAsyncThrows()
         {
             _limitRepositoryMock
                 .Setup(x => x.CheckUserByIdAsync(
@@ -44,9 +44,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse))]
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckUserByIdAsyncReturnsFalse))]
         [Trait("Unit/UseCase", "Limit - CreateLimit")]
-        public async Task ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse()
+        public async Task ShouldThrowNotFoundExceptionIfCheckUserByIdAsyncReturnsFalse()
         {
             _limitRepositoryMock
                 .Setup(x => x.CheckUserByIdAsync(
@@ -59,7 +59,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckCategoryByIdAsyncThrows))]

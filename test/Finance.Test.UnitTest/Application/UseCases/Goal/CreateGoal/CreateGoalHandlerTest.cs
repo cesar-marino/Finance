@@ -26,9 +26,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAUserAsyncThrows))]
         [Trait("Unit/UseCase", "Goal - CreateGoal")]
-        public async Task ShouldRethrowSameExceptionThatCheckAccountAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatCheckAUserAsyncThrows()
         {
             _goalRepositoryMock
                 .Setup(x => x.CheckUserAsync(
@@ -44,9 +44,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse))]
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckUserAsyncReturnsFalse))]
         [Trait("Unit/UseCase", "Goal - CreateGoal")]
-        public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
+        public async Task ShouldThrowNotFoundExceptionIfCheckUserAsyncReturnsFalse()
         {
             _goalRepositoryMock
                 .Setup(x => x.CheckUserAsync(
@@ -59,7 +59,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]

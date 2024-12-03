@@ -14,24 +14,24 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         private readonly RefreshTokenHandlerTestFixture _fixture;
         private readonly RefreshTokenHandler _sut;
         private readonly Mock<ITokenService> _tokenServiceMock;
-        private readonly Mock<IUserRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RefreshTokenHandlerTest(RefreshTokenHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _tokenServiceMock = new();
-            _accountRepositoryMock = new();
+            _userRepositoryMock = new();
             _unitOfWorkMock = new();
 
             _sut = new(
                 tokenService: _tokenServiceMock.Object,
-                userRepository: _accountRepositoryMock.Object,
+                userRepository: _userRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGetUsernameFromTokenAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatGetUsernameFromTokenAsyncThrows()
         {
             _tokenServiceMock
@@ -49,7 +49,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -59,22 +59,22 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new NotFoundException("Account"));
+                .ThrowsAsync(new NotFoundException("User"));
 
             var request = _fixture.MakeRefreshTokenRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUnauthorizedExceptionIfRefreshTokenIsInvalid))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async Task ShouldThrowUnauthorizedExceptionIfRefreshTokenIsInvalid()
         {
             var refreshToken = _fixture.MakeUserToken(
@@ -88,12 +88,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity(refreshToken: refreshToken);
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity(refreshToken: refreshToken);
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var request = _fixture.MakeRefreshTokenRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
@@ -104,7 +104,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -114,12 +114,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
@@ -127,7 +127,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: user.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -136,7 +136,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateRefreshTokenAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatGenerateRefreshTokenAsyncThrows()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -146,12 +146,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
@@ -164,7 +164,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: user.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -173,7 +173,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -183,12 +183,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
@@ -202,13 +202,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: user.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -217,7 +217,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -227,12 +227,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
@@ -250,7 +250,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: user.RefreshToken?.Value);
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -259,7 +259,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
         }
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfTokensAreUpdatedSuccessfully))]
-        [Trait("Unit/UseCase", "Account - RefreshToken")]
+        [Trait("Unit/UseCase", "User - RefreshToken")]
         public async void ShouldReturnTheCorrectResponseIfTokensAreUpdatedSuccessfully()
         {
             var username = _fixture.Faker.Internet.UserName();
@@ -269,12 +269,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
@@ -288,24 +288,24 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
 
-            var request = _fixture.MakeRefreshTokenRequest(refreshToken: account.RefreshToken?.Value);
+            var request = _fixture.MakeRefreshTokenRequest(refreshToken: user.RefreshToken?.Value);
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.AccessToken.Should().NotBeNull();
             response.AccessToken?.Value.Should().Be(accessToken.Value);
             response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
-            response.UserId.Should().Be(account.Id);
-            response.Active.Should().Be(account.Active);
-            response.CreatdAt.Should().Be(account.CreatedAt);
-            response.Email.Should().Be(account.Email);
-            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
-            response.Phone.Should().Be(account.Phone);
-            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.UserId.Should().Be(user.Id);
+            response.Active.Should().Be(user.Active);
+            response.CreatdAt.Should().Be(user.CreatedAt);
+            response.Email.Should().Be(user.Email);
+            response.EmailConfirmed.Should().Be(user.EmailConfirmed);
+            response.Phone.Should().Be(user.Phone);
+            response.PhoneConfirmed.Should().Be(user.PhoneConfirmed);
             response.RefreshToken.Should().NotBeNull();
             response.RefreshToken?.Value.Should().Be(refreshToken.Value);
             response.RefreshToken?.ExpiresIn.Should().Be(refreshToken.ExpiresIn);
-            response.Role.Should().Be(account.Role);
-            response.Username.Should().Be(account.Username);
+            response.Role.Should().Be(user.Role);
+            response.Username.Should().Be(user.Username);
         }
     }
 }

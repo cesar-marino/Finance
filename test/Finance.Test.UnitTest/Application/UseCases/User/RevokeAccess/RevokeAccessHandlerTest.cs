@@ -12,50 +12,50 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAccess
     {
         private readonly RevokeAccessHandlerTestFixture _fixture;
         private readonly RevokeAccessHandler _sut;
-        private readonly Mock<IUserRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RevokeAccessHandlerTest(RevokeAccessHandlerTestFixture fixture)
         {
             _fixture = fixture;
-            _accountRepositoryMock = new();
+            _userRepositoryMock = new();
             _unitOfWorkMock = new();
 
             _sut = new(
-                userRepository: _accountRepositoryMock.Object,
+                userRepository: _userRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAccess")]
         public async Task ShouldRethrowSameExceptionThatFindAsyncThrows()
         {
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new NotFoundException("Account"));
+                .ThrowsAsync(new NotFoundException("User"));
 
             var request = _fixture.MakeRevokeAccessRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAccess")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
@@ -70,15 +70,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAccess
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - RevokeAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAccess")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _unitOfWorkMock
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
@@ -93,30 +93,30 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAccess
         }
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked))]
-        [Trait("Unit/UseCase", "Account - RevokeAccess")]
+        [Trait("Unit/UseCase", "User - RevokeAccess")]
         public async Task ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked()
         {
-            var account = _fixture.MakeUserEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             var request = _fixture.MakeRevokeAccessRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.AccessToken.Should().BeNull();
-            response.UserId.Should().Be(account.Id);
-            response.Active.Should().Be(account.Active);
-            response.CreatdAt.Should().Be(account.CreatedAt);
-            response.Email.Should().Be(account.Email);
-            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
-            response.Phone.Should().Be(account.Phone);
-            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.UserId.Should().Be(user.Id);
+            response.Active.Should().Be(user.Active);
+            response.CreatdAt.Should().Be(user.CreatedAt);
+            response.Email.Should().Be(user.Email);
+            response.EmailConfirmed.Should().Be(user.EmailConfirmed);
+            response.Phone.Should().Be(user.Phone);
+            response.PhoneConfirmed.Should().Be(user.PhoneConfirmed);
             response.RefreshToken.Should().BeNull();
-            response.Role.Should().Be(account.Role);
-            response.Username.Should().Be(account.Username);
+            response.Role.Should().Be(user.Role);
+            response.Username.Should().Be(user.Username);
         }
     }
 }

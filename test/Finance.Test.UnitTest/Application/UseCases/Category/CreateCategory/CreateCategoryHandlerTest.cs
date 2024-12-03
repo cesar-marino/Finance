@@ -26,9 +26,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckAccountAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckUserAsyncThrows))]
         [Trait("Unit/UseCase", "Category - CreateCategory")]
-        public async Task ShouldRethrowSameExceptionThatCheckAccountAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatCheckUserAsyncThrows()
         {
             _categoryRepositoryMock
                 .Setup(x => x.CheckUserAsync(
@@ -44,9 +44,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse))]
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionIfCheckUserAsyncReturnsFalse))]
         [Trait("Unit/UseCase", "Category - CreateCategory")]
-        public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
+        public async Task ShouldThrowNotFoundExceptionIfCheckUserAsyncReturnsFalse()
         {
             _categoryRepositoryMock
                 .Setup(x => x.CheckUserAsync(
@@ -59,7 +59,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]

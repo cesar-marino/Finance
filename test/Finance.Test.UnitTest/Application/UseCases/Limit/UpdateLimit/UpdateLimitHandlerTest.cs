@@ -45,9 +45,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .WithMessage("Limit not found");
         }
 
-        [Fact(DisplayName = nameof(ShouldRetrowSameExceptionThatCheckAccountByIdAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldRetrowSameExceptionThatCheckUserByIdAsyncThrows))]
         [Trait("Unit/UseCase", "Limit - UpdateLimit")]
-        public async Task ShouldRetrowSameExceptionThatCheckAccountByIdAsyncThrows()
+        public async Task ShouldRetrowSameExceptionThatCheckUserByIdAsyncThrows()
         {
             var limit = _fixture.MakeLimitEntity();
             _limitRepositoryMock
@@ -71,9 +71,9 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionThatCheckAccountByIdAsyncReturnsFalse))]
+        [Fact(DisplayName = nameof(ShouldThrowNotFoundExceptionThatCheckUserByIdAsyncReturnsFalse))]
         [Trait("Unit/UseCase", "Limit - UpdateLimit")]
-        public async Task ShouldThrowNotFoundExceptionThatCheckAccountByIdAsyncReturnsFalse()
+        public async Task ShouldThrowNotFoundExceptionThatCheckUserByIdAsyncReturnsFalse()
         {
             var limit = _fixture.MakeLimitEntity();
             _limitRepositoryMock
@@ -94,7 +94,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckCategoryByIdAsyncThrows))]
@@ -259,7 +259,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var request = _fixture.MakeUpdateLimitRequest(accountId: limit.UserId, limitId: limit.Id);
+            var request = _fixture.MakeUpdateLimitRequest(userId: limit.UserId, limitId: limit.Id);
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.UserId.Should().Be(request.UserId);

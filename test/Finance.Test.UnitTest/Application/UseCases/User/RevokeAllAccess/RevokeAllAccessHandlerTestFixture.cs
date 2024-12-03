@@ -8,7 +8,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
     {
         public RevokeAllAccessRequest MakeRevokeAllAccessRequest() => new();
 
-        public IReadOnlyList<UserEntity> MakeAccountList()
+        public IReadOnlyList<UserEntity> MakeUserList()
         {
             return
             [
