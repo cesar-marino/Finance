@@ -1,10 +1,10 @@
-using Finance.Application.UseCases.Account.RevokeAccess;
+using Finance.Application.UseCases.User.RevokeAccess;
 using Finance.Test.IntegrationTest.Commons;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RevokeAccess
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.RevokeAccess
 {
     public class RevokeAccessHandlerTestFixture : FixtureBase
     {
-        public RevokeAccessRequest MakeRevokeAccessRequest(Guid? accountId = null) => new(accountId: accountId ?? Faker.Random.Guid());
+        public RevokeAccessRequest MakeRevokeAccessRequest(Guid? userId = null) => new(userId: userId ?? Faker.Random.Guid());
     }
 }

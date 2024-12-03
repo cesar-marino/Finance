@@ -13,7 +13,7 @@ namespace Finance.Infrastructure.Services.Token
 {
     public class JwtBearerAdapter(IConfiguration configuration) : ITokenService
     {
-        public async Task<AccountToken> GenerateAccessTokenAsync(AccountEntity account, CancellationToken cancellationToken = default)
+        public async Task<UserToken> GenerateAccessTokenAsync(UserEntity user, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -22,8 +22,8 @@ namespace Finance.Infrastructure.Services.Token
 
                 var authClaims = new List<Claim>
                 {
-                    new(ClaimTypes.Name, account.Username),
-                    new(ClaimTypes.Email, account.Email),
+                    new(ClaimTypes.Name, user.Username),
+                    new(ClaimTypes.Email, user.Email),
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
@@ -37,7 +37,7 @@ namespace Finance.Infrastructure.Services.Token
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                 var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                return await Task.Run(() => new AccountToken(accessToken, accessTokenExpiration), cancellationToken);
+                return await Task.Run(() => new UserToken(accessToken, accessTokenExpiration), cancellationToken);
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace Finance.Infrastructure.Services.Token
             }
         }
 
-        public async Task<AccountToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default)
+        public async Task<UserToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Finance.Infrastructure.Services.Token
                 var randomNumber = new byte[64];
                 using var rng = RandomNumberGenerator.Create();
                 rng.GetBytes(randomNumber);
-                return await Task.Run(() => new AccountToken(Convert.ToBase64String(randomNumber), refreshTokenExpiration), cancellationToken);
+                return await Task.Run(() => new UserToken(Convert.ToBase64String(randomNumber), refreshTokenExpiration), cancellationToken);
             }
             catch (Exception ex)
             {

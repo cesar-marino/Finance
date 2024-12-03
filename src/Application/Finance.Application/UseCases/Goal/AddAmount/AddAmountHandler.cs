@@ -10,7 +10,7 @@ namespace Finance.Application.UseCases.Goal.AddAmount
     {
         public async Task<GoalResponse> Handle(AddAmountRequest request, CancellationToken cancellationToken)
         {
-            var goal = await goalRepository.FindAsync(request.AccountId, request.GoalId, cancellationToken);
+            var goal = await goalRepository.FindAsync(request.UserId, request.GoalId, cancellationToken);
             goal.AddAmount(request.Amount);
 
             await goalRepository.UpdateAsync(goal, cancellationToken);

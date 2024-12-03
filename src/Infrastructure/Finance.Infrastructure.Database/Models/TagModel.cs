@@ -3,7 +3,7 @@
 namespace Finance.Infrastructure.Database.Models
 {
     public class TagModel(
-        Guid accountId,
+        Guid userId,
         Guid tagId,
         bool active,
         string name,
@@ -18,11 +18,11 @@ namespace Finance.Infrastructure.Database.Models
         public DateTime CreatedAt { get; set; } = createdAt;
         public DateTime UpdatedAt { get; set; } = updatedAt;
 
-        public Guid AccountId { get; set; } = accountId;
-        public virtual AccountModel? Account { get; set; }
+        public Guid UserId { get; set; } = userId;
+        public virtual UserModel? User { get; set; }
 
         public static TagModel FromEntity(TagEntity tag) => new(
-            accountId: tag.AccountId,
+            userId: tag.UserId,
             tagId: tag.Id,
             active: tag.Active,
             name: tag.Name,
@@ -31,7 +31,7 @@ namespace Finance.Infrastructure.Database.Models
             updatedAt: tag.UpdatedAt);
 
         public TagEntity ToEntity() => new(
-            accountId: AccountId,
+            userId: UserId,
             tagId: TagId,
             active: Active,
             name: Name,

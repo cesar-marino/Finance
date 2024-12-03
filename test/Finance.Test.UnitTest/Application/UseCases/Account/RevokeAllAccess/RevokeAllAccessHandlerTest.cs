@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.RevokeAllAccess;
+using Finance.Application.UseCases.User.RevokeAllAccess;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -6,13 +6,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
+namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAllAccess
 {
     public class RevokeAllAccessHandlerTest : IClassFixture<RevokeAllAccessHandlerTestFixture>
     {
         private readonly RevokeAllAccessHandlerTestFixture _fixture;
         private readonly RevokeAllAccessHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RevokeAllAccessHandlerTest(RevokeAllAccessHandlerTestFixture fixture)
@@ -22,7 +22,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
@@ -31,7 +31,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
         public async Task ShouldRethrowSameExceptionThatFindLoggedAccountsAsyncThrows()
         {
             _accountRepositoryMock
-                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeRevokeAllAccessRequest();
@@ -48,12 +48,12 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
         {
             var accounts = _fixture.MakeAccountList();
             _accountRepositoryMock
-                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accounts);
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -71,7 +71,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
         {
             var accounts = _fixture.MakeAccountList();
             _accountRepositoryMock
-                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accounts);
 
             _unitOfWorkMock
@@ -92,7 +92,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAllAccess
         {
             var accounts = _fixture.MakeAccountList();
             _accountRepositoryMock
-                .Setup(x => x.FindLoggedAccountsAsync(It.IsAny<CancellationToken>()))
+                .Setup(x => x.FindLoggedUsersAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accounts);
 
             var request = _fixture.MakeRevokeAllAccessRequest();

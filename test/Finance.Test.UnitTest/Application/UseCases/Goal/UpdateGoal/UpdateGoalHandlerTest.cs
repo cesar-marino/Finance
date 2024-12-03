@@ -111,7 +111,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.UpdateGoal
             var request = _fixture.MakeUpdateGoalRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(response.AccountId);
+            response.UserId.Should().Be(response.UserId);
             response.CreatedAt.Should().Be(response.CreatedAt);
             response.CurrentAmount.Should().Be(response.CurrentAmount);
             response.ExpectedAmount.Should().Be(request.ExpectedAmount);

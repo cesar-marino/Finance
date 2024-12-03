@@ -12,10 +12,10 @@ namespace Finance.Application.UseCases.Limit.CreateLimit
     {
         public async Task<LimitResponse> Handle(CreateLimitRequest request, CancellationToken cancellationToken)
         {
-            var existAccount = await limitRepository.CheckAccountByIdAsync(request.AccountId, cancellationToken);
+            var existUser = await limitRepository.CheckUserByIdAsync(request.UserId, cancellationToken);
 
-            if (!existAccount)
-                throw new NotFoundException("Account");
+            if (!existUser)
+                throw new NotFoundException("User");
 
             var existCategory = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
 
@@ -23,7 +23,7 @@ namespace Finance.Application.UseCases.Limit.CreateLimit
                 throw new NotFoundException("Category");
 
             var limit = new LimitEntity(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 categoryId: request.CategoryId,
                 name: request.Name,
                 limitAmount: request.LimitAmount);

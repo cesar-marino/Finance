@@ -7,6 +7,6 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.GetGoal
     {
         public GetGoalRequest MakeGetGoalRequest() => new(
             goalId: Faker.Random.Guid(),
-            accountId: Faker.Random.Guid());
+            userId: Faker.Random.Guid());
     }
 }

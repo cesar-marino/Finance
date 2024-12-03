@@ -1,7 +1,7 @@
-using Finance.Application.UseCases.Account.RefreshToken;
+using Finance.Application.UseCases.User.RefreshToken;
 using Finance.Test.UnitTest.Commons;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
+namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
 {
     public class RefreshTokenHandlerTestFixture : FixtureBase
     {

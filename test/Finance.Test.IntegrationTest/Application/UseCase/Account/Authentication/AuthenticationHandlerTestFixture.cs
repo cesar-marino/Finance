@@ -1,7 +1,7 @@
-using Finance.Application.UseCases.Account.Authentication;
+using Finance.Application.UseCases.User.Authentication;
 using Finance.Test.IntegrationTest.Commons;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.Authentication
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.Authentication
 {
     public class AuthenticationHandlerTestFixture : FixtureBase
     {

@@ -9,21 +9,21 @@ namespace Finance.Infrastructure.Database.Configurations
         public void Configure(EntityTypeBuilder<CategoryModel> builder)
         {
             builder.ToTable("categories");
-            builder.HasKey(x => new { x.AccountId, x.CategoryId });
+            builder.HasKey(x => new { x.UserId, x.CategoryId });
 
             builder.Property(x => x.CategoryId)
                 .HasColumnName("category_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.Property(x => x.AccountId)
-                .HasColumnName("account_id")
+            builder.Property(x => x.UserId)
+                .HasColumnName("user_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.HasOne(x => x.Account)
+            builder.HasOne(x => x.User)
                 .WithMany(a => a.Categories)
-                .HasForeignKey(x => x.AccountId);
+                .HasForeignKey(x => x.UserId);
 
             builder.Property(x => x.Active)
                 .HasColumnName("active")
@@ -47,7 +47,7 @@ namespace Finance.Infrastructure.Database.Configurations
 
             builder.HasOne(x => x.SuperCategory)
                 .WithMany(x => x.SubCategories)
-                .HasForeignKey(x => new { x.AccountId, x.SuperCategoryId });
+                .HasForeignKey(x => new { x.UserId, x.SuperCategoryId });
 
             builder.Property(p => p.CreatedAt)
                 .HasColumnName("created_at")

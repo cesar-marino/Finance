@@ -9,21 +9,21 @@ namespace Finance.Infrastructure.Database.Configurations
         public void Configure(EntityTypeBuilder<LimitModel> builder)
         {
             builder.ToTable("limits");
-            builder.HasKey(x => new { x.AccountId, x.LimitId });
+            builder.HasKey(x => new { x.UserId, x.LimitId });
 
             builder.Property(x => x.LimitId)
                 .HasColumnName("limit_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.Property(x => x.AccountId)
-                .HasColumnName("account_id")
+            builder.Property(x => x.UserId)
+                .HasColumnName("user_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.HasOne(x => x.Account)
+            builder.HasOne(x => x.User)
                 .WithMany(a => a.Limits)
-                .HasForeignKey(x => x.AccountId);
+                .HasForeignKey(x => x.UserId);
 
             builder.Property(x => x.CategoryId)
                 .HasColumnName("category_id")
@@ -32,7 +32,7 @@ namespace Finance.Infrastructure.Database.Configurations
 
             builder.HasOne(x => x.Category)
                 .WithMany(a => a.Limits)
-                .HasForeignKey(x => new { x.AccountId, x.CategoryId });
+                .HasForeignKey(x => new { x.UserId, x.CategoryId });
 
             builder.Property(x => x.Name)
                 .HasColumnName("name")

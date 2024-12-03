@@ -39,7 +39,7 @@ builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ITokenService, JwtBearerAdapter>();
 
 builder.Services.AddScoped<IUnitOfWork, FinanceContext>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ILimitRepository, LimitRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

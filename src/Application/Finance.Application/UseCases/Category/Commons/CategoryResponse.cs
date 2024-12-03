@@ -4,7 +4,7 @@ using Finance.Domain.Enums;
 namespace Finance.Application.UseCases.Category.Commons
 {
     public class CategoryResponse(
-        Guid accountId,
+        Guid userId,
         Guid categoryId,
         bool active,
         CategoryType? categoryType,
@@ -16,7 +16,7 @@ namespace Finance.Application.UseCases.Category.Commons
         AggregateCategoryResponse? superCategory = null,
         IReadOnlyList<AggregateCategoryResponse>? subCategories = null)
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public Guid CategoryId { get; } = categoryId;
         public bool Active { get; } = active;
         public CategoryType? CategoryType { get; } = categoryType;
@@ -33,7 +33,7 @@ namespace Finance.Application.UseCases.Category.Commons
             CategoryEntity category,
             CategoryEntity? superCategory = null,
             IReadOnlyList<CategoryEntity>? subCategories = null) => new(
-                accountId: category.AccountId,
+                userId: category.UserId,
                 categoryId: category.Id,
                 active: category.Active,
                 categoryType: category.CategoryType,

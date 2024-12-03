@@ -4,7 +4,7 @@ namespace Finance.Application.UseCases.Goal.Commons
 {
     public class GoalResponse(
         Guid goalId,
-        Guid accountId,
+        Guid userId,
         string name,
         double expectedAmount,
         double currentAmount,
@@ -12,7 +12,7 @@ namespace Finance.Application.UseCases.Goal.Commons
         DateTime updatedAt)
     {
         public Guid GoalId { get; } = goalId;
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public string Name { get; } = name;
         public double ExpectedAmount { get; } = expectedAmount;
         public double CurrentAmount { get; } = currentAmount;
@@ -21,7 +21,7 @@ namespace Finance.Application.UseCases.Goal.Commons
 
         public static GoalResponse FromEntity(GoalEntity goal) => new(
             goalId: goal.Id,
-            accountId: goal.AccountId,
+            userId: goal.UserId,
             name: goal.Name,
             expectedAmount: goal.ExpectedAmount,
             currentAmount: goal.CurrentAmount,

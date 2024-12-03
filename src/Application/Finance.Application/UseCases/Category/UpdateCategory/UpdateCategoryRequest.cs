@@ -5,7 +5,7 @@ using MediatR;
 namespace Finance.Application.UseCases.Category.UpdateCategory
 {
     public class UpdateCategoryRequest(
-        Guid accountId,
+        Guid userId,
         Guid categoryId,
         bool active,
         CategoryType categoryType,
@@ -13,7 +13,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
         string? icon,
         string? color) : IRequest<CategoryResponse>
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public Guid CategoryId { get; } = categoryId;
         public bool Active { get; } = active;
         public CategoryType CategoryType { get; } = categoryType;

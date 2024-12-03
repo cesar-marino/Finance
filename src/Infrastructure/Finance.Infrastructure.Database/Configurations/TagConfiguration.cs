@@ -9,21 +9,21 @@ namespace Finance.Infrastructure.Database.Configurations
         public void Configure(EntityTypeBuilder<TagModel> builder)
         {
             builder.ToTable("tags");
-            builder.HasKey(x => new { x.AccountId, x.TagId });
+            builder.HasKey(x => new { x.UserId, x.TagId });
 
             builder.Property(x => x.TagId)
                 .HasColumnName("tag_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.Property(x => x.AccountId)
-                .HasColumnName("account_id")
+            builder.Property(x => x.UserId)
+                .HasColumnName("user_id")
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.HasOne(x => x.Account)
+            builder.HasOne(x => x.User)
                 .WithMany(a => a.Tags)
-                .HasForeignKey(x => x.AccountId);
+                .HasForeignKey(x => x.UserId);
 
             builder.Property(x => x.Active)
                 .HasColumnName("active")

@@ -12,13 +12,13 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
     {
         public async Task<GoalResponse> Handle(CreateGoalRequest request, CancellationToken cancellationToken)
         {
-            var existAccount = await goalRepository.CheckAccountAsync(request.AccountId, cancellationToken);
+            var existUser = await goalRepository.CheckUserAsync(request.UserId, cancellationToken);
 
-            if (!existAccount)
-                throw new NotFoundException("Account");
+            if (!existUser)
+                throw new NotFoundException("User");
 
             var goal = new GoalEntity(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 name: request.Name,
                 expectedAmount: request.ExpectedAmount);
 

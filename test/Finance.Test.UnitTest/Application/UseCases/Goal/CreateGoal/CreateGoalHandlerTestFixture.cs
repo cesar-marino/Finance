@@ -6,7 +6,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
     public class CreateGoalHandlerTestFixture : FixtureBase
     {
         public CreateGoalRequest MakeCreateGoalRequest() => new(
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             name: Faker.Random.String(5),
             expectedAmount: Faker.Random.Double(min: 0));
     }

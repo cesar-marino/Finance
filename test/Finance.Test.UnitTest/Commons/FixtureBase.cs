@@ -17,7 +17,7 @@ namespace Finance.Test.UnitTest.Commons
             string? name = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: accountId ?? Faker.Random.Guid(),
                 tagId: tagId ?? Faker.Random.Guid(),
                 active: active,
                 name: name ?? Faker.Random.String(5),
@@ -35,7 +35,7 @@ namespace Finance.Test.UnitTest.Commons
             Guid? superCategoryId = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: accountId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid(),
                 active: active,
                 categoryType: categoryType,
@@ -48,26 +48,26 @@ namespace Finance.Test.UnitTest.Commons
 
         public LimitEntity MakeLimitEntity() => new(
             limitId: Faker.Random.Guid(),
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             categoryId: Faker.Random.Guid(),
             name: Faker.Random.String(5),
             limitAmount: Faker.Random.Double(),
             createdAt: Faker.Date.Past(),
             updatedAt: Faker.Date.Past());
 
-        public AccountToken MakeAccountToken(
+        public UserToken MakeUserToken(
             string? value = null,
             DateTime? expiresIn = null) => new(
                 value: value ?? Faker.Random.String(50),
                 expiresIn: expiresIn ?? Faker.Date.Future());
 
-        public AccountEntity MakeAccountEntity(
+        public UserEntity MakeUserEntity(
             bool active = true,
             bool emailConfirmed = false,
             bool phoneConfirmed = false,
             Roles role = Roles.User,
-            AccountToken? refreshToken = null) => new(
-                accountId: Faker.Random.Guid(),
+            UserToken? refreshToken = null) => new(
+                userId: Faker.Random.Guid(),
                 active: active,
                 username: Faker.Internet.UserName(),
                 email: Faker.Internet.Email(),
@@ -89,7 +89,7 @@ namespace Finance.Test.UnitTest.Commons
             double? currentAmount = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: accountId ?? Faker.Random.Guid(),
                 goalId: goalId ?? Faker.Random.Guid(),
                 name: name ?? Faker.Random.String(5),
                 expectedAmount: expectedAmount ?? Faker.Random.Double(),

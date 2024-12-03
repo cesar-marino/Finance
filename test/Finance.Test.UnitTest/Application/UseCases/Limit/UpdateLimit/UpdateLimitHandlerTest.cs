@@ -58,7 +58,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -84,7 +84,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
@@ -110,7 +110,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -142,7 +142,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -174,7 +174,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -212,7 +212,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -248,7 +248,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                 .ReturnsAsync(limit);
 
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -259,10 +259,10 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            var request = _fixture.MakeUpdateLimitRequest(accountId: limit.AccountId, limitId: limit.Id);
+            var request = _fixture.MakeUpdateLimitRequest(accountId: limit.UserId, limitId: limit.Id);
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(request.AccountId);
+            response.UserId.Should().Be(request.UserId);
             response.Category.Id.Should().Be(request.CategoryId);
             response.LimitAmount.Should().Be(request.LimitAmount);
             response.LimitId.Should().Be(request.LimitId);

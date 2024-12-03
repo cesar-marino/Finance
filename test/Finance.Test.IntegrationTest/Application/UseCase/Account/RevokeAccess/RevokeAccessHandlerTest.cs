@@ -1,45 +1,45 @@
-using Finance.Application.UseCases.Account.RevokeAccess;
+using Finance.Application.UseCases.User.RevokeAccess;
 using Finance.Domain.Exceptions;
 using Finance.Infrastructure.Database.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RevokeAccess
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.RevokeAccess
 {
     public class RevokeAccessHandlerTest(RevokeAccessHandlerTestFixture fixture) : IClassFixture<RevokeAccessHandlerTestFixture>
     {
         private readonly RevokeAccessHandlerTestFixture _fixture = fixture;
 
         [Fact(DisplayName = nameof(ShouldThrowNotFoundException))]
-        [Trait("Integration/UseCase", "Account - RevokeAccess")]
+        [Trait("Integration/UseCase", "User - RevokeAccess")]
         public async Task ShouldThrowNotFoundException()
         {
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new RevokeAccessHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new RevokeAccessHandler(userRepository: repository, unitOfWork: context);
 
             var request = _fixture.MakeRevokeAccessRequest();
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
-        [Trait("Integration/UseCase", "Account - RevokeAccess")]
+        [Trait("Integration/UseCase", "User - RevokeAccess")]
         public async Task ShouldThrowUnexpectedException()
         {
-            var account = _fixture.MakeAccountModel();
+            var user = _fixture.MakeUserModel();
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
-            var sut = new RevokeAccessHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new RevokeAccessHandler(userRepository: repository, unitOfWork: context);
 
             await context.DisposeAsync();
 
@@ -52,41 +52,41 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RevokeAccess
         }
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked))]
-        [Trait("Integration/UseCase", "Account - RevokeAccess")]
+        [Trait("Integration/UseCase", "User - RevokeAccess")]
         public async Task ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked()
         {
-            var account = _fixture.MakeAccountModel();
+            var user = _fixture.MakeUserModel();
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
-            var sut = new RevokeAccessHandler(accountRepository: repository, unitOfWork: context);
-            var request = _fixture.MakeRevokeAccessRequest(accountId: account.AccountId);
+            var sut = new RevokeAccessHandler(userRepository: repository, unitOfWork: context);
+            var request = _fixture.MakeRevokeAccessRequest(userId: user.UserId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
-            var accountDb = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == response.AccountId);
-            accountDb.Should().NotBeNull();
-            accountDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
-            accountDb?.AccessTokenExpiresIn.Should().BeNull();
-            accountDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
-            accountDb?.AccessTokenValue.Should().BeNull();
-            accountDb?.AccountId.Should().Be(response.AccountId);
-            accountDb?.Active.Should().Be(response.Active);
-            accountDb?.CreatedAt.Should().Be(response.CreatdAt);
-            accountDb?.Email.Should().Be(response.Email);
-            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
-            accountDb?.Phone.Should().Be(response.Phone);
-            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
-            accountDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
-            accountDb?.RefreshTokenExpiresIn.Should().BeNull();
-            accountDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
-            accountDb?.RefreshTokenValue.Should().BeNull();
-            accountDb?.Role.Should().Be(response.Role.ToString());
-            accountDb?.UpdatedAt.Should().Be(response.UpdatedAt);
-            accountDb?.Username.Should().Be(response.Username);
+            var userDb = await context.Users.FirstOrDefaultAsync(x => x.UserId == response.UserId);
+            userDb.Should().NotBeNull();
+            userDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
+            userDb?.AccessTokenExpiresIn.Should().BeNull();
+            userDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
+            userDb?.AccessTokenValue.Should().BeNull();
+            userDb?.UserId.Should().Be(response.UserId);
+            userDb?.Active.Should().Be(response.Active);
+            userDb?.CreatedAt.Should().Be(response.CreatdAt);
+            userDb?.Email.Should().Be(response.Email);
+            userDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            userDb?.Phone.Should().Be(response.Phone);
+            userDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            userDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
+            userDb?.RefreshTokenExpiresIn.Should().BeNull();
+            userDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
+            userDb?.RefreshTokenValue.Should().BeNull();
+            userDb?.Role.Should().Be(response.Role.ToString());
+            userDb?.UpdatedAt.Should().Be(response.UpdatedAt);
+            userDb?.Username.Should().Be(response.Username);
         }
     }
 }

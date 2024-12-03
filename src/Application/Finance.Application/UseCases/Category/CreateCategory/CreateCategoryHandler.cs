@@ -12,12 +12,12 @@ namespace Finance.Application.UseCases.Category.CreateCategory
     {
         public async Task<CategoryResponse> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
         {
-            var existAccount = await categoryRepository.CheckAccountAsync(request.AccountId, cancellationToken);
-            if (!existAccount)
-                throw new NotFoundException("Account");
+            var existUser = await categoryRepository.CheckUserAsync(request.UserId, cancellationToken);
+            if (!existUser)
+                throw new NotFoundException("User");
 
             var category = new CategoryEntity(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 categoryType: request.CategoryType,
                 name: request.Name,
                 icon: request.Icon,

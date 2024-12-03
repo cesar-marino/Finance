@@ -1,11 +1,11 @@
-using Finance.Application.UseCases.Account.CreateAccount;
+using Finance.Application.UseCases.User.CreateUser;
 using Finance.Test.UnitTest.Commons;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.CreateAccount
+namespace Finance.Test.UnitTest.Application.UseCases.User.CreateUser
 {
-    public class CreateAccountHandlerTestFixture : FixtureBase
+    public class CreateUserHandlerTestFixture : FixtureBase
     {
-        public CreateAccountRequest MakeCreateAccountRequest() => new(
+        public CreateUserRequest MakeCreateUserRequest() => new(
             username: Faker.Internet.UserName(),
             email: Faker.Internet.Email(),
             password: Faker.Internet.Password(),

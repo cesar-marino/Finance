@@ -1,8 +1,8 @@
 namespace Finance.Domain.Exceptions
 {
-    public class DisableAccountException(
-           string code = "disable-account",
-           string? message = "Disable account",
+    public class DisableUserException(
+           string code = "disable-user",
+           string? message = "Disable user",
            Exception? innerException = null) : DomainException(code, message, innerException)
     {
     }

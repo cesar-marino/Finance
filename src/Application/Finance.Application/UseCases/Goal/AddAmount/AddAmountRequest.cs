@@ -5,11 +5,11 @@ namespace Finance.Application.UseCases.Goal.AddAmount
 {
     public class AddAmountRequest(
         Guid goalId,
-        Guid accountId,
+        Guid userId,
         double amount) : IRequest<GoalResponse>
     {
         public Guid GoalId { get; } = goalId;
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public double Amount { get; } = amount;
     }
 }

@@ -110,7 +110,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.DisableCategory
             var request = _fixture.MakeDisableCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(category.AccountId);
+            response.UserId.Should().Be(category.UserId);
             response.Active.Should().BeFalse();
             response.CategoryId.Should().Be(category.Id);
             response.CategoryType.Should().Be(category.CategoryType);

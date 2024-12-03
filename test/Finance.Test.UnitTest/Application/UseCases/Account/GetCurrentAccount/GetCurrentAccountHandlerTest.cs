@@ -1,18 +1,18 @@
 using Finance.Application.Services;
-using Finance.Application.UseCases.Account.GetCurrentAccount;
+using Finance.Application.UseCases.User.GetCurrentUser;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
+namespace Finance.Test.UnitTest.Application.UseCases.User.GetCurrentAccount
 {
     public class GetCurrentAccountHandlerTest : IClassFixture<GetCurrentAccountHandlerTestFixture>
     {
         private readonly GetCurrentAccountHandlerTestFixture _fixture;
-        private readonly GetCurrentAccountHandler _sut;
+        private readonly GetCurrentUserHandler _sut;
         private readonly Mock<ITokenService> _tokenServiceMock;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
 
         public GetCurrentAccountHandlerTest(GetCurrentAccountHandlerTestFixture fixture)
         {
@@ -22,7 +22,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
 
             _sut = new(
                 tokenService: _tokenServiceMock.Object,
-                accountRepository: _accountRepositoryMock.Object);
+                userRepository: _accountRepositoryMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGetUsernameFromTokenAsyncThrows))]
@@ -79,7 +79,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
@@ -92,7 +92,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
             response.AccessToken.Should().NotBeNull();
             response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
             response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(account.Id);
             response.Active.Should().BeTrue();
             response.CreatdAt.Should().Be(account.CreatedAt);
             response.Email.Should().Be(account.Email);

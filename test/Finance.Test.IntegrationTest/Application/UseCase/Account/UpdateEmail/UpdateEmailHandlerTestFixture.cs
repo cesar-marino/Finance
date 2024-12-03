@@ -1,14 +1,14 @@
-using Finance.Application.UseCases.Account.UpdateEmail;
+using Finance.Application.UseCases.User.UpdateEmail;
 using Finance.Test.IntegrationTest.Commons;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.UpdateEmail
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.UpdateEmail
 {
     public class UpdateEmailHandlerTestFixture : FixtureBase
     {
         public UpdateEmailRequest MakeUpdateEmailRequest(
-            Guid? accountId = null,
+            Guid? userId = null,
             string? email = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 email: email ?? Faker.Internet.Email());
     }
 }

@@ -65,7 +65,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.CreateTag
             var request = _fixture.MakeCreateTagRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(request.AccountId);
+            response.UserId.Should().Be(request.UserId);
             response.Active.Should().BeTrue();
             response.Name.Should().Be(request.Name);
         }

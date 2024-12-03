@@ -6,7 +6,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.DisableTag
     public class DisableTagHandlerTestFixture : FixtureBase
     {
         public DisableTagRequest MakeDisableTagRequest() => new(
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             tagId: Faker.Random.Guid());
     }
 }

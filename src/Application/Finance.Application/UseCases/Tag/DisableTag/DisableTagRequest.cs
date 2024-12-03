@@ -4,10 +4,10 @@ using MediatR;
 namespace Finance.Application.UseCases.Tag.DisableTag
 {
     public class DisableTagRequest(
-        Guid accountId,
+        Guid userId,
         Guid tagId) : IRequest<TagResponse>
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public Guid TagId { get; } = tagId;
     }
 }

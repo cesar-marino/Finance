@@ -4,10 +4,10 @@ using MediatR;
 namespace Finance.Application.UseCases.Tag.CreateTag
 {
     public class CreateTagRequest(
-        Guid accountId,
+        Guid userId,
         string name) : IRequest<TagResponse>
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public string Name { get; } = name;
     }
 }

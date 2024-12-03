@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.UpdateUsername;
+using Finance.Application.UseCases.User.UpdateUsername;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -6,13 +6,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
+namespace Finance.Test.UnitTest.Application.UseCases.User.UpdateUsername
 {
     public class UpdateUsernameHandlerTest : IClassFixture<UpdateUsernameHandlerTestFixture>
     {
         private readonly UpdateUsernameHandlerTestFixture _fixture;
         private readonly UpdateUsernameHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWork;
 
         public UpdateUsernameHandlerTest(UpdateUsernameHandlerTestFixture fixture)
@@ -22,7 +22,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
             _unitOfWork = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 unitOfWork: _unitOfWork.Object);
         }
 
@@ -96,7 +96,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(false);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -105,7 +105,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -127,7 +127,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -156,7 +156,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(false);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -168,7 +168,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdateUsername
 
             response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
             response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(account.Id);
             response.Active.Should().Be(account.Active);
             response.CreatdAt.Should().Be(account.CreatedAt);
             response.Email.Should().Be(account.Email);

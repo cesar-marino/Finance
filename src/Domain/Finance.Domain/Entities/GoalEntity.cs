@@ -4,24 +4,24 @@ namespace Finance.Domain.Entities
 {
     public class GoalEntity : AggregateRoot
     {
-        public Guid AccountId { get; }
+        public Guid UserId { get; }
         public string Name { get; private set; }
         public double ExpectedAmount { get; private set; }
         public double CurrentAmount { get; private set; }
 
         public GoalEntity(
-            Guid accountId,
+            Guid userId,
             string name,
             double expectedAmount)
         {
-            AccountId = accountId;
+            UserId = userId;
             Name = name;
             ExpectedAmount = expectedAmount;
             CurrentAmount = 0;
         }
 
         public GoalEntity(
-            Guid accountId,
+            Guid userId,
             Guid goalId,
             string name,
             double expectedAmount,
@@ -29,7 +29,7 @@ namespace Finance.Domain.Entities
             DateTime createdAt,
             DateTime updatedAt) : base(goalId, createdAt, updatedAt)
         {
-            AccountId = accountId;
+            UserId = userId;
             Name = name;
             ExpectedAmount = expectedAmount;
             CurrentAmount = currentAmount;

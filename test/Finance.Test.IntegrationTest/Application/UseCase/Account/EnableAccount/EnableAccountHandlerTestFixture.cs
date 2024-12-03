@@ -1,10 +1,10 @@
-using Finance.Application.UseCases.Account.EnableAccount;
+using Finance.Application.UseCases.User.EnableUser;
 using Finance.Test.IntegrationTest.Commons;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.EnableAccount
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.EnableUser
 {
-    public class EnableAccountHandlerTestFixture : FixtureBase
+    public class EnableUserHandlerTestFixture : FixtureBase
     {
-        public EnableAccountRequest MakeEnableAccountRequest(Guid? accountId = null) => new(accountId: accountId ?? Faker.Random.Guid());
+        public EnableUserRequest MakeEnableUserRequest(Guid? userId = null) => new(userId: userId ?? Faker.Random.Guid());
     }
 }

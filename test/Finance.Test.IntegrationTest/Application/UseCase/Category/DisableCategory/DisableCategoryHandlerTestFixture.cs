@@ -6,9 +6,9 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.DisableCateg
     public class DisableCategoryHandlerTestFixture : FixtureBase
     {
         public DisableCategoryRequest MakeDisableCategoryRequest(
-            Guid? accountId = null,
+            Guid? userId = null,
             Guid? categoryId = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid());
     }
 }

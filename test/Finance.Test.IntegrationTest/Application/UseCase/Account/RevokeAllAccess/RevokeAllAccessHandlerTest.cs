@@ -1,23 +1,23 @@
-using Finance.Application.UseCases.Account.RevokeAllAccess;
+using Finance.Application.UseCases.User.RevokeAllAccess;
 using Finance.Domain.Exceptions;
 using Finance.Infrastructure.Database.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RevokeAllAccess
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.RevokeAllAccess
 {
     public class RevokeAllAccessHandlerTest(RevokeAllAccessHandlerTestFixture fixture) : IClassFixture<RevokeAllAccessHandlerTestFixture>
     {
         private readonly RevokeAllAccessHandlerTestFixture _fixture = fixture;
 
         [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
-        [Trait("Integration/UseCase", "Account - RevokeAllAccess")]
+        [Trait("Integration/UseCase", "User - RevokeAllAccess")]
         public async Task ShouldThrowUnexpectedException()
         {
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new RevokeAllAccessHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new RevokeAllAccessHandler(userRepository: repository, unitOfWork: context);
 
             await context.DisposeAsync();
 
@@ -30,29 +30,29 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.RevokeAllAcce
         }
 
         [Fact(DisplayName = nameof(ShouldRevokeAllAccessSuccessfully))]
-        [Trait("Integration/UseCase", "Account - RevokeAllAccess")]
+        [Trait("Integration/UseCase", "User - RevokeAllAccess")]
         public async Task ShouldRevokeAllAccessSuccessfully()
         {
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var accounts = _fixture.MakeAccounModelList();
-            await context.Accounts.AddRangeAsync(accounts);
+            var users = _fixture.MakeAccounModelList();
+            await context.Users.AddRangeAsync(users);
             await context.SaveChangesAsync();
 
-            var sut = new RevokeAllAccessHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new RevokeAllAccessHandler(userRepository: repository, unitOfWork: context);
 
             var request = _fixture.MakeRevokeAllAccessRequest();
             await sut.Handle(request, _fixture.CancellationToken);
 
-            var accountsDb = await context.Accounts.ToListAsync();
-            accountsDb.Should().NotBeNull();
-            accountsDb.ForEach((account) =>
+            var usersDb = await context.Users.ToListAsync();
+            usersDb.Should().NotBeNull();
+            usersDb.ForEach((user) =>
             {
-                account?.AccessTokenExpiresIn.Should().BeNull();
-                account?.AccessTokenValue.Should().BeNull();
-                account?.RefreshTokenExpiresIn.Should().BeNull();
-                account?.RefreshTokenValue.Should().BeNull();
+                user?.AccessTokenExpiresIn.Should().BeNull();
+                user?.AccessTokenValue.Should().BeNull();
+                user?.RefreshTokenExpiresIn.Should().BeNull();
+                user?.RefreshTokenValue.Should().BeNull();
             });
         }
     }

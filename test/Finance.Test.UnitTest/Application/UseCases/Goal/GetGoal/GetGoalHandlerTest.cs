@@ -54,7 +54,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.GetGoal
             var request = _fixture.MakeGetGoalRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(response.AccountId);
+            response.UserId.Should().Be(response.UserId);
             response.CreatedAt.Should().Be(response.CreatedAt);
             response.CurrentAmount.Should().Be(response.CurrentAmount);
             response.ExpectedAmount.Should().Be(response.ExpectedAmount);

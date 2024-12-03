@@ -1,10 +1,10 @@
-using Finance.Application.UseCases.Account.GetCurrentAccount;
+using Finance.Application.UseCases.User.GetCurrentUser;
 using Finance.Test.UnitTest.Commons;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.GetCurrentAccount
+namespace Finance.Test.UnitTest.Application.UseCases.User.GetCurrentAccount
 {
     public class GetCurrentAccountHandlerTestFixture : FixtureBase
     {
-        public GetCurrentAccountRequest MakeGetCurrentAccountRequest() => new(accessToken: Faker.Random.Guid().ToString());
+        public GetCurrentUserRequest MakeGetCurrentAccountRequest() => new(accessToken: Faker.Random.Guid().ToString());
     }
 }

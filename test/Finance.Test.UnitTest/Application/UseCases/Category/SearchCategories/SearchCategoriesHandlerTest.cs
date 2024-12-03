@@ -75,7 +75,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.SearchCategories
             response.Items.ToList().ForEach((item) =>
             {
                 var category = result.Items.FirstOrDefault(x => x.Id == item.CategoryId);
-                category?.AccountId.Should().Be(item.AccountId);
+                category?.UserId.Should().Be(item.UserId);
                 category?.Active.Should().Be(item.Active);
                 category?.CategoryType.Should().Be(item.CategoryType);
                 category?.Color.Should().Be(item.Color);

@@ -1,5 +1,5 @@
 using Finance.Application.Services;
-using Finance.Application.UseCases.Account.Authentication;
+using Finance.Application.UseCases.User.Authentication;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -7,13 +7,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
+namespace Finance.Test.UnitTest.Application.UseCases.User.Authentication
 {
     public class AuthenticationHandlerTest : IClassFixture<AuthenticationHandlerTestFixture>
     {
         private readonly AuthenticationHandlerTestFixture _fixture;
         private readonly AuthenticationHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -21,46 +21,46 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         public AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture)
         {
             _fixture = fixture;
-            _accountRepositoryMock = new();
+            _userRepositoryMock = new();
             _encryptionServiceMock = new();
             _tokenServiceMock = new();
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _userRepositoryMock.Object,
                 encryptionService: _encryptionServiceMock.Object,
                 tokenService: _tokenServiceMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByEmailAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatFindByEmailAsyncThrows()
         {
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new NotFoundException("Account"));
+                .ThrowsAsync(new NotFoundException("User"));
 
             var request = _fixture.MakeAuthenticationRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatVerifyAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatVerifyAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -78,15 +78,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         }
 
         [Fact(DisplayName = nameof(ShouldThrowInvalidPasswordExceptionIfVerifyAsyncReturnsFalse))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldThrowInvalidPasswordExceptionIfVerifyAsyncReturnsFalse()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -103,16 +103,16 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .WithMessage("Incorrect password");
         }
 
-        [Fact(DisplayName = nameof(ShouldThrowDisabledAccountExceptionIfAccountIsDisabled))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
-        public async Task ShouldThrowDisabledAccountExceptionIfAccountIsDisabled()
+        [Fact(DisplayName = nameof(ShouldThrowDisabledUserExceptionIfUserIsDisabled))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldThrowDisabledUserExceptionIfUserIsDisabled()
         {
-            var account = _fixture.MakeAccountEntity(active: false);
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity(active: false);
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -124,21 +124,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
             var request = _fixture.MakeAuthenticationRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
-            await act.Should().ThrowExactlyAsync<DisableAccountException>()
-                .Where(x => x.Code == "disable-account")
-                .WithMessage("Disable account");
+            await act.Should().ThrowExactlyAsync<DisableUserException>()
+                .Where(x => x.Code == "disable-user")
+                .WithMessage("Disable user");
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatGenerateAccessTokenAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -149,7 +149,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
 
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -162,15 +162,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateRefreshTokenAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatGenerateRefreshTokenAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -179,10 +179,10 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(true);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
@@ -199,15 +199,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -216,21 +216,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(true);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -243,15 +243,15 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
+        [Trait("Unit/UseCase", "User - Authentication")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -260,14 +260,14 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(true);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
@@ -284,16 +284,16 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated))]
-        [Trait("Unit/UseCase", "Account - Authentication")]
-        public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyAuthenticated()
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAuthenticated))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAuthenticated()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindByEmailAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _encryptionServiceMock
                .Setup(x => x.VerifyAsync(
@@ -302,14 +302,14 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(true);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
@@ -320,18 +320,18 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.Authentication
             response.AccessToken.Should().NotBeNull();
             response.AccessToken?.Value.Should().Be(accessToken.Value);
             response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(user.Id);
             response.Active.Should().BeTrue();
-            response.CreatdAt.Should().Be(account.CreatedAt);
-            response.Email.Should().Be(account.Email);
-            response.EmailConfirmed.Should().Be(account.EmailConfirmed);
-            response.Phone.Should().Be(account.Phone);
-            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
+            response.CreatdAt.Should().Be(user.CreatedAt);
+            response.Email.Should().Be(user.Email);
+            response.EmailConfirmed.Should().Be(user.EmailConfirmed);
+            response.Phone.Should().Be(user.Phone);
+            response.PhoneConfirmed.Should().Be(user.PhoneConfirmed);
             response.RefreshToken.Should().NotBeNull();
             response.RefreshToken?.Value.Should().Be(refreshToken.Value);
             response.RefreshToken?.ExpiresIn.Should().Be(refreshToken.ExpiresIn);
-            response.Role.Should().Be(account.Role);
-            response.Username.Should().Be(account.Username);
+            response.Role.Should().Be(user.Role);
+            response.Username.Should().Be(user.Username);
         }
     }
 }

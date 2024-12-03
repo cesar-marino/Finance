@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.RevokeAccess;
+using Finance.Application.UseCases.User.RevokeAccess;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -6,13 +6,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
+namespace Finance.Test.UnitTest.Application.UseCases.User.RevokeAccess
 {
     public class RevokeAccessHandlerTest : IClassFixture<RevokeAccessHandlerTestFixture>
     {
         private readonly RevokeAccessHandlerTestFixture _fixture;
         private readonly RevokeAccessHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RevokeAccessHandlerTest(RevokeAccessHandlerTestFixture fixture)
@@ -22,7 +22,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
@@ -48,7 +48,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
         [Trait("Unit/UseCase", "Account - RevokeAccess")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -57,7 +57,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -73,7 +73,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
         [Trait("Unit/UseCase", "Account - RevokeAccess")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -96,7 +96,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
         [Trait("Unit/UseCase", "Account - RevokeAccess")]
         public async Task ShouldReturnTheCorrectResponseIfAccessIsSuccessfullyRevoked()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -107,7 +107,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RevokeAccess
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
             response.AccessToken.Should().BeNull();
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(account.Id);
             response.Active.Should().Be(account.Active);
             response.CreatdAt.Should().Be(account.CreatedAt);
             response.Email.Should().Be(account.Email);

@@ -31,7 +31,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldRethrowSameExceptionThatCheckAccountByIdAsyncThrows()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -49,7 +49,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldThrowNotFoundExceptionIfCheckAccountByIdAsyncReturnsFalse()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
@@ -67,7 +67,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldRethrowSameExceptionThatCheckCategoryByIdAsyncThrows()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -91,7 +91,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldThrowNotFoundIfCheckCategoryByIdAsyncReturnsFalse()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -115,7 +115,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -145,7 +145,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -173,7 +173,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
         public async Task ShouldReturnTheCorrectResponseIfLimitIsAddedSucccessfully()
         {
             _limitRepositoryMock
-                .Setup(x => x.CheckAccountByIdAsync(
+                .Setup(x => x.CheckUserByIdAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -187,7 +187,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.CreateLimit
             var request = _fixture.MakeCreateLimitRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(request.AccountId);
+            response.UserId.Should().Be(request.UserId);
             response.Category.Id.Should().Be(request.CategoryId);
             response.LimitAmount.Should().Be(request.LimitAmount);
             response.Name.Should().Be(request.Name);

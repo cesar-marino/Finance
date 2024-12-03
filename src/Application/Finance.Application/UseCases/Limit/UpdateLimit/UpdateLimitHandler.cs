@@ -12,13 +12,13 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
         public async Task<LimitResponse> Handle(UpdateLimitRequest request, CancellationToken cancellationToken)
         {
             var limit = await limitRepository.FindAsync(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 entityId: request.LimitId,
                 cancellationToken);
 
-            var existAccount = await limitRepository.CheckAccountByIdAsync(request.AccountId, cancellationToken);
-            if (!existAccount)
-                throw new NotFoundException("Account");
+            var existUser = await limitRepository.CheckUserByIdAsync(request.UserId, cancellationToken);
+            if (!existUser)
+                throw new NotFoundException("User");
 
             var existCategory = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
             if (!existCategory)

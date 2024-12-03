@@ -31,7 +31,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         public async Task ShouldRethrowSameExceptionThatCheckAccountAsyncThrows()
         {
             _categoryRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -49,7 +49,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
         {
             _categoryRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
@@ -67,7 +67,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _categoryRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -89,7 +89,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
             _categoryRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -111,7 +111,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
         public async Task ShouldReturnTheCorrectResponseIfCategoryIsAddedSuccessfully()
         {
             _categoryRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -119,7 +119,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
             var request = _fixture.MakeCreateCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(request.AccountId);
+            response.UserId.Should().Be(request.UserId);
             response.Active.Should().BeTrue();
             response.CategoryType.Should().Be(request.CategoryType);
             response.Color.Should().Be(request.Color);

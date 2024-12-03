@@ -11,12 +11,12 @@ namespace Finance.Infrastructure.Database.Repositories
 {
     public class CategoryRepository(FinanceContext context) : ICategoryRepository
     {
-        public async Task<bool> CheckAccountAsync(Guid accountId, CancellationToken cancellationToken = default)
+        public async Task<bool> CheckUserAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             try
             {
-                var account = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
-                return account != null;
+                var user = await context.Users.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+                return user != null;
             }
             catch (Exception ex)
             {
@@ -24,12 +24,12 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<CategoryEntity> FindAsync(Guid accountId, Guid entityId, CancellationToken cancellationToken = default)
+        public async Task<CategoryEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
         {
             try
             {
                 var model = await context.Categories.FirstOrDefaultAsync(
-                    x => x.AccountId == accountId && x.CategoryId == entityId,
+                    x => x.UserId == userId && x.CategoryId == entityId,
                     cancellationToken);
 
                 return model?.ToEntity() ?? throw new NotFoundException("Category");
@@ -139,7 +139,7 @@ namespace Finance.Infrastructure.Database.Repositories
                 var category = CategoryModel.FromEntity(aggregate);
 
                 var existingCategory = await context.Categories
-                    .FirstOrDefaultAsync(x => x.AccountId == category.AccountId && x.CategoryId == category.CategoryId, cancellationToken: cancellationToken);
+                    .FirstOrDefaultAsync(x => x.UserId == category.UserId && x.CategoryId == category.CategoryId, cancellationToken: cancellationToken);
 
                 if (existingCategory != null)
                 {

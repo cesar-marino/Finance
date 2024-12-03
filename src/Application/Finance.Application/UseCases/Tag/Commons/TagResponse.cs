@@ -3,14 +3,14 @@
 namespace Finance.Application.UseCases.Tag.Commons
 {
     public class TagResponse(
-        Guid accountId,
+        Guid userId,
         Guid tagId,
         bool active,
         string name,
         DateTime createdAt,
         DateTime updatedAt)
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public Guid TagId { get; } = tagId;
         public bool Active { get; } = active;
         public string Name { get; } = name;
@@ -18,7 +18,7 @@ namespace Finance.Application.UseCases.Tag.Commons
         public DateTime UpdatedAt { get; } = updatedAt;
 
         public static TagResponse FromEntity(TagEntity tag) => new(
-            accountId: tag.AccountId,
+            userId: tag.UserId,
             tagId: tag.Id,
             active: tag.Active,
             name: tag.Name,

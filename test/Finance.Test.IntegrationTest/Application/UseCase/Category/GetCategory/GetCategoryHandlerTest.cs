@@ -27,9 +27,9 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
                 .WithMessage("Category not found");
         }
 
-        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsFound))]
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsFound))]
         [Trait("Integration/UseCase", "Category - GetCategory")]
-        public async Task ShouldReturnTheCorrectResponseIfAccountIsFound()
+        public async Task ShouldReturnTheCorrectResponseIfUserIsFound()
         {
             var context = _fixture.MakeFinanceContext();
             var repository = new CategoryRepository(context);
@@ -44,7 +44,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
 
             var sut = new GetCategoryHandler(categoryRepository: repository);
 
-            var request = _fixture.MakeGetCategoryRequest(accountId: category.AccountId, categoryId: category.CategoryId);
+            var request = _fixture.MakeGetCategoryRequest(userId: category.UserId, categoryId: category.CategoryId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
             var categoryDb = await context.Categories
@@ -55,7 +55,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
                 .Where(x => x.SuperCategoryId == category.CategoryId)
                 .ToListAsync();
 
-            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.UserId.Should().Be(response.UserId);
             categoryDb?.Active.Should().Be(response.Active);
             categoryDb?.CategoryId.Should().Be(response.CategoryId);
             categoryDb?.CategoryType.Should().Be(response.CategoryType);

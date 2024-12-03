@@ -6,7 +6,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.CreateCategory
     public class CreateCategoryHandlerTestFixture : FixtureBase
     {
         public CreateCategoryRequest MakeCreateCategoryRequest() => new(
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             categoryType: Domain.Enums.CategoryType.Revenue,
             name: Faker.Random.String(5),
             icon: Faker.Random.String(5),

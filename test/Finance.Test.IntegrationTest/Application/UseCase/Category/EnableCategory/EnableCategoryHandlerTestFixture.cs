@@ -6,9 +6,9 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.EnableCatego
     public class EnableCategoryHandlerTestFixture : FixtureBase
     {
         public EnableCategoryRequest MakeEnableCategoryRequest(
-            Guid? accountId = null,
+            Guid? userId = null,
             Guid? categoryId = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid());
     }
 }

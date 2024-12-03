@@ -24,7 +24,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
@@ -34,8 +34,8 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
             var context = _fixture.MakeFinanceContext();
             var repository = new CategoryRepository(context);
 
-            var account = _fixture.MakeAccountModel();
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var user = _fixture.MakeUserModel();
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
@@ -43,7 +43,7 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
 
             await context.DisposeAsync();
 
-            var request = _fixture.MakeCreateCategoryRequest(accountId: account.AccountId);
+            var request = _fixture.MakeCreateCategoryRequest(userId: user.UserId);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -58,18 +58,18 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
             var context = _fixture.MakeFinanceContext();
             var repository = new CategoryRepository(context);
 
-            var account = _fixture.MakeAccountModel();
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var user = _fixture.MakeUserModel();
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
             var sut = new CreateCategoryHandler(categoryRepository: repository, unitOfWork: context);
 
-            var request = _fixture.MakeCreateCategoryRequest(accountId: account.AccountId);
+            var request = _fixture.MakeCreateCategoryRequest(userId: user.UserId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
             var categoryDb = await context.Categories.FirstOrDefaultAsync();
-            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.UserId.Should().Be(response.UserId);
             categoryDb?.Active.Should().Be(response.Active);
             categoryDb?.CategoryType.Should().Be(response.CategoryType);
             categoryDb?.Color.Should().Be(response.Color);

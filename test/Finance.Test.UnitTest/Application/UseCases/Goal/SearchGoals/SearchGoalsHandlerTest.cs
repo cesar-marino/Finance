@@ -69,7 +69,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.SearchGoals
             response.Items.ToList().ForEach((item) =>
             {
                 var goal = result.Items.FirstOrDefault(x => x.Id == item.GoalId);
-                goal?.AccountId.Should().Be(item.AccountId);
+                goal?.UserId.Should().Be(item.UserId);
                 goal?.CreatedAt.Should().Be(item.CreatedAt);
                 goal?.Id.Should().Be(item.GoalId);
                 goal?.Name.Should().Be(item.Name);

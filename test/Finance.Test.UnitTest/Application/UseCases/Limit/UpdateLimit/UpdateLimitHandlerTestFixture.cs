@@ -7,7 +7,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Limit.UpdateLimit
     public class UpdateLimitHandlerTestFixture : FixtureBase
     {
         public UpdateLimitRequest MakeUpdateLimitRequest(Guid? accountId = null, Guid? limitId = null) => new(
-            accountId: accountId ?? Faker.Random.Guid(),
+            userId: accountId ?? Faker.Random.Guid(),
             limitId: limitId ?? Faker.Random.Guid(),
             categoryId: Faker.Random.Guid(),
             name: Faker.Random.String(5),

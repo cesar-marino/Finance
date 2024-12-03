@@ -10,7 +10,7 @@ namespace Finance.Application.UseCases.Limit.RemoveLimit
         public async Task<bool> Handle(RemoveLimitRequest request, CancellationToken cancellationToken)
         {
             await limitRepository.RemoveAsync(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 limitId: request.LimitId,
                 cancellationToken);
 

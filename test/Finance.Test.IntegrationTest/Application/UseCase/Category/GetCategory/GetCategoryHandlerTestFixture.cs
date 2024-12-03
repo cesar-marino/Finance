@@ -7,9 +7,9 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.GetCategory
     public class GetCategoryHandlerTestFixture : FixtureBase
     {
         public GetCategoryRequest MakeGetCategoryRequest(
-            Guid? accountId = null,
+            Guid? userId = null,
             Guid? categoryId = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid());
 
         public List<CategoryModel> MakeCategoryList(Guid superCategoryId) => [

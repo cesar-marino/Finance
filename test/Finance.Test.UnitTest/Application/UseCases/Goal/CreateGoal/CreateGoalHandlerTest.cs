@@ -31,7 +31,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         public async Task ShouldRethrowSameExceptionThatCheckAccountAsyncThrows()
         {
             _goalRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -49,7 +49,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         public async Task ShouldThrowNotFoundExceptionIfCheckAccountAsyncReturnsFalse()
         {
             _goalRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
@@ -67,7 +67,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _goalRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -91,7 +91,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
             _goalRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -113,7 +113,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
         public async Task ShouldReturnTheCorrectResponseIfGoalIsSuccessfullyCreated()
         {
             _goalRepositoryMock
-                .Setup(x => x.CheckAccountAsync(
+                .Setup(x => x.CheckUserAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
@@ -121,7 +121,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.CreateGoal
             var request = _fixture.MakeCreateGoalRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(request.AccountId);
+            response.UserId.Should().Be(request.UserId);
             response.CurrentAmount.Should().Be(0);
             response.ExpectedAmount.Should().Be(request.ExpectedAmount);
             response.Name.Should().Be(request.Name);

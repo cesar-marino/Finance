@@ -60,11 +60,11 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.EnableCatego
 
             var sut = new EnableCategoryHandler(categoryRepository: repository, unitOfWork: context);
 
-            var request = _fixture.MakeEnableCategoryRequest(accountId: category.AccountId, categoryId: category.CategoryId);
+            var request = _fixture.MakeEnableCategoryRequest(userId: category.UserId, categoryId: category.CategoryId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
             var categoryDb = await context.Categories.FirstOrDefaultAsync(x => x.CategoryId == category.CategoryId);
-            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.UserId.Should().Be(response.UserId);
             categoryDb?.Active.Should().BeTrue();
             categoryDb?.CategoryId.Should().Be(response.CategoryId);
             categoryDb?.CategoryType.Should().Be(response.CategoryType);

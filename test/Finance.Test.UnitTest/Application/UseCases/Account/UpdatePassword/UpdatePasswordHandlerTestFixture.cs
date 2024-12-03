@@ -1,12 +1,12 @@
-using Finance.Application.UseCases.Account.UpdatePassword;
+using Finance.Application.UseCases.User.UpdatePassword;
 using Finance.Test.UnitTest.Commons;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
+namespace Finance.Test.UnitTest.Application.UseCases.User.UpdatePassword
 {
     public class UpdatePasswordHandlerTestFixture : FixtureBase
     {
         public UpdatePasswordRequest MakeUpdatePasswordRequest() => new(
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             currentPassword: Faker.Internet.Password(),
             newPassword: Faker.Internet.Password());
     }

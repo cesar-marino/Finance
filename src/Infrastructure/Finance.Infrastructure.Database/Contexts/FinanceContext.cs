@@ -8,7 +8,7 @@ namespace Finance.Infrastructure.Database.Contexts
 {
     public class FinanceContext(DbContextOptions<FinanceContext> options) : DbContext(options), IUnitOfWork
     {
-        public DbSet<AccountModel> Accounts { get; private set; }
+        public DbSet<UserModel> Users { get; private set; }
         public DbSet<TagModel> Tags { get; private set; }
         public DbSet<CategoryModel> Categories { get; private set; }
         public DbSet<LimitModel> Limits { get; private set; }
@@ -27,7 +27,7 @@ namespace Finance.Infrastructure.Database.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new LimitConfiguration());

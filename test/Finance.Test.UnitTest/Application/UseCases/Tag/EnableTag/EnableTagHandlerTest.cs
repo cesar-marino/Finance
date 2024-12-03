@@ -110,7 +110,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.EnableTag
             var request = _fixture.MakeEnableTagRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(tag.AccountId);
+            response.UserId.Should().Be(tag.UserId);
             response.Active.Should().BeTrue();
             response.CreatedAt.Should().Be(tag.CreatedAt);
             response.Name.Should().Be(tag.Name);

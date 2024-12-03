@@ -1,5 +1,5 @@
 using Finance.Application.Services;
-using Finance.Application.UseCases.Account.UpdatePassword;
+using Finance.Application.UseCases.User.UpdatePassword;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -7,13 +7,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
+namespace Finance.Test.UnitTest.Application.UseCases.User.UpdatePassword
 {
     public class UpdatePasswordHandlerTest : IClassFixture<UpdatePasswordHandlerTestFixture>
     {
         private readonly UpdatePasswordHandlerTestFixture _fixture;
         private readonly UpdatePasswordHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
@@ -25,7 +25,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 encryptionService: _encryptionServiceMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
@@ -52,7 +52,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldRethrowSameExceptionThatVerifyAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -78,7 +78,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldThrowInvalidPasswordExceptionIfVerifyAsyncReturnsFalse()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -104,7 +104,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldRethrowSameExceptionThatEncryptAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -136,7 +136,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -159,7 +159,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -175,7 +175,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -212,7 +212,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
         [Trait("Unit/UseCase", "Account - UpdatePassword")]
         public async void ShouldReturnTheCorrectResponseIfPasswordIsSuccessfullyUpdated()
         {
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -240,7 +240,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.UpdatePassword
 
             response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
             response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(account.Id);
             response.Active.Should().Be(account.Active);
             response.CreatdAt.Should().Be(account.CreatedAt);
             response.Email.Should().Be(account.Email);

@@ -7,13 +7,13 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.CreateCatego
     public class CreateCategoryHandlerTestFixture : FixtureBase
     {
         public CreateCategoryRequest MakeCreateCategoryRequest(
-            Guid? accountId = null,
+            Guid? userId = null,
             CategoryType? categoryType = null,
             string? name = null,
             string? icon = null,
             string? color = null,
             Guid? superCategoryId = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryType: categoryType ?? CategoryType.Expenditure,
                 name: name ?? Faker.Random.String(5),
                 icon: icon ?? Faker.Random.String(5),

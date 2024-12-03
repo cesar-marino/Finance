@@ -4,7 +4,7 @@ using Finance.Domain.Enums;
 namespace Finance.Infrastructure.Database.Models
 {
     public class CategoryModel(
-        Guid accountId,
+        Guid userId,
         Guid categoryId,
         bool active,
         CategoryType? categoryType,
@@ -30,13 +30,13 @@ namespace Finance.Infrastructure.Database.Models
         public virtual CategoryModel? SuperCategory { get; set; }
         public virtual List<CategoryModel>? SubCategories { get; set; }
 
-        public Guid AccountId { get; set; } = accountId;
-        public virtual AccountModel? Account { get; set; }
+        public Guid UserId { get; set; } = userId;
+        public virtual UserModel? User { get; set; }
 
         public virtual List<LimitModel>? Limits { get; set; }
 
         public CategoryEntity ToEntity() => new(
-            accountId: AccountId,
+            userId: UserId,
             categoryId: CategoryId,
             active: Active,
             categoryType: CategoryType,
@@ -48,7 +48,7 @@ namespace Finance.Infrastructure.Database.Models
             updatedAt: UpdatedAt);
 
         public static CategoryModel FromEntity(CategoryEntity category) => new(
-            accountId: category.AccountId,
+            userId: category.UserId,
             categoryId: category.Id,
             active: category.Active,
             categoryType: category.CategoryType,

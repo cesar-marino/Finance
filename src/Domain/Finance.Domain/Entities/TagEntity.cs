@@ -4,26 +4,26 @@ namespace Finance.Domain.Entities
 {
     public class TagEntity : AggregateRoot
     {
-        public Guid AccountId { get; }
+        public Guid UserId { get; }
         public bool Active { get; private set; }
         public string Name { get; private set; }
 
-        public TagEntity(Guid accountId, string name)
+        public TagEntity(Guid userId, string name)
         {
-            AccountId = accountId;
+            UserId = userId;
             Active = true;
             Name = name;
         }
 
         public TagEntity(
             Guid tagId,
-            Guid accountId,
+            Guid userId,
             bool active,
             string name,
             DateTime createdAt,
             DateTime updatedAt) : base(tagId, createdAt, updatedAt)
         {
-            AccountId = accountId;
+            UserId = userId;
             Active = active;
             Name = name;
         }

@@ -1,50 +1,50 @@
-using Finance.Application.UseCases.Account.EnableAccount;
+using Finance.Application.UseCases.User.EnableUser;
 using Finance.Domain.Exceptions;
 using Finance.Infrastructure.Database.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.EnableAccount
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.EnableUser
 {
-    public class EnableAccountHandlerTest(EnableAccountHandlerTestFixture fixture) : IClassFixture<EnableAccountHandlerTestFixture>
+    public class EnableUserHandlerTest(EnableUserHandlerTestFixture fixture) : IClassFixture<EnableUserHandlerTestFixture>
     {
-        private readonly EnableAccountHandlerTestFixture _fixture = fixture;
+        private readonly EnableUserHandlerTestFixture _fixture = fixture;
 
         [Fact(DisplayName = nameof(ShouldThrowNotFoundException))]
-        [Trait("Integration/UseCase", "Account - EnableAccount")]
+        [Trait("Integration/UseCase", "User - EnableUser")]
         public async Task ShouldThrowNotFoundException()
         {
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new EnableAccountHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new EnableUserHandler(userRepository: repository, unitOfWork: context);
 
-            var request = _fixture.MakeEnableAccountRequest();
+            var request = _fixture.MakeEnableUserRequest();
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
-        [Trait("Integration/UseCase", "Account - EnableAccount")]
+        [Trait("Integration/UseCase", "User - EnableUser")]
         public async Task ShouldThrowUnexpectedException()
         {
-            var account = _fixture.MakeAccountModel(active: false);
+            var user = _fixture.MakeUserModel(active: false);
             var context = _fixture.MakeFinanceContext();
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new EnableAccountHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new EnableUserHandler(userRepository: repository, unitOfWork: context);
 
             await context.DisposeAsync();
 
-            var request = _fixture.MakeEnableAccountRequest(accountId: account.AccountId);
+            var request = _fixture.MakeEnableUserRequest(userId: user.UserId);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -52,42 +52,42 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.EnableAccount
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyEnabled))]
-        [Trait("Integration/UseCase", "Account - EnableAccount")]
-        public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyEnabled()
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsSuccessfullyEnabled))]
+        [Trait("Integration/UseCase", "User - EnableUser")]
+        public async Task ShouldReturnTheCorrectResponseIfUserIsSuccessfullyEnabled()
         {
-            var account = _fixture.MakeAccountModel(active: false);
+            var user = _fixture.MakeUserModel(active: false);
             var context = _fixture.MakeFinanceContext();
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new EnableAccountHandler(accountRepository: repository, unitOfWork: context);
+            var sut = new EnableUserHandler(userRepository: repository, unitOfWork: context);
 
-            var request = _fixture.MakeEnableAccountRequest(accountId: account.AccountId);
+            var request = _fixture.MakeEnableUserRequest(userId: user.UserId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
-            var accountDb = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == response.AccountId);
+            var userDb = await context.Users.FirstOrDefaultAsync(x => x.UserId == response.UserId);
 
-            accountDb.Should().NotBeNull();
-            accountDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
-            accountDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
-            accountDb?.AccountId.Should().Be(response.AccountId);
-            accountDb?.Active.Should().BeTrue();
-            accountDb?.Active.Should().Be(response.Active);
-            accountDb?.CreatedAt.Should().Be(response.CreatdAt);
-            accountDb?.Email.Should().Be(response.Email);
-            accountDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
-            accountDb?.Phone.Should().Be(response.Phone);
-            accountDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
-            accountDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
-            accountDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
-            accountDb?.Role.Should().Be(response.Role.ToString());
-            accountDb?.UpdatedAt.Should().Be(response.UpdatedAt);
-            accountDb?.Username.Should().Be(response.Username);
+            userDb.Should().NotBeNull();
+            userDb?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
+            userDb?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
+            userDb?.UserId.Should().Be(response.UserId);
+            userDb?.Active.Should().BeTrue();
+            userDb?.Active.Should().Be(response.Active);
+            userDb?.CreatedAt.Should().Be(response.CreatdAt);
+            userDb?.Email.Should().Be(response.Email);
+            userDb?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            userDb?.Phone.Should().Be(response.Phone);
+            userDb?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            userDb?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
+            userDb?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
+            userDb?.Role.Should().Be(response.Role.ToString());
+            userDb?.UpdatedAt.Should().Be(response.UpdatedAt);
+            userDb?.Username.Should().Be(response.Username);
         }
     }
 }

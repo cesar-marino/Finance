@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.CreateAccount;
+using Finance.Application.UseCases.User.CreateUser;
 using Finance.Domain.Exceptions;
 using Finance.Infrastructure.Database.Repositories;
 using Finance.Infrastructure.Services.Encryption;
@@ -7,41 +7,41 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Finance.Test.IntegrationTest.Application.UseCase.Account.CreateAccount
+namespace Finance.Test.IntegrationTest.Application.UseCase.User.CreateUser
 {
-    public class CreateAccountHandlerTest : IClassFixture<CreateAccountHandlerTestFixture>
+    public class CreateUserHandlerTest : IClassFixture<CreateUserHandlerTestFixture>
     {
-        private readonly CreateAccountHandlerTestFixture _fixture;
+        private readonly CreateUserHandlerTestFixture _fixture;
         private readonly IConfiguration _configuration;
 
-        public CreateAccountHandlerTest(CreateAccountHandlerTestFixture fixture)
+        public CreateUserHandlerTest(CreateUserHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _configuration = _fixture.MakeConfiguration();
         }
 
         [Fact(DisplayName = nameof(ShouldThrowEmailInUseException))]
-        [Trait("Integration/UseCase", "Account - CreateAccount")]
+        [Trait("Integration/UseCase", "User - CreateUser")]
         public async Task ShouldThrowEmailInUseException()
         {
-            var account = _fixture.MakeAccountModel();
+            var user = _fixture.MakeUserModel();
             var context = _fixture.MakeFinanceContext();
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
             var tokenService = new JwtBearerAdapter(configuration: _configuration);
             var encryptionService = new EncryptionService();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new CreateAccountHandler(
-                accountRepository: repository,
+            var sut = new CreateUserHandler(
+                userRepository: repository,
                 encryptionService: encryptionService,
                 tokenService: tokenService,
                 unitOfWork: context);
 
-            var request = _fixture.MakeCreateAccountRequest(email: account.Email);
+            var request = _fixture.MakeCreateUserRequest(email: user.Email);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<EmailInUseException>()
@@ -50,27 +50,27 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.CreateAccount
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUsernameInUseException))]
-        [Trait("Integration/UseCase", "Account - CreateAccount")]
+        [Trait("Integration/UseCase", "User - CreateUser")]
         public async Task ShouldThrowUsernameInUseException()
         {
-            var account = _fixture.MakeAccountModel();
+            var user = _fixture.MakeUserModel();
             var context = _fixture.MakeFinanceContext();
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
             var tokenService = new JwtBearerAdapter(configuration: _configuration);
             var encryptionService = new EncryptionService();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new CreateAccountHandler(
-                accountRepository: repository,
+            var sut = new CreateUserHandler(
+                userRepository: repository,
                 encryptionService: encryptionService,
                 tokenService: tokenService,
                 unitOfWork: context);
 
-            var request = _fixture.MakeCreateAccountRequest(username: account.Username);
+            var request = _fixture.MakeCreateUserRequest(username: user.Username);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UsernameInUseException>()
@@ -79,29 +79,29 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.CreateAccount
         }
 
         [Fact(DisplayName = nameof(ShouldThrowUnexpectedException))]
-        [Trait("Integration/UseCase", "Account - CreateAccount")]
+        [Trait("Integration/UseCase", "User - CreateUser")]
         public async Task ShouldThrowUnexpectedException()
         {
-            var account = _fixture.MakeAccountModel();
+            var user = _fixture.MakeUserModel();
             var context = _fixture.MakeFinanceContext();
 
-            var trackingInfo = await context.Accounts.AddAsync(account);
+            var trackingInfo = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
             trackingInfo.State = EntityState.Detached;
 
             var tokenService = new JwtBearerAdapter(configuration: _configuration);
             var encryptionService = new EncryptionService();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new CreateAccountHandler(
-                accountRepository: repository,
+            var sut = new CreateUserHandler(
+                userRepository: repository,
                 encryptionService: encryptionService,
                 tokenService: tokenService,
                 unitOfWork: context);
 
             await context.DisposeAsync();
 
-            var request = _fixture.MakeCreateAccountRequest(username: account.Username);
+            var request = _fixture.MakeCreateUserRequest(username: user.Username);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -109,46 +109,46 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Account.CreateAccount
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyCreated))]
-        [Trait("Integration/UseCase", "Account - CreateAccount")]
-        public async Task ShouldReturnTheCorrectResponseIfAccountIsSuccessfullyCreated()
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsSuccessfullyCreated))]
+        [Trait("Integration/UseCase", "User - CreateUser")]
+        public async Task ShouldReturnTheCorrectResponseIfUserIsSuccessfullyCreated()
         {
             var tokenService = new JwtBearerAdapter(configuration: _configuration);
             var encryptionService = new EncryptionService();
             var context = _fixture.MakeFinanceContext();
-            var repository = new AccountRepository(context);
+            var repository = new UserRepository(context);
 
-            var sut = new CreateAccountHandler(
-                accountRepository: repository,
+            var sut = new CreateUserHandler(
+                userRepository: repository,
                 encryptionService: encryptionService,
                 tokenService: tokenService,
                 unitOfWork: context);
 
-            var request = _fixture.MakeCreateAccountRequest();
+            var request = _fixture.MakeCreateUserRequest();
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
-            var account = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == response.AccountId);
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserId == response.UserId);
 
-            account.Should().NotBeNull();
-            account?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
-            account?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
-            account?.AccountId.Should().Be(response.AccountId);
-            account?.Active.Should().BeTrue();
+            user.Should().NotBeNull();
+            user?.AccessTokenExpiresIn.Should().Be(response.AccessToken?.ExpiresIn);
+            user?.AccessTokenValue.Should().Be(response.AccessToken?.Value);
+            user?.UserId.Should().Be(response.UserId);
+            user?.Active.Should().BeTrue();
             response.Active.Should().BeTrue();
-            account?.CreatedAt.Should().Be(response.CreatdAt);
-            account?.Email.Should().Be(response.Email);
-            account?.EmailConfirmed.Should().BeFalse();
+            user?.CreatedAt.Should().Be(response.CreatdAt);
+            user?.Email.Should().Be(response.Email);
+            user?.EmailConfirmed.Should().BeFalse();
             response.EmailConfirmed.Should().BeFalse();
-            account?.EmailConfirmed.Should().Be(response.EmailConfirmed);
-            account?.Phone.Should().Be(response.Phone);
-            account?.PhoneConfirmed.Should().BeFalse();
+            user?.EmailConfirmed.Should().Be(response.EmailConfirmed);
+            user?.Phone.Should().Be(response.Phone);
+            user?.PhoneConfirmed.Should().BeFalse();
             response.PhoneConfirmed.Should().BeFalse();
-            account?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
-            account?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
-            account?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
-            account?.Role.Should().Be(response.Role.ToString());
-            account?.UpdatedAt.Should().Be(response.UpdatedAt);
-            account?.Username.Should().Be(response.Username);
+            user?.PhoneConfirmed.Should().Be(response.PhoneConfirmed);
+            user?.RefreshTokenExpiresIn.Should().Be(response.RefreshToken?.ExpiresIn);
+            user?.RefreshTokenValue.Should().Be(response.RefreshToken?.Value);
+            user?.Role.Should().Be(response.Role.ToString());
+            user?.UpdatedAt.Should().Be(response.UpdatedAt);
+            user?.Username.Should().Be(response.Username);
         }
     }
 }

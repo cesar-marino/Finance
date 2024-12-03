@@ -31,25 +31,25 @@ namespace Finance.Test.IntegrationTest.Application.UseCase.Category.DisableCateg
         [Trait("Integration/UseCase", "Category - DisableCategory")]
         public async Task ShouldReturnTheCorrectResponseIfCategoryIsSuccessfullyDisabled()
         {
-            var account = _fixture.MakeAccountModel();
-            var category = _fixture.MakeCategoryModel(accountId: account.AccountId);
+            var user = _fixture.MakeUserModel();
+            var category = _fixture.MakeCategoryModel(userId: user.UserId);
 
             var context = _fixture.MakeFinanceContext();
             var repository = new CategoryRepository(context);
 
-            var accountTrackingInfo = await context.Accounts.AddAsync(account);
+            var userTrackingInfo = await context.Users.AddAsync(user);
             var categoryTrackingInfo = await context.Categories.AddAsync(category);
             await context.SaveChangesAsync();
-            accountTrackingInfo.State = EntityState.Detached;
+            userTrackingInfo.State = EntityState.Detached;
             categoryTrackingInfo.State = EntityState.Detached;
 
             var sut = new DisableCategoryHandler(categoryRepository: repository, unitOfWork: context);
 
-            var request = _fixture.MakeDisableCategoryRequest(accountId: category.AccountId, categoryId: category.CategoryId);
+            var request = _fixture.MakeDisableCategoryRequest(userId: category.UserId, categoryId: category.CategoryId);
             var response = await sut.Handle(request, _fixture.CancellationToken);
 
             var categoryDb = await context.Categories.FirstOrDefaultAsync(x => x.CategoryId == category.CategoryId);
-            categoryDb?.AccountId.Should().Be(response.AccountId);
+            categoryDb?.UserId.Should().Be(response.UserId);
             categoryDb?.Active.Should().BeFalse();
             categoryDb?.CategoryId.Should().Be(response.CategoryId);
             categoryDb?.CategoryType.Should().Be(response.CategoryType);

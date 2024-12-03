@@ -110,7 +110,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.UpdateCategory
             var request = _fixture.MakeUpdateCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(category.AccountId);
+            response.UserId.Should().Be(category.UserId);
             response.Active.Should().Be(request.Active);
             response.CategoryId.Should().Be(category.Id);
             response.CategoryType.Should().Be(request.CategoryType);

@@ -86,7 +86,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.AddAmount
             var request = _fixture.MakeAddAmountRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(goal.AccountId);
+            response.UserId.Should().Be(goal.UserId);
             response.CreatedAt.Should().Be(goal.CreatedAt);
             response.ExpectedAmount.Should().Be(goal.ExpectedAmount);
             response.GoalId.Should().Be(goal.Id);

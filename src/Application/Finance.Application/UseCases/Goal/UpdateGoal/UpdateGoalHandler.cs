@@ -10,7 +10,7 @@ namespace Finance.Application.UseCases.Goal.UpdateGoal
     {
         public async Task<GoalResponse> Handle(UpdateGoalRequest request, CancellationToken cancellationToken)
         {
-            var goal = await goalRepository.FindAsync(request.AccountId, request.GoalId, cancellationToken);
+            var goal = await goalRepository.FindAsync(request.UserId, request.GoalId, cancellationToken);
             goal.Updated(name: request.Name, expectedAmount: request.ExpectedAmount);
 
             await goalRepository.UpdateAsync(goal, cancellationToken);

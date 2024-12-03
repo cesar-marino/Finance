@@ -5,7 +5,7 @@ namespace Finance.Domain.Entities
 {
     public class CategoryEntity : AggregateRoot
     {
-        public Guid AccountId { get; }
+        public Guid UserId { get; }
         public bool Active { get; private set; }
         public CategoryType? CategoryType { get; private set; }
         public string Name { get; private set; }
@@ -14,14 +14,14 @@ namespace Finance.Domain.Entities
         public Guid? SuperCategoryId { get; private set; }
 
         public CategoryEntity(
-            Guid accountId,
+            Guid userId,
             CategoryType? categoryType,
             string name,
             string? icon,
             string? color,
             Guid? superCategoryId = null)
         {
-            AccountId = accountId;
+            UserId = userId;
             Active = true;
             CategoryType = categoryType;
             Name = name;
@@ -32,7 +32,7 @@ namespace Finance.Domain.Entities
 
         public CategoryEntity(
             Guid categoryId,
-            Guid accountId,
+            Guid userId,
             bool active,
             CategoryType? categoryType,
             string name,
@@ -42,7 +42,7 @@ namespace Finance.Domain.Entities
             DateTime createdAt,
             DateTime updatedAt) : base(categoryId, createdAt, updatedAt)
         {
-            AccountId = accountId;
+            UserId = userId;
             Active = active;
             CategoryType = categoryType;
             Name = name;

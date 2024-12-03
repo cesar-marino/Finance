@@ -11,7 +11,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
         public async Task<CategoryResponse> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await categoryRepository.FindAsync(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 entityId: request.CategoryId,
                 cancellationToken);
 

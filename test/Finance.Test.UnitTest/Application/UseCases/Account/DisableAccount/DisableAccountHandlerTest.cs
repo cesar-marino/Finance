@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.DisableAccount;
+using Finance.Application.UseCases.User.DisableUser;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -6,62 +6,62 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.DisableAccount
+namespace Finance.Test.UnitTest.Application.UseCases.User.DisableUser
 {
-    public class DisableAccountHandlerTest : IClassFixture<DisableAccountHandlerTestFixture>
+    public class DisableUserHandlerTest : IClassFixture<DisableUserHandlerTestFixture>
     {
-        private readonly DisableAccountHandlerTestFixture _fixture;
-        private readonly DisableAccountHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly DisableUserHandlerTestFixture _fixture;
+        private readonly DisableUserHandler _sut;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
-        public DisableAccountHandlerTest(DisableAccountHandlerTestFixture fixture)
+        public DisableUserHandlerTest(DisableUserHandlerTestFixture fixture)
         {
             _fixture = fixture;
-            _accountRepositoryMock = new();
+            _userRepositoryMock = new();
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _userRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethorwSameExceptionThatFindAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - DisableAccount")]
+        [Trait("Unit/UseCase", "User - DisableUser")]
         public async void ShouldRethorwSameExceptionThatFindAsyncThrows()
         {
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new NotFoundException("Account"));
+                .ThrowsAsync(new NotFoundException("User"));
 
-            var request = _fixture.MakeDisableAccountRequest();
+            var request = _fixture.MakeDisableUserRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
-                .WithMessage("Account not found");
+                .WithMessage("User not found");
         }
 
         [Fact(DisplayName = nameof(ShouldRethorwSameExceptionThatUpdateAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - DisableAccount")]
+        [Trait("Unit/UseCase", "User - DisableUser")]
         public async void ShouldRethorwSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
-            _accountRepositoryMock
+            _userRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeDisableAccountRequest();
+            var request = _fixture.MakeDisableUserRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -70,21 +70,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.DisableAccount
         }
 
         [Fact(DisplayName = nameof(ShouldRethorwSameExceptionThatCommitAsyncThrows))]
-        [Trait("Unit/UseCase", "Account - DisableAccount")]
+        [Trait("Unit/UseCase", "User - DisableUser")]
         public async void ShouldRethorwSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity();
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
             _unitOfWorkMock
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
-            var request = _fixture.MakeDisableAccountRequest();
+            var request = _fixture.MakeDisableUserRequest();
             var act = () => _sut.Handle(request, _fixture.CancellationToken);
 
             await act.Should().ThrowExactlyAsync<UnexpectedException>()
@@ -92,33 +92,33 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.DisableAccount
                 .WithMessage("An unexpected error occurred");
         }
 
-        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfAccountIsDisabledSuccessfully))]
-        [Trait("Unit/UseCase", "Account - DisableAccount")]
-        public async void ShouldReturnTheCorrectResponseIfAccountIsDisabledSuccessfully()
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsDisabledSuccessfully))]
+        [Trait("Unit/UseCase", "User - DisableUser")]
+        public async void ShouldReturnTheCorrectResponseIfUserIsDisabledSuccessfully()
         {
-            var account = _fixture.MakeAccountEntity(active: true);
-            _accountRepositoryMock
+            var user = _fixture.MakeUserEntity(active: true);
+            _userRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync(user);
 
-            var request = _fixture.MakeDisableAccountRequest();
+            var request = _fixture.MakeDisableUserRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccessToken?.Value.Should().Be(account.AccessToken?.Value);
-            response.AccessToken?.ExpiresIn.Should().Be(account.AccessToken?.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.AccessToken?.Value.Should().Be(user.AccessToken?.Value);
+            response.AccessToken?.ExpiresIn.Should().Be(user.AccessToken?.ExpiresIn);
+            response.UserId.Should().Be(user.Id);
             response.Active.Should().BeFalse();
-            response.CreatdAt.Should().Be(account.CreatedAt);
-            response.Email.Should().Be(account.Email);
+            response.CreatdAt.Should().Be(user.CreatedAt);
+            response.Email.Should().Be(user.Email);
             response.EmailConfirmed.Should().BeFalse();
-            response.Phone.Should().Be(account.Phone);
-            response.PhoneConfirmed.Should().Be(account.PhoneConfirmed);
-            response.RefreshToken?.Value.Should().Be(account.RefreshToken?.Value);
-            response.RefreshToken?.ExpiresIn.Should().Be(account.RefreshToken?.ExpiresIn);
-            response.Role.Should().Be(account.Role);
-            response.Username.Should().Be(account.Username);
+            response.Phone.Should().Be(user.Phone);
+            response.PhoneConfirmed.Should().Be(user.PhoneConfirmed);
+            response.RefreshToken?.Value.Should().Be(user.RefreshToken?.Value);
+            response.RefreshToken?.ExpiresIn.Should().Be(user.RefreshToken?.ExpiresIn);
+            response.Role.Should().Be(user.Role);
+            response.Username.Should().Be(user.Username);
         }
     }
 }

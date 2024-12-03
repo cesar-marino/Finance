@@ -3,7 +3,7 @@
 namespace Finance.Application.UseCases.Limit.Commons
 {
     public class LimitResponse(
-        Guid accountId,
+        Guid userId,
         Guid limitId,
         string name,
         double? currentAmount,
@@ -12,7 +12,7 @@ namespace Finance.Application.UseCases.Limit.Commons
         DateTime createdAt,
         DateTime updatedAt)
     {
-        public Guid AccountId { get; } = accountId;
+        public Guid UserId { get; } = userId;
         public Guid LimitId { get; } = limitId;
         public string Name { get; } = name;
         public double? CurrentAmount { get; } = currentAmount;
@@ -26,7 +26,7 @@ namespace Finance.Application.UseCases.Limit.Commons
             LimitEntity limit,
             double? currentAmount = null,
             CategoryEntity? category = null) => new(
-                accountId: limit.AccountId,
+                userId: limit.UserId,
                 limit.Id,
                 name: limit.Name,
                 currentAmount: currentAmount,

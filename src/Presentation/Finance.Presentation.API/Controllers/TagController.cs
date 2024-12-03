@@ -28,44 +28,44 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{accountId:guid}/{tagId:guid}/disable")]
+        [HttpPut("{userId:guid}/{tagId:guid}/disable")]
         [ProducesResponseType(typeof(TagResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Disable(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid tagId,
             CancellationToken cancellationToken = default)
         {
-            var request = new DisableTagRequest(accountId: accountId, tagId: tagId);
+            var request = new DisableTagRequest(userId: userId, tagId: tagId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("{accountId:guid}/{tagId:guid}/enable")]
+        [HttpPut("{userId:guid}/{tagId:guid}/enable")]
         [ProducesResponseType(typeof(TagResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Enable(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid tagId,
             CancellationToken cancellationToken = default)
         {
-            var request = new EnableTagRequest(accountId: accountId, tagId: tagId);
+            var request = new EnableTagRequest(userId: userId, tagId: tagId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("{accountId:guid}/{tagId:guid}")]
+        [HttpGet("{userId:guid}/{tagId:guid}")]
         [ProducesResponseType(typeof(TagResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid tagId,
             CancellationToken cancellationToken = default)
         {
-            var request = new GetTagRequest(accountId: accountId, tagId: tagId);
+            var request = new GetTagRequest(userId: userId, tagId: tagId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }

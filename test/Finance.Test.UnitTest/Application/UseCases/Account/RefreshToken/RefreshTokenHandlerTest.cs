@@ -1,5 +1,5 @@
 using Finance.Application.Services;
-using Finance.Application.UseCases.Account.RefreshToken;
+using Finance.Application.UseCases.User.RefreshToken;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -7,14 +7,14 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
+namespace Finance.Test.UnitTest.Application.UseCases.User.RefreshToken
 {
     public class RefreshTokenHandlerTest : IClassFixture<RefreshTokenHandlerTestFixture>
     {
         private readonly RefreshTokenHandlerTestFixture _fixture;
         private readonly RefreshTokenHandler _sut;
         private readonly Mock<ITokenService> _tokenServiceMock;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RefreshTokenHandlerTest(RefreshTokenHandlerTestFixture fixture)
@@ -26,7 +26,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
 
             _sut = new(
                 tokenService: _tokenServiceMock.Object,
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
@@ -77,7 +77,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
         [Trait("Unit/UseCase", "Account - RefreshToken")]
         public async Task ShouldThrowUnauthorizedExceptionIfRefreshTokenIsInvalid()
         {
-            var refreshToken = _fixture.MakeAccountToken(
+            var refreshToken = _fixture.MakeUserToken(
                 value: _fixture.Faker.Random.Guid().ToString(),
                 expiresIn: _fixture.Faker.Date.Past());
 
@@ -88,7 +88,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity(refreshToken: refreshToken);
+            var account = _fixture.MakeUserEntity(refreshToken: refreshToken);
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
@@ -114,7 +114,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
@@ -123,7 +123,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
 
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -146,17 +146,17 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(account);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
@@ -183,28 +183,28 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(account);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -227,21 +227,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(account);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
@@ -269,21 +269,21 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(username);
 
-            var account = _fixture.MakeAccountEntity();
+            var account = _fixture.MakeUserEntity();
             _accountRepositoryMock
                 .Setup(x => x.FindByUsernameAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(account);
 
-            var accessToken = _fixture.MakeAccountToken();
+            var accessToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateAccessTokenAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accessToken);
 
-            var refreshToken = _fixture.MakeAccountToken();
+            var refreshToken = _fixture.MakeUserToken();
             _tokenServiceMock
                 .Setup(x => x.GenerateRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(refreshToken);
@@ -294,7 +294,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.RefreshToken
             response.AccessToken.Should().NotBeNull();
             response.AccessToken?.Value.Should().Be(accessToken.Value);
             response.AccessToken?.ExpiresIn.Should().Be(accessToken.ExpiresIn);
-            response.AccountId.Should().Be(account.Id);
+            response.UserId.Should().Be(account.Id);
             response.Active.Should().Be(account.Active);
             response.CreatdAt.Should().Be(account.CreatedAt);
             response.Email.Should().Be(account.Email);

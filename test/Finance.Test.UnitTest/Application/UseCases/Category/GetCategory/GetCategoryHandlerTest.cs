@@ -88,7 +88,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Category.GetCategory
             var request = _fixture.MakeGetCategoryRequest();
             var response = await _sut.Handle(request, _fixture.CancellationToken);
 
-            response.AccountId.Should().Be(category.AccountId);
+            response.UserId.Should().Be(category.UserId);
             response.Active.Should().Be(category.Active);
             response.CategoryId.Should().Be(category.Id);
             response.CategoryType.Should().Be(category.CategoryType);

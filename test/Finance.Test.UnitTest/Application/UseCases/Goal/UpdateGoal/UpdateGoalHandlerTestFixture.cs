@@ -7,7 +7,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Goal.UpdateGoal
     {
         public UpdateGoalRequest MakeUpdateGoalRequest() => new(
             goalId: Faker.Random.Guid(),
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             name: Faker.Random.String(5),
             expectedAmount: Faker.Random.Double());
     }

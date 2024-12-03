@@ -6,7 +6,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Tag.CreateTag
     public class CreateTagHandlerTestFixture : FixtureBase
     {
         public CreateTagRequest MakeCreateTagRequest() => new(
-            accountId: Faker.Random.Guid(),
+            userId: Faker.Random.Guid(),
             name: Faker.Random.String(5));
     }
 }

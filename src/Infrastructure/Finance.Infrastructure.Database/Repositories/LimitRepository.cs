@@ -9,12 +9,12 @@ namespace Finance.Infrastructure.Database.Repositories
 {
     public class LimitRepository(FinanceContext context) : ILimitRepository
     {
-        public async Task<bool> CheckAccountByIdAsync(Guid accountId, CancellationToken cancellationToken = default)
+        public async Task<bool> CheckUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             try
             {
-                var account = await context.Accounts.FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
-                return account != null;
+                var user = await context.Users.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+                return user != null;
             }
             catch (Exception ex)
             {
@@ -35,11 +35,11 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<LimitEntity> FindAsync(Guid accountId, Guid entityId, CancellationToken cancellationToken = default)
+        public async Task<LimitEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
         {
             try
             {
-                var model = await context.Limits.FirstOrDefaultAsync(x => x.AccountId == accountId && x.LimitId == entityId, cancellationToken);
+                var model = await context.Limits.FirstOrDefaultAsync(x => x.UserId == userId && x.LimitId == entityId, cancellationToken);
                 return model?.ToEntity() ?? throw new NotFoundException("Limit");
             }
             catch (DomainException)
@@ -65,11 +65,11 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task RemoveAsync(Guid accountId, Guid limitId, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(Guid userId, Guid limitId, CancellationToken cancellationToken = default)
         {
             try
             {
-                var model = await context.Limits.FirstOrDefaultAsync(x => x.AccountId == accountId && x.LimitId == limitId, cancellationToken)
+                var model = await context.Limits.FirstOrDefaultAsync(x => x.UserId == userId && x.LimitId == limitId, cancellationToken)
                     ?? throw new NotFoundException("Limit");
 
                 context.Limits.Remove(model);

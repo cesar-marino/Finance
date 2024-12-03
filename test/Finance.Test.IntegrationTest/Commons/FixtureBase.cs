@@ -32,8 +32,8 @@ namespace Finance.Test.IntegrationTest.Commons
                 .Build();
         }
 
-        public AccountModel MakeAccountModel(
-            Guid? accountId = null,
+        public UserModel MakeUserModel(
+            Guid? userId = null,
             bool active = true,
             string? username = null,
             string? email = null,
@@ -48,7 +48,7 @@ namespace Finance.Test.IntegrationTest.Commons
             string? role = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 active: active,
                 username: username ?? Faker.Internet.UserName(),
                 email: email ?? Faker.Internet.Email(),
@@ -65,7 +65,7 @@ namespace Finance.Test.IntegrationTest.Commons
                 updatedAt: updatedAt ?? Faker.Date.Past());
 
         public CategoryModel MakeCategoryModel(
-            Guid? accountId = null,
+            Guid? userId = null,
             Guid? categoryId = null,
             bool active = true,
             CategoryType categoryType = CategoryType.Expenditure,
@@ -75,7 +75,7 @@ namespace Finance.Test.IntegrationTest.Commons
             Guid? superCategoryId = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null) => new(
-                accountId: accountId ?? Faker.Random.Guid(),
+                userId: userId ?? Faker.Random.Guid(),
                 categoryId: categoryId ?? Faker.Random.Guid(),
                 active: active,
                 categoryType: categoryType,

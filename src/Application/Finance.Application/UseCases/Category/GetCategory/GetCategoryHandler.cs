@@ -8,7 +8,7 @@ namespace Finance.Application.UseCases.Category.GetCategory
         public async Task<CategoryResponse> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await categoryRepository.FindAsync(
-                accountId: request.AccountId,
+                userId: request.UserId,
                 entityId: request.CategoryId,
                 cancellationToken);
 

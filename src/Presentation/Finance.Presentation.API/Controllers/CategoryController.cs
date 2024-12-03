@@ -29,44 +29,44 @@ namespace Finance.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{accountId:Guid}/{categoryId:Guid}/disable")]
+        [HttpPut("{userId:Guid}/{categoryId:Guid}/disable")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Disable(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid categoryId,
             CancellationToken cancellationToken = default)
         {
-            var request = new DisableCategoryRequest(accountId: accountId, categoryId: categoryId);
+            var request = new DisableCategoryRequest(userId: userId, categoryId: categoryId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpPut("{accountId:Guid}/{categoryId:Guid}/enable")]
+        [HttpPut("{userId:Guid}/{categoryId:Guid}/enable")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Enable(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid categoryId,
             CancellationToken cancellationToken = default)
         {
-            var request = new EnableCategoryRequest(accountId: accountId, categoryId: categoryId);
+            var request = new EnableCategoryRequest(userId: userId, categoryId: categoryId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("{accountId:Guid}/{categoryId:Guid}")]
+        [HttpGet("{userId:Guid}/{categoryId:Guid}")]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(
-            [FromRoute] Guid accountId,
+            [FromRoute] Guid userId,
             [FromRoute] Guid categoryId,
             CancellationToken cancellationToken = default)
         {
-            var request = new GetCategoryRequest(accountId: accountId, categoryId: categoryId);
+            var request = new GetCategoryRequest(userId: userId, categoryId: categoryId);
             var response = await mediator.Send(request, cancellationToken);
             return Ok(response);
         }

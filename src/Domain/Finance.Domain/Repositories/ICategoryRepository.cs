@@ -6,7 +6,7 @@ namespace Finance.Domain.Repositories
 {
     public interface ICategoryRepository : IRepository<CategoryEntity>
     {
-        Task<bool> CheckAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
+        Task<bool> CheckUserAsync(Guid userId, CancellationToken cancellationToken = default);
 
         Task<IReadOnlyList<CategoryEntity>> FindSubcategoriesAsync(Guid categoryId, CancellationToken cancellationToken = default);
 

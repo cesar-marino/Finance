@@ -1,4 +1,4 @@
-using Finance.Application.UseCases.Account.EnableAccount;
+using Finance.Application.UseCases.User.EnableUser;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
@@ -6,13 +6,13 @@ using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
-namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
+namespace Finance.Test.UnitTest.Application.UseCases.User.EnableAccount
 {
     public class EnableAccountHandlerTest : IClassFixture<EnableAccountHandlerTestFixture>
     {
         private readonly EnableAccountHandlerTestFixture _fixture;
-        private readonly EnableAccountHandler _sut;
-        private readonly Mock<IAccountRepository> _accountRepositoryMock;
+        private readonly EnableUserHandler _sut;
+        private readonly Mock<IUserRepository> _accountRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public EnableAccountHandlerTest(EnableAccountHandlerTestFixture fixture)
@@ -22,7 +22,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
             _unitOfWorkMock = new();
 
             _sut = new(
-                accountRepository: _accountRepositoryMock.Object,
+                userRepository: _accountRepositoryMock.Object,
                 unitOfWork: _unitOfWorkMock.Object);
         }
 
@@ -48,7 +48,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
         [Trait("Unit/UseCase", "Account - EnableAccount")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity(active: false);
+            var account = _fixture.MakeUserEntity(active: false);
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -57,7 +57,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
 
             _accountRepositoryMock
                 .Setup(x => x.UpdateAsync(
-                    It.IsAny<AccountEntity>(),
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
@@ -73,7 +73,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
         [Trait("Unit/UseCase", "Account - EnableAccount")]
         public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
         {
-            var account = _fixture.MakeAccountEntity(active: false);
+            var account = _fixture.MakeUserEntity(active: false);
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),
@@ -96,7 +96,7 @@ namespace Finance.Test.UnitTest.Application.UseCases.Account.EnableAccount
         [Trait("Unit/UseCase", "Account - EnableAccount")]
         public async Task ShouldReturnTheCorrectResponseIfAccountIsEnabledSuccessfully()
         {
-            var account = _fixture.MakeAccountEntity(active: false);
+            var account = _fixture.MakeUserEntity(active: false);
             _accountRepositoryMock
                 .Setup(x => x.FindAsync(
                     It.IsAny<Guid>(),

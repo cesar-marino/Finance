@@ -3,7 +3,7 @@
 namespace Finance.Infrastructure.Database.Models
 {
     public class LimitModel(
-        Guid accountId,
+        Guid userId,
         Guid limitId,
         Guid categoryId,
         string name,
@@ -17,14 +17,14 @@ namespace Finance.Infrastructure.Database.Models
         public DateTime CreatedAt { get; set; } = createdAt;
         public DateTime UpdatedAt { get; set; } = updatedAt;
 
-        public Guid AccountId { get; set; } = accountId;
-        public virtual AccountModel? Account { get; set; }
+        public Guid UserId { get; set; } = userId;
+        public virtual UserModel? User { get; set; }
 
         public Guid CategoryId { get; set; } = categoryId;
         public virtual CategoryModel? Category { get; set; }
 
         public static LimitModel FromEntity(LimitEntity limit) => new(
-            accountId: limit.AccountId,
+            userId: limit.UserId,
             limitId: limit.Id,
             categoryId: limit.CategoryId,
             name: limit.Name,
@@ -34,7 +34,7 @@ namespace Finance.Infrastructure.Database.Models
 
         public LimitEntity ToEntity() => new(
             limitId: LimitId,
-            accountId: AccountId,
+            userId: UserId,
             categoryId: CategoryId,
             name: Name,
             limitAmount: LimitAmount,

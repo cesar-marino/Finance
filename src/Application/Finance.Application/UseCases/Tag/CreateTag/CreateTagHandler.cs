@@ -11,7 +11,7 @@ namespace Finance.Application.UseCases.Tag.CreateTag
     {
         public async Task<TagResponse> Handle(CreateTagRequest request, CancellationToken cancellationToken)
         {
-            var tag = new TagEntity(accountId: request.AccountId, name: request.Name);
+            var tag = new TagEntity(userId: request.UserId, name: request.Name);
 
             await tagRepository.InsertAsync(tag, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
