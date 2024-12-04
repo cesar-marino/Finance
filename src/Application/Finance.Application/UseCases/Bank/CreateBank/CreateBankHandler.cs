@@ -11,11 +11,15 @@ namespace Finance.Application.UseCases.Bank.CreateBank
     {
         public async Task<BankResponse> Handle(CreateBankRequest request, CancellationToken cancellationToken)
         {
-            var bank = new BankEntity(code: request.Code, name: request.Name, color: request.Color, logo: request.Logo);
+            var bank = new BankEntity(
+                code: request.Code,
+                name: request.Name,
+                color: request.Color,
+                logo: request.Logo);
+
             await bankRepository.InsertAsync(bank, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return BankResponse.FromEntity(bank);
         }
     }
 }
