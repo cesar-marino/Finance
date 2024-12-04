@@ -9,7 +9,7 @@ namespace Finance.Application.UseCases.Category.GetCategory
         {
             var category = await categoryRepository.FindAsync(
                 userId: request.UserId,
-                entityId: request.CategoryId,
+                id: request.CategoryId,
                 cancellationToken);
 
             var subCategories = await categoryRepository.FindSubcategoriesAsync(category.Id, cancellationToken);

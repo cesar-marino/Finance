@@ -10,12 +10,12 @@ namespace Finance.Infrastructure.Database.Repositories
 {
     public class TagRepository(FinanceContext context) : ITagRepository
     {
-        public async Task<TagEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
+        public async Task<TagEntity> FindAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             try
             {
                 var model = await context.Tags.AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.UserId == userId && x.TagId == entityId, cancellationToken);
+                    .FirstOrDefaultAsync(x => x.UserId == userId && x.TagId == id, cancellationToken);
 
                 return model != null ? model.ToEntity() : throw new NotFoundException("Tag");
             }

@@ -24,12 +24,12 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<CategoryEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
+        public async Task<CategoryEntity> FindAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             try
             {
                 var model = await context.Categories.FirstOrDefaultAsync(
-                    x => x.UserId == userId && x.CategoryId == entityId,
+                    x => x.UserId == userId && x.CategoryId == id,
                     cancellationToken);
 
                 return model?.ToEntity() ?? throw new NotFoundException("Category");

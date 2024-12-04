@@ -12,7 +12,7 @@ namespace Finance.Application.UseCases.Category.DisableCategory
         {
             var category = await categoryRepository.FindAsync(
                 userId: request.UserId,
-                entityId: request.CategoryId,
+                id: request.CategoryId,
                 cancellationToken);
 
             category.Disable();

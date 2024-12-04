@@ -35,11 +35,11 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<LimitEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
+        public async Task<LimitEntity> FindAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
             try
             {
-                var model = await context.Limits.FirstOrDefaultAsync(x => x.UserId == userId && x.LimitId == entityId, cancellationToken);
+                var model = await context.Limits.FirstOrDefaultAsync(x => x.UserId == userId && x.LimitId == id, cancellationToken);
                 return model?.ToEntity() ?? throw new NotFoundException("Limit");
             }
             catch (DomainException)

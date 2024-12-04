@@ -13,7 +13,7 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
         {
             var limit = await limitRepository.FindAsync(
                 userId: request.UserId,
-                entityId: request.LimitId,
+                id: request.LimitId,
                 cancellationToken);
 
             var existUser = await limitRepository.CheckUserByIdAsync(request.UserId, cancellationToken);

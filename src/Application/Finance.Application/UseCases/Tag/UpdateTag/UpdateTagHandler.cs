@@ -12,7 +12,7 @@ namespace Finance.Application.UseCases.Tag.UpdateTag
         {
             var tag = await tagRepository.FindAsync(
                 userId: request.UserId,
-                entityId: request.TagId,
+                id: request.TagId,
                 cancellationToken);
 
             tag.ChangeName(request.Name);

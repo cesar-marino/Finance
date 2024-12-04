@@ -1,10 +1,10 @@
 ﻿namespace Finance.Domain.SeedWork
 {
     public abstract class AggregateRoot(
-        Guid? entityId = null,
+        Guid? id = null,
         DateTime? createdAt = null,
         DateTime? updatedAt = null) : EntityBase(
-            entityId,
+            id,
             createdAt,
             updatedAt)
     {
