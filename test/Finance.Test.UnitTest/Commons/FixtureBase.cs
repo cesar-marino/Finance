@@ -96,5 +96,15 @@ namespace Finance.Test.UnitTest.Commons
                 currentAmount: currentAmount ?? Faker.Random.Double(),
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
+
+        public BankEntity MakeBankEntity() => new(
+            bankId: Faker.Random.Guid(),
+            active: Faker.Random.Bool(),
+            code: Faker.Random.String(5),
+            name: Faker.Random.String(5),
+            color: Faker.Random.String(5),
+            logo: Faker.Internet.Url(),
+            createdAt: Faker.Date.Past(),
+            updatedAt: Faker.Date.Past());
     }
 }
