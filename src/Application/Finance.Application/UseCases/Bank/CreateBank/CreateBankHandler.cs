@@ -17,9 +17,12 @@ namespace Finance.Application.UseCases.Bank.CreateBank
                 color: request.Color,
                 logo: request.Logo);
 
-            await bankRepository.InsertAsync(bank, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return BankResponse.FromEntity(bank);
+            await bankRepository.InsertAsync(
+                aggregate: bank,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return BankResponse.FromEntity(bank: bank);
         }
     }
 }

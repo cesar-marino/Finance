@@ -9,9 +9,9 @@ namespace Finance.Application.UseCases.Bank.GetBank
         {
             var bank = await bankRepository.FindAsync(
                 id: request.BankId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
-            return BankResponse.FromEntity(bank);
+            return BankResponse.FromEntity(bank: bank);
         }
     }
 }

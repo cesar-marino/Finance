@@ -10,9 +10,9 @@ namespace Finance.Application.UseCases.Tag.GetTag
             var tag = await tagRepository.FindAsync(
                 id: request.TagId,
                 userId: request.UserId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
-            return TagResponse.FromEntity(tag);
+            return TagResponse.FromEntity(tag: tag);
         }
     }
 }

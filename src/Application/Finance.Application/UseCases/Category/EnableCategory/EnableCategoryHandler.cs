@@ -13,13 +13,16 @@ namespace Finance.Application.UseCases.Category.EnableCategory
             var category = await categoryRepository.FindAsync(
                 id: request.CategoryId,
                 userId: request.UserId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             category.Enable();
 
-            await categoryRepository.UpdateAsync(category, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return CategoryResponse.FromEntity(category);
+            await categoryRepository.UpdateAsync(
+                aggregate: category,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return CategoryResponse.FromEntity(category: category);
         }
     }
 }

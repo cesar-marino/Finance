@@ -14,13 +14,19 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
             var limit = await limitRepository.FindAsync(
                 id: request.LimitId,
                 userId: request.UserId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
-            var existUser = await limitRepository.CheckUserByIdAsync(request.UserId, cancellationToken);
+            var existUser = await limitRepository.CheckUserByIdAsync(
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
+
             if (!existUser)
                 throw new NotFoundException("User");
 
-            var existCategory = await limitRepository.CheckCategoryByIdAsync(request.CategoryId, cancellationToken);
+            var existCategory = await limitRepository.CheckCategoryByIdAsync(
+                categoryId: request.CategoryId,
+                cancellationToken: cancellationToken);
+
             if (!existCategory)
                 throw new NotFoundException("Category");
 
@@ -29,9 +35,12 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
                 limitAmount: request.LimitAmount,
                 categoryId: request.CategoryId);
 
-            await limitRepository.UpdateAsync(limit, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return LimitResponse.FromEntity(limit);
+            await limitRepository.UpdateAsync(
+                aggregate: limit,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return LimitResponse.FromEntity(limit: limit);
         }
     }
 }

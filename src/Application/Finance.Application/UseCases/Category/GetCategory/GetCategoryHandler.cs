@@ -10,11 +10,15 @@ namespace Finance.Application.UseCases.Category.GetCategory
             var category = await categoryRepository.FindAsync(
                 id: request.CategoryId,
                 userId: request.UserId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
-            var subCategories = await categoryRepository.FindSubcategoriesAsync(category.Id, cancellationToken);
+            var subCategories = await categoryRepository.FindSubcategoriesAsync(
+                categoryId: category.Id,
+                cancellationToken: cancellationToken);
 
-            return CategoryResponse.FromEntity(category: category, subCategories: subCategories);
+            return CategoryResponse.FromEntity(
+                category: category,
+                subCategories: subCategories);
         }
     }
 }

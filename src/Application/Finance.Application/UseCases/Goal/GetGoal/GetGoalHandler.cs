@@ -12,7 +12,7 @@ namespace Finance.Application.UseCases.Goal.GetGoal
                 userId: request.UserId,
                 cancellationToken: cancellationToken);
 
-            return GoalResponse.FromEntity(goal);
+            return GoalResponse.FromEntity(goal: goal);
         }
     }
 }

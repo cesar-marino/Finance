@@ -13,7 +13,7 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
             var category = await categoryRepository.FindAsync(
                 id: request.CategoryId,
                 userId: request.UserId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             category.Updated(
                 active: request.Active,
@@ -22,9 +22,12 @@ namespace Finance.Application.UseCases.Category.UpdateCategory
                 icon: request.Icon,
                 color: request.Color);
 
-            await categoryRepository.UpdateAsync(category, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return CategoryResponse.FromEntity(category);
+            await categoryRepository.UpdateAsync(
+                aggregate: category,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return CategoryResponse.FromEntity(category: category);
         }
     }
 }

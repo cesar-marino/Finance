@@ -10,9 +10,15 @@ namespace Finance.Application.UseCases.User.GetCurrentUser
     {
         public async Task<UserResponse> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
         {
-            var username = await tokenService.GetUsernameFromTokenAsync(request.AccessToken, cancellationToken);
-            var user = await userRepository.FindByUsernameAsync(username, cancellationToken);
-            return UserResponse.FromEntity(user);
+            var username = await tokenService.GetUsernameFromTokenAsync(
+                token: request.AccessToken,
+                cancellationToken: cancellationToken);
+
+            var user = await userRepository.FindByUsernameAsync(
+                username: username,
+                cancellationToken: cancellationToken);
+
+            return UserResponse.FromEntity(user: user);
         }
     }
 }

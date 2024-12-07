@@ -11,6 +11,8 @@ namespace Finance.Application.Services
 
         Task<UserToken> GenerateRefreshTokenAsync(CancellationToken cancellationToken = default);
 
-        Task<string> GetUsernameFromTokenAsync(string token, CancellationToken cancellationToken);
+        Task<string> GetUsernameFromTokenAsync(
+            string token,
+            CancellationToken cancellationToken = default);
     }
 }

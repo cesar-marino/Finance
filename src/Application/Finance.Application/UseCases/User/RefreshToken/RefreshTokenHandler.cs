@@ -13,21 +13,34 @@ namespace Finance.Application.UseCases.User.RefreshToken
     {
         public async Task<UserResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
-            var username = await tokenService.GetUsernameFromTokenAsync(request.AccessToken, cancellationToken);
-            var user = await userRepository.FindByUsernameAsync(username, cancellationToken);
+            var username = await tokenService.GetUsernameFromTokenAsync(
+                request.AccessToken,
+                cancellationToken: cancellationToken);
+
+            var user = await userRepository.FindByUsernameAsync(
+                username: username,
+                cancellationToken: cancellationToken);
 
             if (user.RefreshToken?.Value != request.RefreshToken
                 || user.RefreshToken.ExpiresIn < DateTime.UtcNow)
                 throw new UnauthorizedException();
 
-            var accessToken = await tokenService.GenerateAccessTokenAsync(user, cancellationToken);
-            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            var accessToken = await tokenService.GenerateAccessTokenAsync(
+                user: user,
+                cancellationToken: cancellationToken);
 
-            user.ChangeTokens(accessToken, refreshToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken: cancellationToken);
 
-            await userRepository.UpdateAsync(user, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return UserResponse.FromEntity(user);
+            user.ChangeTokens(
+                accessToken: accessToken,
+                refreshToken: refreshToken);
+
+            await userRepository.UpdateAsync(
+                aggregate: user,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return UserResponse.FromEntity(user: user);
         }
     }
 }

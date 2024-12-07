@@ -15,7 +15,7 @@ namespace Finance.Application.UseCases.Category.SearchCategories
                 perPage: request.PerPage,
                 orderBy: request.OrderBy,
                 order: request.Order,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             return new(
                 currentPage: result.CurrentPage,

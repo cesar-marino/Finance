@@ -10,12 +10,18 @@ namespace Finance.Application.UseCases.User.DisableUser
     {
         public async Task<UserResponse> Handle(DisableUserRequest request, CancellationToken cancellationToken)
         {
-            var user = await userRepository.FindAsync(request.UserId, cancellationToken);
+            var user = await userRepository.FindAsync(
+                id: request.UserId,
+                cancellationToken: cancellationToken);
+
             user.Disable();
 
-            await userRepository.UpdateAsync(user, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return UserResponse.FromEntity(user);
+            await userRepository.UpdateAsync(
+                aggregate: user,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return UserResponse.FromEntity(user: user);
         }
     }
 }
