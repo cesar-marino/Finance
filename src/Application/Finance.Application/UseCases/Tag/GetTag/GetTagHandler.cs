@@ -7,7 +7,11 @@ namespace Finance.Application.UseCases.Tag.GetTag
     {
         public async Task<TagResponse> Handle(GetTagRequest request, CancellationToken cancellationToken)
         {
-            var tag = await tagRepository.FindAsync(request.UserId, request.TagId, cancellationToken);
+            var tag = await tagRepository.FindAsync(
+                id: request.TagId,
+                userId: request.UserId,
+                cancellationToken);
+
             return TagResponse.FromEntity(tag);
         }
     }

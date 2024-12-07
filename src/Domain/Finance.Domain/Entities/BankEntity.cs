@@ -27,7 +27,7 @@ namespace Finance.Domain.Entities
             string? color,
             string? logo,
             DateTime createdAt,
-            DateTime updatedAt) : base(bankId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: bankId, createdAt: createdAt, updatedAt: updatedAt)
         {
             Active = active;
             Code = code;

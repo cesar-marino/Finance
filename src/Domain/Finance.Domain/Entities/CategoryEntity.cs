@@ -3,9 +3,8 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Entities
 {
-    public class CategoryEntity : AggregateRoot
+    public class CategoryEntity : AuditableAggregateRoot
     {
-        public Guid UserId { get; }
         public bool Active { get; private set; }
         public CategoryType? CategoryType { get; private set; }
         public string Name { get; private set; }
@@ -19,9 +18,8 @@ namespace Finance.Domain.Entities
             string name,
             string? icon,
             string? color,
-            Guid? superCategoryId = null)
+            Guid? superCategoryId = null) : base(userId: userId)
         {
-            UserId = userId;
             Active = true;
             CategoryType = categoryType;
             Name = name;
@@ -40,9 +38,8 @@ namespace Finance.Domain.Entities
             string? color,
             Guid? superCategoryId,
             DateTime createdAt,
-            DateTime updatedAt) : base(categoryId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: categoryId, userId: userId, createdAt: createdAt, updatedAt: updatedAt)
         {
-            UserId = userId;
             Active = active;
             CategoryType = categoryType;
             Name = name;

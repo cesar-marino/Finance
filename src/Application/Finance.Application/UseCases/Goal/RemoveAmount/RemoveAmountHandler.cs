@@ -10,7 +10,11 @@ namespace Finance.Application.UseCases.Goal.RemoveAmount
     {
         public async Task<GoalResponse> Handle(RemoveAmountRequest request, CancellationToken cancellationToken)
         {
-            var goal = await goalRepository.FindAsync(request.UserId, request.GoalId, cancellationToken);
+            var goal = await goalRepository.FindAsync(
+                id: request.GoalId,
+                userId: request.UserId,
+                cancellationToken);
+
             goal.RemoveAmount(request.Amount);
 
             await goalRepository.UpdateAsync(goal, cancellationToken);

@@ -11,8 +11,8 @@ namespace Finance.Application.UseCases.Tag.UpdateTag
         public async Task<TagResponse> Handle(UpdateTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(
-                userId: request.UserId,
                 id: request.TagId,
+                userId: request.UserId,
                 cancellationToken);
 
             tag.ChangeName(request.Name);

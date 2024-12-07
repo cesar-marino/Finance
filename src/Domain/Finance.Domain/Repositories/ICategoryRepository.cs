@@ -4,7 +4,7 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Repositories
 {
-    public interface ICategoryRepository : IRepository<CategoryEntity>
+    public interface ICategoryRepository : IAuditableRepository<CategoryEntity>
     {
         Task<bool> CheckUserAsync(Guid userId, CancellationToken cancellationToken = default);
 

@@ -3,9 +3,8 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Repositories
 {
-    public interface IUserRepository : IRepository<UserEntity>
+    public interface IUserRepository : IGeneralRepository<UserEntity>
     {
-        Task<UserEntity> FindAsync(Guid userId, CancellationToken cancellationToken = default);
         Task<bool> CheckEmailAsync(string email, CancellationToken cancellationToken = default);
         Task<bool> CheckUsernameAsync(string username, CancellationToken cancellationToken = default);
         Task<UserEntity> FindByEmailAsync(string email, CancellationToken cancellationToken = default);

@@ -11,8 +11,8 @@ namespace Finance.Application.UseCases.Tag.EnableTag
         public async Task<TagResponse> Handle(EnableTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(
-                userId: request.UserId,
                 id: request.TagId,
+                userId: request.UserId,
                 cancellationToken);
 
             tag.Enable();

@@ -3,7 +3,7 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Repositories
 {
-    public interface ITagRepository : IRepository<TagEntity>
+    public interface ITagRepository : IAuditableRepository<TagEntity>
     {
         Task<SearchResult<TagEntity>> SearchAsync(
             bool? active,

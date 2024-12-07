@@ -2,9 +2,8 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Entities
 {
-    public class GoalEntity : AggregateRoot
+    public class GoalEntity : AuditableAggregateRoot
     {
-        public Guid UserId { get; }
         public string Name { get; private set; }
         public double ExpectedAmount { get; private set; }
         public double CurrentAmount { get; private set; }
@@ -12,9 +11,8 @@ namespace Finance.Domain.Entities
         public GoalEntity(
             Guid userId,
             string name,
-            double expectedAmount)
+            double expectedAmount) : base(userId: userId)
         {
-            UserId = userId;
             Name = name;
             ExpectedAmount = expectedAmount;
             CurrentAmount = 0;
@@ -27,9 +25,8 @@ namespace Finance.Domain.Entities
             double expectedAmount,
             double currentAmount,
             DateTime createdAt,
-            DateTime updatedAt) : base(goalId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: goalId, userId: userId, createdAt: createdAt, updatedAt: updatedAt)
         {
-            UserId = userId;
             Name = name;
             ExpectedAmount = expectedAmount;
             CurrentAmount = currentAmount;

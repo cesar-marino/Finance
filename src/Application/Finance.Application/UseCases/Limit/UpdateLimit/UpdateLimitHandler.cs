@@ -12,8 +12,8 @@ namespace Finance.Application.UseCases.Limit.UpdateLimit
         public async Task<LimitResponse> Handle(UpdateLimitRequest request, CancellationToken cancellationToken)
         {
             var limit = await limitRepository.FindAsync(
-                userId: request.UserId,
                 id: request.LimitId,
+                userId: request.UserId,
                 cancellationToken);
 
             var existUser = await limitRepository.CheckUserByIdAsync(request.UserId, cancellationToken);

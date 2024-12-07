@@ -11,8 +11,8 @@ namespace Finance.Application.UseCases.Category.EnableCategory
         public async Task<CategoryResponse> Handle(EnableCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await categoryRepository.FindAsync(
-                userId: request.UserId,
                 id: request.CategoryId,
+                userId: request.UserId,
                 cancellationToken);
 
             category.Enable();
