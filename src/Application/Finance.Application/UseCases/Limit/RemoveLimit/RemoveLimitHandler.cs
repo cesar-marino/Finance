@@ -12,9 +12,9 @@ namespace Finance.Application.UseCases.Limit.RemoveLimit
             await limitRepository.RemoveAsync(
                 userId: request.UserId,
                 limitId: request.LimitId,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
-            await unitOfWork.CommitAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
             return true;
         }
     }

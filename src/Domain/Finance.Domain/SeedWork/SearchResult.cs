@@ -6,7 +6,7 @@
         int total,
         string? orderBy,
         SearchOrder? order,
-        IReadOnlyList<TAggregate> items) where TAggregate : AggregateRoot
+        IReadOnlyList<TAggregate> items) where TAggregate : EntityBase
     {
         public int? CurrentPage { get; } = currentPage;
         public int? PerPage { get; } = perPage;

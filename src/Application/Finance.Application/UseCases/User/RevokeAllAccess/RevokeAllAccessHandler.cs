@@ -9,15 +9,18 @@ namespace Finance.Application.UseCases.User.RevokeAllAccess
     {
         public async Task Handle(RevokeAllAccessRequest request, CancellationToken cancellationToken)
         {
-            var users = await userRepository.FindLoggedUsersAsync(cancellationToken);
+            var users = await userRepository.FindLoggedUsersAsync(cancellationToken: cancellationToken);
 
             foreach (var user in users)
             {
                 user.RevokeTokens();
-                await userRepository.UpdateAsync(user, cancellationToken);
+
+                await userRepository.UpdateAsync(
+                    aggregate: user,
+                    cancellationToken: cancellationToken);
             }
 
-            await unitOfWork.CommitAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
             await Task.CompletedTask;
         }
     }

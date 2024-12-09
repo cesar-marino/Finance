@@ -3,8 +3,8 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Repositories
 {
-    public interface IBankRepository : IRepository<BankEntity>
+    public interface IBankRepository : IGeneralRepository<BankEntity>
     {
-        Task<BankEntity> FindAsync(Guid bankId, CancellationToken cancellationToken = default);
+
     }
 }

@@ -24,9 +24,12 @@ namespace Finance.Application.UseCases.Category.CreateCategory
                 color: request.Color,
                 superCategoryId: request.SuperCategoryId);
 
-            await categoryRepository.InsertAsync(category, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return CategoryResponse.FromEntity(category);
+            await categoryRepository.InsertAsync(
+                aggregate: category,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return CategoryResponse.FromEntity(category: category);
         }
     }
 }

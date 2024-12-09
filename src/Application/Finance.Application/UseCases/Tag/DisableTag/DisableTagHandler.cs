@@ -11,15 +11,18 @@ namespace Finance.Application.UseCases.Tag.DisableTag
         public async Task<TagResponse> Handle(DisableTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(
-                userId: request.UserId,
                 id: request.TagId,
-                cancellationToken);
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
 
             tag.Disable();
 
-            await tagRepository.UpdateAsync(tag, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return TagResponse.FromEntity(tag);
+            await tagRepository.UpdateAsync(
+                aggregate: tag,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return TagResponse.FromEntity(tag: tag);
         }
     }
 }

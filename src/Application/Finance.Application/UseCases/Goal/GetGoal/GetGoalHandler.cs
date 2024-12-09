@@ -7,8 +7,12 @@ namespace Finance.Application.UseCases.Goal.GetGoal
     {
         public async Task<GoalResponse> Handle(GetGoalRequest request, CancellationToken cancellationToken)
         {
-            var goal = await goalRepository.FindAsync(request.UserId, request.GoalId, cancellationToken);
-            return GoalResponse.FromEntity(goal);
+            var goal = await goalRepository.FindAsync(
+                id: request.GoalId,
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
+
+            return GoalResponse.FromEntity(goal: goal);
         }
     }
 }

@@ -11,11 +11,16 @@ namespace Finance.Application.UseCases.Tag.CreateTag
     {
         public async Task<TagResponse> Handle(CreateTagRequest request, CancellationToken cancellationToken)
         {
-            var tag = new TagEntity(userId: request.UserId, name: request.Name);
+            var tag = new TagEntity(
+                userId: request.UserId,
+                name: request.Name);
 
-            await tagRepository.InsertAsync(tag, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return TagResponse.FromEntity(tag);
+            await tagRepository.InsertAsync(
+                aggregate: tag,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return TagResponse.FromEntity(tag: tag);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Finance.Domain.Entities
             UserToken? accessToken,
             UserToken? refreshToken,
             DateTime createdAt,
-            DateTime updatedAt) : base(userId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: userId, createdAt: createdAt, updatedAt: updatedAt)
         {
             Active = active;
             Username = username;

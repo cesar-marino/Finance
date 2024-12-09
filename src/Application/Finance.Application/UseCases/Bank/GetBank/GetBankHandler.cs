@@ -7,8 +7,11 @@ namespace Finance.Application.UseCases.Bank.GetBank
     {
         public async Task<BankResponse> Handle(GetBankRequest request, CancellationToken cancellationToken)
         {
-            var bank = await bankRepository.FindAsync(bankId: request.BankId, cancellationToken);
-            return BankResponse.FromEntity(bank);
+            var bank = await bankRepository.FindAsync(
+                id: request.BankId,
+                cancellationToken: cancellationToken);
+
+            return BankResponse.FromEntity(bank: bank);
         }
     }
 }

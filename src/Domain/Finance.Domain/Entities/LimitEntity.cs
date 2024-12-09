@@ -2,9 +2,8 @@
 
 namespace Finance.Domain.Entities
 {
-    public class LimitEntity : AggregateRoot
+    public class LimitEntity : AuditableAggregateRoot
     {
-        public Guid UserId { get; }
         public string Name { get; private set; }
         public double LimitAmount { get; private set; }
         public Guid CategoryId { get; private set; }
@@ -13,9 +12,8 @@ namespace Finance.Domain.Entities
             Guid userId,
             Guid categoryId,
             string name,
-            double limitAmount)
+            double limitAmount) : base(userId: userId)
         {
-            UserId = userId;
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;
@@ -28,9 +26,8 @@ namespace Finance.Domain.Entities
             string name,
             double limitAmount,
             DateTime createdAt,
-            DateTime updatedAt) : base(limitId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: limitId, userId: userId, createdAt: createdAt, updatedAt: updatedAt)
         {
-            UserId = userId;
             CategoryId = categoryId;
             Name = name;
             LimitAmount = limitAmount;

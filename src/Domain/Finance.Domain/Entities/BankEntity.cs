@@ -10,7 +10,11 @@ namespace Finance.Domain.Entities
         public string? Color { get; private set; }
         public string? Logo { get; private set; }
 
-        public BankEntity(string? code, string name, string? color, string? logo)
+        public BankEntity(
+            string? code,
+            string name,
+            string? color,
+            string? logo)
         {
             Active = true;
             Code = code;
@@ -27,7 +31,10 @@ namespace Finance.Domain.Entities
             string? color,
             string? logo,
             DateTime createdAt,
-            DateTime updatedAt) : base(bankId, createdAt, updatedAt)
+            DateTime updatedAt) : base(
+                id: bankId,
+                createdAt: createdAt,
+                updatedAt: updatedAt)
         {
             Active = active;
             Code = code;

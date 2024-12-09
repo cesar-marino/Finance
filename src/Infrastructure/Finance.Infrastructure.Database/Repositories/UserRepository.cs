@@ -52,11 +52,6 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public Task<UserEntity> FindAsync(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<UserEntity> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             try

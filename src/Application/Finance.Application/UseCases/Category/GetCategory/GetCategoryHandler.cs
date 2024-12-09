@@ -8,13 +8,17 @@ namespace Finance.Application.UseCases.Category.GetCategory
         public async Task<CategoryResponse> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await categoryRepository.FindAsync(
-                userId: request.UserId,
                 id: request.CategoryId,
-                cancellationToken);
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
 
-            var subCategories = await categoryRepository.FindSubcategoriesAsync(category.Id, cancellationToken);
+            var subCategories = await categoryRepository.FindSubcategoriesAsync(
+                categoryId: category.Id,
+                cancellationToken: cancellationToken);
 
-            return CategoryResponse.FromEntity(category: category, subCategories: subCategories);
+            return CategoryResponse.FromEntity(
+                category: category,
+                subCategories: subCategories);
         }
     }
 }

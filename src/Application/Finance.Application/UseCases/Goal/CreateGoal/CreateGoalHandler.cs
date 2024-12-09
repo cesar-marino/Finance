@@ -12,7 +12,9 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
     {
         public async Task<GoalResponse> Handle(CreateGoalRequest request, CancellationToken cancellationToken)
         {
-            var existUser = await goalRepository.CheckUserAsync(request.UserId, cancellationToken);
+            var existUser = await goalRepository.CheckUserAsync(
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
 
             if (!existUser)
                 throw new NotFoundException("User");
@@ -22,10 +24,12 @@ namespace Finance.Application.UseCases.Goal.CreateGoal
                 name: request.Name,
                 expectedAmount: request.ExpectedAmount);
 
-            await goalRepository.InsertAsync(goal, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
+            await goalRepository.InsertAsync(
+                aggregate: goal,
+                cancellationToken: cancellationToken);
 
-            return GoalResponse.FromEntity(goal);
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return GoalResponse.FromEntity(goal: goal);
         }
     }
 }

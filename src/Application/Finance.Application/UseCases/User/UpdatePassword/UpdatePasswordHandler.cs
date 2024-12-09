@@ -13,21 +13,30 @@ namespace Finance.Application.UseCases.User.UpdatePassword
     {
         public async Task<UserResponse> Handle(UpdatePasswordRequest request, CancellationToken cancellationToken)
         {
-            var user = await userRepository.FindAsync(request.UserId, cancellationToken);
+            var user = await userRepository.FindAsync(
+                id: request.UserId,
+                cancellationToken: cancellationToken);
+
             var passwordIsValid = await encryptionService.VerifyAsync(
-                request.CurrentPassword,
-                user.Password,
-                cancellationToken);
+                value: request.CurrentPassword,
+                hash: user.Password,
+                cancellationToken: cancellationToken);
 
             if (!passwordIsValid)
                 throw new InvalidPasswordException();
 
-            var password = await encryptionService.EcnryptAsync(request.NewPassword, cancellationToken);
+            var password = await encryptionService.EcnryptAsync(
+                key: request.NewPassword,
+                cancellationToken: cancellationToken);
+
             user.ChangePassword(password);
 
-            await userRepository.UpdateAsync(user, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return UserResponse.FromEntity(user);
+            await userRepository.UpdateAsync(
+                aggregate: user,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return UserResponse.FromEntity(user: user);
         }
     }
 }

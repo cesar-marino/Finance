@@ -14,7 +14,7 @@ namespace Finance.Application.UseCases.Tag.SerachTags
                 perPage: request.PerPage,
                 orderBy: request.OrderBy,
                 order: request.Order,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             return new(
                 currentPage: result.CurrentPage,

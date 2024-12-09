@@ -15,17 +15,23 @@ namespace Finance.Application.UseCases.User.CreateUser
     {
         public async Task<UserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {
-            var emailInUse = await userRepository.CheckEmailAsync(request.Email, cancellationToken);
+            var emailInUse = await userRepository.CheckEmailAsync(
+                email: request.Email,
+                cancellationToken: cancellationToken);
+
             if (emailInUse)
                 throw new EmailInUseException();
 
-            var usernameInUse = await userRepository.CheckUsernameAsync(request.Username, cancellationToken);
+            var usernameInUse = await userRepository.CheckUsernameAsync(
+                username: request.Username,
+                cancellationToken: cancellationToken);
+
             if (usernameInUse)
                 throw new UsernameInUseException();
 
             var password = await encryptionService.EcnryptAsync(
-                request.Password,
-                cancellationToken);
+                key: request.Password,
+                cancellationToken: cancellationToken);
 
             var user = new UserEntity(
                 username: request.Username,
@@ -33,14 +39,22 @@ namespace Finance.Application.UseCases.User.CreateUser
                 password: password,
                 phone: request.Phone);
 
-            var accessToken = await tokenService.GenerateAccessTokenAsync(user, cancellationToken);
-            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken);
+            var accessToken = await tokenService.GenerateAccessTokenAsync(
+                user: user,
+                cancellationToken: cancellationToken);
 
-            user.ChangeTokens(accessToken, refreshToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(cancellationToken: cancellationToken);
 
-            await userRepository.InsertAsync(user, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return UserResponse.FromEntity(user);
+            user.ChangeTokens(
+                accessToken: accessToken,
+                refreshToken: refreshToken);
+
+            await userRepository.InsertAsync(
+                aggregate: user,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return UserResponse.FromEntity(user: user);
         }
     }
 }

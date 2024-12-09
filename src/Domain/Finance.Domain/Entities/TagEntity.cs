@@ -2,15 +2,15 @@
 
 namespace Finance.Domain.Entities
 {
-    public class TagEntity : AggregateRoot
+    public class TagEntity : AuditableAggregateRoot
     {
-        public Guid UserId { get; }
         public bool Active { get; private set; }
         public string Name { get; private set; }
 
-        public TagEntity(Guid userId, string name)
+        public TagEntity(
+            Guid userId,
+            string name) : base(userId: userId)
         {
-            UserId = userId;
             Active = true;
             Name = name;
         }
@@ -21,9 +21,8 @@ namespace Finance.Domain.Entities
             bool active,
             string name,
             DateTime createdAt,
-            DateTime updatedAt) : base(tagId, createdAt, updatedAt)
+            DateTime updatedAt) : base(id: tagId, userId: userId, createdAt: createdAt, updatedAt: updatedAt)
         {
-            UserId = userId;
             Active = active;
             Name = name;
         }

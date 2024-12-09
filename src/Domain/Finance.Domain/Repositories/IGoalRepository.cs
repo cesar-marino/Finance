@@ -3,7 +3,7 @@ using Finance.Domain.SeedWork;
 
 namespace Finance.Domain.Repositories
 {
-    public interface IGoalRepository : IRepository<GoalEntity>
+    public interface IGoalRepository : IAuditableRepository<GoalEntity>
     {
         Task<bool> CheckUserAsync(Guid userId, CancellationToken cancellationToken = default);
         Task RemoveAsync(Guid userId, Guid goalId, CancellationToken cancellationToken = default);

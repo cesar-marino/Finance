@@ -24,7 +24,7 @@ namespace Finance.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<CategoryEntity> FindAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
+        public async Task<CategoryEntity> FindAsync(Guid id, Guid userId, CancellationToken cancellationToken = default)
         {
             try
             {

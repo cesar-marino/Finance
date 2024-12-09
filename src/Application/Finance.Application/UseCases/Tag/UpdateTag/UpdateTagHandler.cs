@@ -11,15 +11,18 @@ namespace Finance.Application.UseCases.Tag.UpdateTag
         public async Task<TagResponse> Handle(UpdateTagRequest request, CancellationToken cancellationToken)
         {
             var tag = await tagRepository.FindAsync(
-                userId: request.UserId,
                 id: request.TagId,
-                cancellationToken);
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
 
-            tag.ChangeName(request.Name);
+            tag.ChangeName(name: request.Name);
 
-            await tagRepository.UpdateAsync(tag, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return TagResponse.FromEntity(tag);
+            await tagRepository.UpdateAsync(
+                aggregate: tag,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return TagResponse.FromEntity(tag: tag);
         }
     }
 }

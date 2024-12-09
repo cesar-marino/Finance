@@ -11,15 +11,18 @@ namespace Finance.Application.UseCases.Category.EnableCategory
         public async Task<CategoryResponse> Handle(EnableCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await categoryRepository.FindAsync(
-                userId: request.UserId,
                 id: request.CategoryId,
-                cancellationToken);
+                userId: request.UserId,
+                cancellationToken: cancellationToken);
 
             category.Enable();
 
-            await categoryRepository.UpdateAsync(category, cancellationToken);
-            await unitOfWork.CommitAsync(cancellationToken);
-            return CategoryResponse.FromEntity(category);
+            await categoryRepository.UpdateAsync(
+                aggregate: category,
+                cancellationToken: cancellationToken);
+
+            await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
+            return CategoryResponse.FromEntity(category: category);
         }
     }
 }
