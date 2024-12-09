@@ -7,11 +7,11 @@ namespace Finance.Application.UseCases.Bank.CreateBank
         string? code,
         string name,
         string? color,
-        string? logo) : IRequest<BankResponse>
+        byte[]? logo) : IRequest<BankResponse>
     {
         public string? Code { get; } = code;
         public string Name { get; } = name;
         public string? Color { get; } = color;
-        public string? Logo { get; } = logo;
+        public byte[]? Logo { get; } = logo;
     }
 }
