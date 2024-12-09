@@ -1,11 +1,15 @@
+using Finance.Application.Services;
 using Finance.Application.UseCases.Bank.Commons;
 
 namespace Finance.Application.UseCases.Bank.CreateBank
 {
-    public class CreateBankHandler : ICreateBankHandler
+    public class CreateBankHandler(IStorageService storageService) : ICreateBankHandler
     {
-        public Task<BankResponse> Handle(CreateBankRequest request, CancellationToken cancellationToken)
+        public async Task<BankResponse> Handle(CreateBankRequest request, CancellationToken cancellationToken)
         {
+            if (request.Logo is not null)
+                await storageService.UploadAsync("/bank", request.Logo, cancellationToken);
+
             throw new NotImplementedException();
         }
     }

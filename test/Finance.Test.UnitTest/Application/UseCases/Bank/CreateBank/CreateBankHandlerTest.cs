@@ -23,7 +23,26 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.CreateBank
             _unitOfWorkMock = new();
             _storageServiceMock = new();
 
-            _sut = new();
+            _sut = new(storageService: _storageServiceMock.Object);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUploadAsyncThrows))]
+        [Trait("Unit/UseCase", "Bank - CreateBank")]
+        public async Task ShouldRethrowSameExceptionThatUploadAsyncThrows()
+        {
+            _storageServiceMock
+                .Setup(x => x.UploadAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateBankRequest(_fixture.Faker.Random.Bytes(50000));
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
