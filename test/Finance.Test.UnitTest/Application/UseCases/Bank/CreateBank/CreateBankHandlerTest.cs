@@ -10,10 +10,10 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.CreateBank
 {
     public class CreateBankHandlerTest : IClassFixture<CreateBankHandlerTestFixture>
     {
-        private CreateBankHandlerTestFixture _fixture;
-        private CreateBankHandler _sut;
-        private Mock<IBankRepository> _bankRepositoryMock;
-        private Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly CreateBankHandlerTestFixture _fixture;
+        private readonly CreateBankHandler _sut;
+        private readonly Mock<IBankRepository> _bankRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public CreateBankHandlerTest(CreateBankHandlerTestFixture fixture)
         {
