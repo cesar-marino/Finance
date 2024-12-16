@@ -59,5 +59,19 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.CreateBank
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfBankIsSuccessfullyCreated))]
+        [Trait("Unit/UseCase", "Bank - CreateBank")]
+        public async void ShouldReturnTheCorrectResponseIfBankIsSuccessfullyCreated()
+        {
+            var request = _fixture.MakeCreateBankRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.Active.Should().BeTrue();
+            response.Code.Should().Be(request.Code);
+            response.Color.Should().Be(request.Color);
+            response.Name.Should().Be(request.Name);
+            response.Logo.Should().BeNull();
+        }
     }
 }

@@ -14,15 +14,14 @@ namespace Finance.Application.UseCases.Bank.CreateBank
             var bank = new BankEntity(
                 code: request.Code,
                 name: request.Name,
-                color: request.Code);
+                color: request.Color);
 
             await bankRepository.InsertAsync(
                 aggregate: bank,
                 cancellationToken: cancellationToken);
 
             await unitOfWork.CommitAsync(cancellationToken: cancellationToken);
-
-            throw new NotImplementedException();
+            return BankResponse.FromEntity(bank: bank);
         }
     }
 }
