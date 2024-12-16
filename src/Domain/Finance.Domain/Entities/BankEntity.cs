@@ -13,14 +13,12 @@ namespace Finance.Domain.Entities
         public BankEntity(
             string? code,
             string name,
-            string? color,
-            string? logo)
+            string? color)
         {
             Active = true;
             Code = code;
             Name = name;
             Color = color;
-            Logo = logo;
         }
 
         public BankEntity(
