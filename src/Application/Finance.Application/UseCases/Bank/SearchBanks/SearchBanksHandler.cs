@@ -1,4 +1,5 @@
 
+using Finance.Application.UseCases.Bank.Commons;
 using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Bank.SearchBanks
@@ -7,7 +8,7 @@ namespace Finance.Application.UseCases.Bank.SearchBanks
     {
         public async Task<SearchBanksResponse> Handle(SearchBanksRequest request, CancellationToken cancellationToken)
         {
-            _ = await bankRepository.SearchAsync(
+            var result = await bankRepository.SearchAsync(
                 active: request.Active,
                 code: request.Code,
                 name: request.Name,
@@ -16,7 +17,13 @@ namespace Finance.Application.UseCases.Bank.SearchBanks
                 orderBy: request.OrderBy,
                 order: request.Order);
 
-            throw new NotImplementedException();
+            return new(
+                currentPage: result.CurrentPage,
+                perPage: result.PerPage,
+                total: result.Total,
+                orderBy: result.OrderBy,
+                order: result.Order,
+                items: result.Items.Select(BankResponse.FromEntity).ToList());
         }
     }
 }

@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Bank.SearchBanks;
+using Finance.Domain.Entities;
 using Finance.Domain.SeedWork;
 using Finance.Test.UnitTest.Commons;
 
@@ -14,5 +15,13 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.SearchBanks
             perPage: Faker.Random.Int(5),
             orderBy: Faker.Random.String(5),
             order: SearchOrder.Asc);
+
+        public SearchResult<BankEntity> MakeSearchBanksResult() => new(
+            currentPage: Faker.Random.Int(5),
+            perPage: Faker.Random.Int(5),
+            total: 2,
+            orderBy: Faker.Random.String(5),
+            order: SearchOrder.Asc,
+            items: [MakeBankEntity(), MakeBankEntity()]);
     }
 }
