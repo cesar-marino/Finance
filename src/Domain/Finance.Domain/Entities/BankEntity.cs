@@ -51,5 +51,11 @@ namespace Finance.Domain.Entities
             Color = color;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void Disable()
+        {
+            Active = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

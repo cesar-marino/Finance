@@ -91,5 +91,28 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.DisableBank
                 .Where(x => x.Code == "unexpected")
                 .WithMessage("An unexpected error occurred");
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfBankIsSuccessfullyDisabled))]
+        [Trait("Unit/UseCase", "Bank - DisableBank")]
+        public async void ShouldReturnTheCorrectResponseIfBankIsSuccessfullyDisabled()
+        {
+            var bank = _fixture.MakeBankEntity();
+            _bankRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(bank);
+
+            var request = _fixture.MakeDisableBankRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            response.Active.Should().BeFalse();
+            response.BankId.Should().Be(bank.Id);
+            response.Code.Should().Be(bank.Code);
+            response.Color.Should().Be(bank.Color);
+            response.CreatedAt.Should().Be(bank.CreatedAt);
+            response.Logo.Should().Be(bank.Logo);
+            response.Name.Should().Be(bank.Name);
+        }
     }
 }

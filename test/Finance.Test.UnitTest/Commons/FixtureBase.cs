@@ -97,9 +97,9 @@ namespace Finance.Test.UnitTest.Commons
                 createdAt: createdAt ?? Faker.Date.Past(),
                 updatedAt: updatedAt ?? Faker.Date.Past());
 
-        public BankEntity MakeBankEntity() => new(
+        public BankEntity MakeBankEntity(bool active = true) => new(
             bankId: Faker.Random.Guid(),
-            active: Faker.Random.Bool(),
+            active: active,
             code: Faker.Random.String(5),
             name: Faker.Random.String(5),
             color: Faker.Random.String(5),
