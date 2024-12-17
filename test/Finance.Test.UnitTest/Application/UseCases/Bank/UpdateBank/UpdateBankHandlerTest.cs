@@ -2,6 +2,7 @@ using Finance.Application.UseCases.Bank.UpdateBank;
 using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
+using Finance.Domain.SeedWork;
 using FluentAssertions;
 using Moq;
 
@@ -12,12 +13,16 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.UpdateBank
         private readonly UpdateBankHandlerTestFixture _fixture;
         private readonly UpdateBankHandler _sut;
         private readonly Mock<IBankRepository> _bankRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public UpdateBankHandlerTest(UpdateBankHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _bankRepositoryMock = new();
-            _sut = new(bankRepository: _bankRepositoryMock.Object);
+            _unitOfWorkMock = new();
+            _sut = new(
+                bankRepository: _bankRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -53,6 +58,29 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.UpdateBank
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<BankEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateBankRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "Bank - UpdateBank")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var bank = _fixture.MakeBankEntity();
+            _bankRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(bank);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeUpdateBankRequest();
