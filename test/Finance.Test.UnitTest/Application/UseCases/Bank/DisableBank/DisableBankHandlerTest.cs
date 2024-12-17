@@ -1,4 +1,5 @@
 using Finance.Application.UseCases.Bank.DisableBank;
+using Finance.Domain.Entities;
 using Finance.Domain.Exceptions;
 using Finance.Domain.Repositories;
 using FluentAssertions;
@@ -35,6 +36,31 @@ namespace Finance.Test.UnitTest.Application.UseCases.Bank.DisableBank
             await act.Should().ThrowExactlyAsync<NotFoundException>()
                 .Where(x => x.Code == "not-found")
                 .WithMessage("Bank not found");
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "Bank - DisableBank")]
+        public async void ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var bank = _fixture.MakeBankEntity();
+            _bankRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(bank);
+
+            _bankRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<BankEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeDisableBankRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            await act.Should().ThrowExactlyAsync<UnexpectedException>()
+                .Where(x => x.Code == "unexpected")
+                .WithMessage("An unexpected error occurred");
         }
     }
 }
