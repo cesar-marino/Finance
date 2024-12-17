@@ -11,9 +11,11 @@ namespace Finance.Application.UseCases.Bank.EnableBank
         public async Task<BankResponse> Handle(EnableBankRequest request, CancellationToken cancellationToken)
         {
             var bank = await bankRepository.FindAsync(request.BankId, cancellationToken);
+            bank.Enable();
+
             await bankRepository.UpdateAsync(bank, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-            throw new NotImplementedException();
+            return BankResponse.FromEntity(bank);
         }
     }
 }
