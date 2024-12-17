@@ -7,7 +7,8 @@ namespace Finance.Application.UseCases.Bank.EnableBank
     {
         public async Task<BankResponse> Handle(EnableBankRequest request, CancellationToken cancellationToken)
         {
-            await bankRepository.FindAsync(request.BankId, cancellationToken);
+            var bank = await bankRepository.FindAsync(request.BankId, cancellationToken);
+            await bankRepository.UpdateAsync(bank, cancellationToken);
             throw new NotImplementedException();
         }
     }
