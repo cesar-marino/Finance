@@ -7,7 +7,9 @@ namespace Finance.Application.UseCases.Bank.UpdateBank
     {
         public async Task<BankResponse> Handle(UpdateBankRequest request, CancellationToken cancellationToken)
         {
-            _ = await bankRepository.FindAsync(id: request.BankId, cancellationToken: cancellationToken);
+            var bank = await bankRepository.FindAsync(id: request.BankId, cancellationToken: cancellationToken);
+
+            await bankRepository.UpdateAsync(aggregate: bank, cancellationToken: cancellationToken);
 
             throw new NotImplementedException();
         }
