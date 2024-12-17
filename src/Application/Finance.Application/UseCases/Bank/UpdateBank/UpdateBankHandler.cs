@@ -1,11 +1,14 @@
 using Finance.Application.UseCases.Bank.Commons;
+using Finance.Domain.Repositories;
 
 namespace Finance.Application.UseCases.Bank.UpdateBank
 {
-    public class UpdateBankHandler : IUpdateBankHandler
+    public class UpdateBankHandler(IBankRepository bankRepository) : IUpdateBankHandler
     {
-        public Task<BankResponse> Handle(UpdateBankRequest request, CancellationToken cancellationToken)
+        public async Task<BankResponse> Handle(UpdateBankRequest request, CancellationToken cancellationToken)
         {
+            _ = await bankRepository.FindAsync(id: request.BankId, cancellationToken: cancellationToken);
+
             throw new NotImplementedException();
         }
     }
