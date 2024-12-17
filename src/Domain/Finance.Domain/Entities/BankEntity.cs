@@ -40,5 +40,16 @@ namespace Finance.Domain.Entities
             Color = color;
             Logo = logo;
         }
+
+        public void Update(
+            string name,
+            string? code,
+            string? color)
+        {
+            Name = name;
+            Code = code;
+            Color = color;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

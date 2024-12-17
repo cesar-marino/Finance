@@ -12,10 +12,14 @@ namespace Finance.Application.UseCases.Bank.UpdateBank
         {
             var bank = await bankRepository.FindAsync(id: request.BankId, cancellationToken: cancellationToken);
 
+            bank.Update(
+                name: request.Name,
+                code: request.Code,
+                color: request.Color);
+
             await bankRepository.UpdateAsync(bank, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return BankResponse.FromEntity(bank);
         }
     }
 }
